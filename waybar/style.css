@@ -1,0 +1,124 @@
+/* =====================================================
+ * Waybar Style — Transparent, Clean, Nerd Font Ready
+ * Slight "Module Depth" for subtle layering
+ * ===================================================== */
+
+/* ---------- Global Bar ---------- */
+window#waybar {
+    background-color: rgba(0, 0, 0, 0.0); /* fully transparent */
+    color: #ffffff;
+    font-family: "JetBrains Mono", monospace;
+    font-size: 13px;
+    font-weight: 600; /* slightly thicker text */
+}
+
+/* ---------- Power Menu Icon ---------- */
+#custom-rofi-power-menu {
+    font-family: "JetBrainsMono Nerd Font", monospace;
+    font-size: 20px;
+    padding: 6px 10px;
+    background-color: rgba(0, 0, 0, 0.28); /* slightly darker for emphasis */
+    margin: 5px;
+    border-radius: 6px;
+}
+
+/* ---------- Notification Bell ---------- */
+#custom-notification {
+    font-family: "JetBrainsMono Nerd Font", monospace;
+    font-size: 20px;
+    padding: 6px 10px;
+    background-color: rgba(0, 0, 0, 0.28);
+    margin: 5px;
+    border-radius: 6px;
+}
+
+/* ---------- App Button ---------- */
+#custom-appbutton {
+    font-family: "JetBrains Mono", monospace;
+    font-size: 13px;
+    font-weight: 600;
+    background-color: rgba(0, 0, 0, 0.20); /* lighter to differentiate */
+    padding: 4px 8px;
+    margin: 5px;
+    border-radius: 6px;
+}
+
+/* ---------- Workspaces ---------- */
+#workspaces {
+    background-color: rgba(0, 0, 0, 0.25);
+    padding: 4px 8px;
+    margin: 5px;
+    border-radius: 6px;
+    font-family: "JetBrains Mono", monospace;
+    font-size: 13px;
+}
+
+#workspaces button {
+    background: transparent;
+    color: #ccc;
+    padding: 0 6px;
+    font-weight: 600; /* thicker workspace text */
+}
+
+#workspaces button.active {
+    background-color: rgba(255, 255, 255, 0.1);
+    color: #ffffff;
+    border-radius: 6px;
+}
+
+/* ---------- Window Title ---------- */
+#window {
+    font-weight: 700; /* bold window title */
+    color: #ffffff;
+    background-color: rgba(0, 0, 0, 0.30); /* slightly darker */
+    padding: 4px 8px;
+    margin: 5px;
+    border-radius: 6px;
+    font-family: "JetBrains Mono", monospace;
+    font-size: 13px;
+}
+
+/* ---------- Clock ---------- */
+#clock {
+    background-color: rgba(0, 0, 0, 0.20);
+    padding: 4px 8px;
+    margin: 5px;
+    border-radius: 6px;
+    font-family: "JetBrains Mono", monospace;
+    font-size: 13px;
+    font-weight: 600;
+}
+
+/* ---------- Network ---------- */
+#network {
+    background-color: rgba(0, 0, 0, 0.25);
+    padding: 4px 8px;
+    margin: 5px;
+    border-radius: 6px;
+    font-family: "JetBrainsMono Nerd Font", monospace; /* icons use Nerd Font */
+    font-size: 13px;
+    font-weight: 600;
+}
+
+/* ---------- Pulseaudio / Volume ---------- */
+#pulseaudio {
+    background-color: rgba(0, 0, 0, 0.25);
+    padding: 4px 8px;
+    margin: 5px;
+    border-radius: 6px;
+    font-family: "JetBrainsMono Nerd Font", monospace; /* icon font */
+    font-size: 13px;
+    font-weight: 600;
+}
+
+/* ---------- CPU Module ---------- */
+#cpu {
+    background-color: rgba(0, 0, 0, 0.20); /* lighter to differentiate */
+    padding: 4px 8px;
+    margin: 5px;
+    border-radius: 6px;
+    font-family: "JetBrains Mono", monospace;
+    font-size: 13px;
+    font-weight: 600;
+}
+
