@@ -7,6 +7,6 @@ sudo pacman -S nautilus polkit-gnome rofi git rust hyprland xorg-server xorg-xwa
 git clone https://aur.archlinux.org/paru.git
 cd paru
 makepkg -si
-paru -S waypaper
-paru -S mpvpaper
-paru -S clipse-wayland-bin
+paru -S waypaper --noconfirm
+paru -S mpvpaper --noconfirm
+paru -S clipse-wayland-bin --noconfirm
