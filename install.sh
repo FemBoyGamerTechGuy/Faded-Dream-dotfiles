@@ -1,6 +1,5 @@
 sudo pacman -S archlinux-keyring archlinux-mirrorlist artix-archlinux-support --noconfirm
 sudo rm -rf /etc/pacman.conf
-rm -rf .config
 sudo cp $HOME/Faded-Dream-dotfiles/pacman.conf /etc/
 sudo pacman-key --populate archlinux
 sudo pacman -Sy --noconfirm
