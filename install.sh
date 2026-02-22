@@ -111,8 +111,8 @@ echo "[6/6] Done."
 echo ""
 
 echo "============================================="
-echo "   Installation complete! Please reboot"
-echo "   or re-login to apply all changes."
+echo "   Installation complete! Rebooting in 10"
+echo "   seconds. Press CTRL+C to cancel."
 echo "============================================="
 echo ""
 
