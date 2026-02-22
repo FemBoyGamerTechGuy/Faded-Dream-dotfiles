@@ -8,7 +8,7 @@
 
 ## Preview
 
-
+[![Screenshot 1](https://github.com/FemBoyGamerTechGuy/Faded-Dream-dotfiles/raw/main/Previews/2026-02-22-192101_hyprshot.png)](https://github.com/FemBoyGamerTechGuy/Faded-Dream-dotfiles/blob/main/Previews/2026-02-22-192101_hyprshot.png)
 ![Screenshot 2](insert_image_here)  
 ![Screenshot 3](insert_image_here)
 
