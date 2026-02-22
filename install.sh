@@ -11,5 +11,6 @@ git clone https://aur.archlinux.org/paru.git
 cd paru
 makepkg -si
 paru -S waypaper mpvpaper clipse-wayland-bin --noconfirm
-cp -r "$HOME/Faded-Dream-dotfiles/rofi for .config" "$HOME/.config/rofi" #This copys the needed files for rofi into .config
-cp -r "$HOME/Faded-Dream-dotfiles/rofi for local then share" "$HOME/.local/share/rofi" #This copys the needed files for .local/share
+cp -r "$HOME/Faded-Dream-dotfiles/rofi for .config" "$HOME/.config/rofi" # This copys the needed files for rofi into .config
+cp -r "$HOME/Faded-Dream-dotfiles/rofi for local then share" "$HOME/.local/share/rofi" # This copys the needed files for .local/share
+cp -r "$HOME/Faded-Dream-dotfiles/fastfetch" "$HOME/.config/fastfetch" # This copys fastfetch config into .config
