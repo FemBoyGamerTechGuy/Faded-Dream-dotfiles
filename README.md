@@ -1,2 +1,56 @@
 # Faded-Dream-dotfiles
-My Hyprland configuration Simple xorg support configuration made to work with any apps on hyprland also this setup is made to work with artix runit
+
+> **Faded-Dream-dotfiles** is a straightforward configuration for [Hyprland](https://github.com/hyprwm/Hyprland), a Wayland compositor, focused on simplicity, compatibility, and daily usability.  
+> It provides reliable XWayland support to ensure Xorg applications run smoothly under Wayland.  
+> This setup is built and tested on [Artix Linux](https://artixlinux.org/) (runit).
+
+---
+
+## Preview
+
+
+![Screenshot 2](insert_image_here)  
+![Screenshot 3](insert_image_here)
+
+---
+
+## Video Demonstration
+
+[Video Demonstration](insert_video_here)
+
+---
+
+## Features
+
+- Single, central Hyprland configuration  
+- Reliable XWayland compatibility  
+- Minimal and lightweight setup  
+- Uses [Rofi](https://github.com/davatorium/rofi) as application launcher  
+- Video wallpaper support via [mpvpaper](https://github.com/jeeh/MPV-paper)  
+- [swaync](https://github.com/expensiveSmoke/swaync) for notifications (default configuration)  
+- Designed for practical daily use  
+
+---
+
+## Environment
+
+- **Compositor:** [Hyprland](https://github.com/hyprwm/Hyprland) (Wayland compositor)  
+- **Init System:** runit  
+- **Distribution:** [Artix Linux](https://artixlinux.org/) (runit)  
+- **Launcher:** [Rofi](https://github.com/davatorium/rofi)  
+- **Notifications:** [swaync](https://github.com/ErikReider/SwayNotificationCenter) (default config)  
+- **Wallpaper:** [mpvpaper](https://github.com/GhostNaN/mpvpaper) / [waypaper](https://github.com/anufrievroman/waypaper)  
+
+---
+
+## Project Structure
+
+```bash
+.config/
+ ├── hypr/
+ │   └── hyprland.conf
+ ├── waybar/
+ ├── rofi/
+ └── swaync/
+```
+# THIS IS NOT DONE YET same thing is for this "README.md"
