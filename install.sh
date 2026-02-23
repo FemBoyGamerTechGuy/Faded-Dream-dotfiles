@@ -1,120 +1,182 @@
 #!/bin/bash
-
 # =============================================================================
 # Faded Dream Dotfiles - Install Script
 # =============================================================================
 
+set -euo pipefail
+
+# --- Colors & Helpers --------------------------------------------------------
+RED='\033[0;31m'; GREEN='\033[0;32m'; YELLOW='\033[1;33m'
+CYAN='\033[0;36m'; BOLD='\033[1m'; RESET='\033[0m'
+
+info()    { echo -e "${CYAN}${BOLD}[INFO]${RESET}  $*"; }
+success() { echo -e "${GREEN}${BOLD}[ OK ]${RESET}  $*"; }
+warn()    { echo -e "${YELLOW}${BOLD}[WARN]${RESET}  $*"; }
+die()     { echo -e "${RED}${BOLD}[FAIL]${RESET}  $*" >&2; exit 1; }
+
+step() {
+    echo ""
+    echo -e "${BOLD}${CYAN}══════════════════════════════════════════${RESET}"
+    echo -e "${BOLD}  $1${RESET}"
+    echo -e "${BOLD}${CYAN}══════════════════════════════════════════${RESET}"
+}
+
+DOTFILES_DIR="${HOME}/Faded-Dream-dotfiles"
+TOTAL_STEPS=6
+
+# --- Preflight Checks --------------------------------------------------------
+[[ "$(id -u)" -eq 0 ]] && die "Do not run this script as root."
+[[ ! -d "$DOTFILES_DIR" ]] && die "Dotfiles directory not found: $DOTFILES_DIR"
+command -v pacman &>/dev/null || die "pacman not found. Is this Artix/Arch Linux?"
+
 echo ""
-echo "============================================="
-echo "   Faded Dream Dotfiles - Install Script"
-echo "============================================="
-echo ""
+echo -e "${BOLD}${CYAN}"
+echo "  ╔══════════════════════════════════════╗"
+echo "  ║   Faded Dream Dotfiles  -  Installer  ║"
+echo "  ╚══════════════════════════════════════╝"
+echo -e "${RESET}"
 
-# --- Arch Linux Repository Setup ---------------------------------------------
+# --- [1/6] Arch Repositories -------------------------------------------------
+step "[1/${TOTAL_STEPS}] Setting up Arch Linux repositories"
 
-echo "[1/6] Setting up Arch Linux repositories..."
+sudo pacman -S --noconfirm --needed archlinux-keyring archlinux-mirrorlist artix-archlinux-support \
+    || die "Failed to install repository packages."
 
-sudo pacman -S archlinux-keyring archlinux-mirrorlist artix-archlinux-support --noconfirm
-sudo rm -rf /etc/pacman.conf
-sudo cp $HOME/Faded-Dream-dotfiles/pacman.conf /etc/
+[[ -f "$DOTFILES_DIR/pacman.conf" ]] || die "pacman.conf not found in dotfiles."
+sudo cp /etc/pacman.conf /etc/pacman.conf.bak && info "Backed up existing pacman.conf"
+sudo cp "$DOTFILES_DIR/pacman.conf" /etc/pacman.conf
+
 sudo pacman-key --populate archlinux
 sudo pacman -Sy --noconfirm
 
-echo "[1/6] Done."
-echo ""
+success "Arch repositories configured."
 
-# --- Directory Structure -----------------------------------------------------
+# --- [2/6] Directory Structure -----------------------------------------------
+step "[2/${TOTAL_STEPS}] Creating directory structure"
 
-echo "[2/6] Creating directory structure..."
+mkdir -p \
+    "${HOME}/.config" \
+    "${HOME}/.local/share" \
+    "${HOME}/.config/autostart"
 
-mkdir -p $HOME/.config
-mkdir -p $HOME/.local/share
-mkdir -p $HOME/.config/autostart
+success "Directories ready."
 
-echo "[2/6] Done."
-echo ""
+# --- [3/6] Core Packages -----------------------------------------------------
+step "[3/${TOTAL_STEPS}] Installing core packages"
 
-# --- Package Installation ----------------------------------------------------
-
-echo "[3/6] Installing core packages..."
-
-sudo pacman -S \
-    nemo \
-    polkit-gnome \
-    rofi \
-    git \
-    rust \
-    hyprland \
-    xorg-server \
-    xorg-xwayland \
-    pipewire \
-    pipewire-pulse \
-    pipewire-alsa \
-    pipewire-jack \
-    noto-fonts \
-    noto-fonts-cjk \
-    noto-fonts-emoji \
-    waybar \
-    swaync \
-    neovim \
-    hyprshot \
+PACKAGES=(
+    # Desktop / WM
+    hyprland
+    xorg-server
+    xorg-xwayland
+    waybar
+    swaync
+    rofi
+    # Audio
+    pipewire
+    pipewire-pulse
+    pipewire-alsa
+    pipewire-jack
+    # File manager / Polkit
+    nemo
+    polkit-gnome
+    # Fonts
+    noto-fonts
+    noto-fonts-cjk
+    noto-fonts-emoji
     ttf-firacode-nerd
-    --noconfirm
+    # Terminal / Utilities
+    kitty
+    btop
+    calcurse
+    hyprshot
+    neovim
+    wget
+    git
+    # Languages & runtimes
+    rust
+    go
+    python-pip
+    jdk-openjdk
+    julia
+    php
+    npm
+    luarocks
+    tectonic
+)
 
-echo "[3/6] Done."
-echo ""
+sudo pacman -S --noconfirm --needed "${PACKAGES[@]}" \
+    || die "Package installation failed."
 
-# --- AUR Helper (paru) -------------------------------------------------------
+success "Core packages installed."
 
-echo "[4/6] Installing paru AUR helper and AUR packages..."
+# --- [4/6] AUR Helper (paru) -------------------------------------------------
+step "[4/${TOTAL_STEPS}] Installing paru and AUR packages"
 
-git clone https://aur.archlinux.org/paru.git
-cd paru && makepkg -si
-paru -S waypaper mpvpaper clipse-wayland-bin --noconfirm
+if command -v paru &>/dev/null; then
+    warn "paru already installed, skipping build."
+else
+    PARU_TMP=$(mktemp -d)
+    git clone https://aur.archlinux.org/paru.git "$PARU_TMP/paru" \
+        || die "Failed to clone paru."
+    (cd "$PARU_TMP/paru" && makepkg -si --noconfirm) \
+        || die "Failed to build paru."
+    rm -rf "$PARU_TMP"
+fi
 
-echo "[4/6] Done."
-echo ""
+paru -S --noconfirm --needed waypaper mpvpaper clipse-wayland-bin \
+    || die "Failed to install AUR packages."
 
-# --- Dotfile Deployment ------------------------------------------------------
+success "paru and AUR packages installed."
 
-echo "[5/6] Deploying dotfiles..."
+# --- [5/6] Dotfile Deployment ------------------------------------------------
+step "[5/${TOTAL_STEPS}] Deploying dotfiles"
 
-cp -r $HOME/Faded-Dream-dotfiles/hypr $HOME/.config
-cp -r "$HOME/Faded-Dream-dotfiles/rofi for .config" "$HOME/.config/rofi"
-cp -r "$HOME/Faded-Dream-dotfiles/rofi for local then share" "$HOME/.local/share/rofi"
-cp -r "$HOME/Faded-Dream-dotfiles/fastfetch" "$HOME/.config/fastfetch"
+deploy() {
+    local src="$1" dst="$2"
+    if [[ ! -e "$src" ]]; then
+        warn "Source not found, skipping: $src"
+        return
+    fi
+    mkdir -p "$(dirname "$dst")"
+    cp -r "$src" "$dst" && info "Deployed: $(basename "$src") → $dst"
+}
 
-echo "[5/6] Done."
-echo ""
+deploy "$DOTFILES_DIR/hypr"                                 "${HOME}/.config/hypr"
+deploy "$DOTFILES_DIR/rofi for .config"                     "${HOME}/.config/rofi"
+deploy "$DOTFILES_DIR/rofi for local then share"            "${HOME}/.local/share/rofi"
+deploy "$DOTFILES_DIR/fastfetch"                            "${HOME}/.config/fastfetch"
 
-# --- Autostart Services ------------------------------------------------------
+success "Dotfiles deployed."
 
-echo "[6/6] Setting up PipeWire autostart service..."
+# --- [6/6] PipeWire Autostart ------------------------------------------------
+step "[6/${TOTAL_STEPS}] Setting up PipeWire autostart"
 
-cat > $HOME/.config/autostart/pipewire.sh << 'EOF'
+PIPEWIRE_SCRIPT="${HOME}/.config/autostart/pipewire.sh"
+
+cat > "$PIPEWIRE_SCRIPT" << 'EOF'
 #!/bin/bash
-
-# Wait for XDG_RUNTIME_DIR to be available before starting audio services.
-while [ ! -d "/run/user/$(id -u)" ]; do
+# Wait for XDG_RUNTIME_DIR before starting audio services.
+until [[ -d "/run/user/$(id -u)" ]]; do
     sleep 0.5
 done
-
 sleep 3
-
 /usr/bin/pipewire &
 /usr/bin/pipewire-pulse &
 /usr/bin/wireplumber &
 EOF
 
-chmod +x $HOME/.config/autostart/pipewire.sh
+chmod +x "$PIPEWIRE_SCRIPT"
+success "PipeWire autostart configured."
 
-echo "[6/6] Done."
+# --- Done --------------------------------------------------------------------
 echo ""
-
-echo "============================================="
-echo "   Installation complete! Rebooting in 10"
-echo "   seconds. Press CTRL+C to cancel."
-echo "============================================="
+echo -e "${GREEN}${BOLD}"
+echo "  ╔══════════════════════════════════════╗"
+echo "  ║      Installation complete!           ║"
+echo "  ╚══════════════════════════════════════╝"
+echo -e "${RESET}"
+echo -e "  Rebooting in ${BOLD}10 seconds${RESET}. Press ${BOLD}Ctrl+C${RESET} to cancel."
 echo ""
 
 sleep 10
