@@ -72,6 +72,7 @@ PACKAGES=(
     waybar
     swaync
     rofi
+    nwg-look
     # Browser
     librewolf
     # Audio
