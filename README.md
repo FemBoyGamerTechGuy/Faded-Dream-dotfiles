@@ -22,12 +22,12 @@
 
 ## Features
 
-- Single, central Hyprland configuration  
-- Reliable XWayland compatibility  
-- Minimal and lightweight setup  
+- Single, central Hyprland configuration  "May change in the future"
+- Reliable XWayland compatibility  "I stand by this"
+- Minimal and lightweight setup  "Will work on most pcs even with igpu"
 - Uses [Rofi](https://github.com/davatorium/rofi) as application launcher  
-- Video wallpaper support via [mpvpaper](https://github.com/jeeh/MPV-paper)  
-- [swaync](https://github.com/expensiveSmoke/swaync) for notifications (default configuration)  
+- Video wallpaper support via [mpvpaper](https://github.com/GhostNaN/mpvpaper)  
+- [swaync](https://github.com/ErikReider/SwayNotificationCenter) for notifications (default configuration)  
 - Designed for practical daily use  
 
 ---
