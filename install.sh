@@ -58,6 +58,7 @@ sudo pacman -S \
     swaync \
     neovim \
     hyprshot \
+    ttf-firacode-nerd
     --noconfirm
 
 echo "[3/6] Done."
