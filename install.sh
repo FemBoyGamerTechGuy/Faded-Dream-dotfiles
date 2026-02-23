@@ -204,8 +204,8 @@ deploy "$DOTFILES_DIR/gtk configs/xsettingsd"     "${HOME}/.config/xsettingsd"
 deploy "$DOTFILES_DIR/.zshrc"                     "${HOME}/.zshrc"
 deploy "$DOTFILES_DIR/.zsh"                       "${HOME}/.zsh"
 deploy "$DOTFILES_DIR/gtk configs/.gtkrc-2.0"     "${HOME}/.gtkrc-2.0"
-deploy "$DOTFILES_DIR/.themes"                     "${HOME}/.themes"
-deploy "$DOTFILES_DIR/.icons"                      "${HOME}/.icons"
+deploy "$DOTFILES_DIR/.themes"                    "${HOME}/.themes"
+deploy "$DOTFILES_DIR/.icons"                     "${HOME}/.icons"
 
 success "Dotfiles deployed."
 
