@@ -59,4 +59,4 @@ alias cls='clear'
 alias update='sudo pacman -Syu --noconfirm'
 alias paru='paru --noconfirm'
 alias vim='nvim'
-alias cat='bat --style=plain' # requires bat package
+alias cat='bat --style=plain --paging=never'
