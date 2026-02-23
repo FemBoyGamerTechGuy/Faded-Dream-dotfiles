@@ -98,6 +98,7 @@ PACKAGES=(
   # Terminal / Shell / Utilities
   kitty
   zsh
+  bat
   btop
   calcurse
   hyprshot
@@ -118,6 +119,8 @@ PACKAGES=(
 
 sudo pacman -S --noconfirm --needed "${PACKAGES[@]}" ||
   die "Package installation failed."
+
+gsettings set org.cinnamon.desktop.default-applications.terminal exec kitty
 
 success "Core packages installed."
 
