@@ -120,4 +120,4 @@ Faded-Dream-dotfiles/
 
 <div align="center">
 <sub>Built with 💜 on Artix Linux</sub>
-</div>My configuration Simple xorg support configuration made to work with any apps 
+</div>
