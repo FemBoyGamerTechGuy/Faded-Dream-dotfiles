@@ -191,12 +191,21 @@ deploy() {
     cp -r "$src" "$dst" && info "Deployed: $(basename "$src") → $dst"
 }
 
+# Config folder deployments
 deploy "$DOTFILES_DIR/hypr"                       "${HOME}/.config/hypr"
 deploy "$DOTFILES_DIR/rofi for .config"           "${HOME}/.config/rofi"
 deploy "$DOTFILES_DIR/rofi for local then share"  "${HOME}/.local/share/rofi"
 deploy "$DOTFILES_DIR/fastfetch"                  "${HOME}/.config/fastfetch"
+deploy "$DOTFILES_DIR/gtk configs/gtk-3.0"        "${HOME}/.config/gtk-3.0"
+deploy "$DOTFILES_DIR/gtk configs/gtk-4.0"        "${HOME}/.config/gtk-4.0"
+deploy "$DOTFILES_DIR/gtk configs/xsettingsd"     "${HOME}/.config/xsettingsd"
+
+# Home directory deployments
 deploy "$DOTFILES_DIR/.zshrc"                     "${HOME}/.zshrc"
 deploy "$DOTFILES_DIR/.zsh"                       "${HOME}/.zsh"
+deploy "$DOTFILES_DIR/gtk configs/.gtkrc-2.0"     "${HOME}/.gtkrc-2.0"
+deploy "$DOTFILES_DIR/.themes"                     "${HOME}/.themes"
+deploy "$DOTFILES_DIR/.icons"                      "${HOME}/.icons"
 
 success "Dotfiles deployed."
 
