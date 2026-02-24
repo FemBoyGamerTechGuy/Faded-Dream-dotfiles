@@ -96,7 +96,7 @@
 | `vim` | `nvim` | Use Neovim instead of Vim |
 | `cat` | `bat --style=plain` | Better cat with syntax highlighting |
 
-> `cat` alias requires `bat` to be installed: `sudo pacman -S bat`
+> `cat` alias requires `bat` to be installed — handled automatically by `install.sh`
 
 ---
 
@@ -169,6 +169,16 @@ grandpa-style             pixelrobots
 
 ---
 
+## Notes
+
+- On first boot after install, PipeWire may take a few seconds to start — this is normal
+- `bat` must be installed for the `cat` alias to work — handled automatically by `install.sh`
+- The `if_tea` Oh My Posh theme requires the FiraCode Nerd Font to render correctly
+- GTK theming is managed via `nwg-look` — run it after first login to apply the theme
+- Keyboard layout is set to `us,ro` by default — change `kb_layout` and `kb_variant` in `hyprland.conf` to match your layout
+
+---
+
 ## Installation
 
 > Tested on a fresh Artix Linux (runit) install.
@@ -218,4 +228,6 @@ Faded-Dream-dotfiles/
 
 <div align="center">
 <sub>Built with 💜 on Artix Linux</sub>
+<br>
+<sub>Almost all of this repository was vibe coded with <a href="https://claude.ai">Claude.ai</a></sub>
 </div>
