@@ -205,6 +205,7 @@ deploy() {
 
 # Config folder deployments
 deploy "$DOTFILES_DIR/hypr" "${HOME}/.config/hypr"
+deploy "$DOTFILES_DIR/waybar" "${HOME}/.config/waybar"
 deploy "$DOTFILES_DIR/kitty" "${HOME}/.config/kitty"
 deploy "$DOTFILES_DIR/rofi for .config" "${HOME}/.config/rofi"
 deploy "$DOTFILES_DIR/rofi for local then share" "${HOME}/.local/share/rofi"
