@@ -99,6 +99,7 @@ PACKAGES=(
   kitty
   zsh
   bat
+  fastfetch
   btop
   calcurse
   hyprshot
