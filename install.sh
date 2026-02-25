@@ -106,6 +106,9 @@ PACKAGES=(
   neovim
   wget
   git
+  # Media
+  mpv
+  imagemagick
   # Languages & runtimes
   rust
   go
