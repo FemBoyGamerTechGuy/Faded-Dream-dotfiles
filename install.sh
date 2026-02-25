@@ -250,9 +250,7 @@ NEMO_TERMINAL_SCRIPT="${HOME}/.config/autostart/set-nemo-terminal.sh"
 
 cat >"$NEMO_TERMINAL_SCRIPT" <<'EOF'
 #!/bin/bash
-until [ -n "$DBUS_SESSION_BUS_ADDRESS" ]; do
-    sleep 1
-done
+sleep 10
 gsettings set org.cinnamon.desktop.default-applications.terminal exec kitty
 gsettings set org.gnome.desktop.default-applications.terminal exec kitty
 rm -- "$0"
@@ -261,14 +259,12 @@ EOF
 chmod +x "$NEMO_TERMINAL_SCRIPT"
 success "Nemo terminal autostart configured."
 
-# GTK theme autostart (runs once on first login then deletes itself)
+# GTK theme autostart (runs once on first login then kills itself)
 GTK_THEME_SCRIPT="${HOME}/.config/autostart/set-gtk-theme.sh"
 
 cat >"$GTK_THEME_SCRIPT" <<'EOF'
 #!/bin/bash
-until [ -n "$DBUS_SESSION_BUS_ADDRESS" ]; do
-    sleep 1
-done
+sleep 10
 gsettings set org.gnome.desktop.interface gtk-theme "Nordic-bluish-accent-v40"
 gsettings set org.gnome.desktop.interface icon-theme "Papirus"
 gsettings set org.gnome.desktop.interface cursor-theme "ArcDusk-cursors"
