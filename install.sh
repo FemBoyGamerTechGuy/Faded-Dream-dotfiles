@@ -64,7 +64,8 @@ step "[2/${TOTAL_STEPS}] Creating directory structure"
 mkdir -p \
   "${HOME}/.config" \
   "${HOME}/.local/share" \
-  "${HOME}/.config/autostart"
+  "${HOME}/.config/autostart" \
+  "${HOME}/.icons/default"
 
 success "Directories ready."
 
@@ -87,6 +88,7 @@ PACKAGES=(
   pipewire-pulse
   pipewire-alsa
   pipewire-jack
+  pavucontrol
   # File manager / Polkit
   nemo
   polkit-gnome
@@ -236,10 +238,14 @@ cat >"$PIPEWIRE_SCRIPT" <<'EOF'
 until [[ -d "/run/user/$(id -u)" ]]; do
     sleep 0.5
 done
-sleep 3
+sleep 1
 /usr/bin/pipewire &
 /usr/bin/pipewire-pulse &
 /usr/bin/wireplumber &
+# Wait for pipewire to be ready then restart waybar to pick up audio
+sleep 2
+pkill waybar || true
+waybar &
 EOF
 
 chmod +x "$PIPEWIRE_SCRIPT"
@@ -269,6 +275,10 @@ gsettings set org.gnome.desktop.interface gtk-theme "Nordic-bluish-accent-v40"
 gsettings set org.gnome.desktop.interface icon-theme "Papirus"
 gsettings set org.gnome.desktop.interface cursor-theme "ArcDusk-cursors"
 gsettings set org.gnome.desktop.interface cursor-size 24
+# Fix cursor theme for all environments including XWayland
+echo '[Icon Theme]' > ~/.icons/default/index.theme
+echo 'Name=ArcDusk-cursors' >> ~/.icons/default/index.theme
+echo 'Inherits=ArcDusk-cursors' >> ~/.icons/default/index.theme
 rm -- "$0"
 EOF
 
