@@ -121,8 +121,6 @@ PACKAGES=(
 sudo pacman -S --noconfirm --needed "${PACKAGES[@]}" ||
   die "Package installation failed."
 
-gsettings set org.cinnamon.desktop.default-applications.terminal exec kitty
-
 success "Core packages installed."
 
 # --- [4/9] Set zsh as default shell ------------------------------------------
@@ -223,9 +221,10 @@ deploy "$DOTFILES_DIR/.icons" "${HOME}/.icons"
 
 success "Dotfiles deployed."
 
-# --- [9/9] PipeWire Autostart ------------------------------------------------
-step "[9/${TOTAL_STEPS}] Setting up PipeWire autostart"
+# --- [9/9] Autostart Scripts -------------------------------------------------
+step "[9/${TOTAL_STEPS}] Setting up autostart scripts"
 
+# PipeWire autostart
 PIPEWIRE_SCRIPT="${HOME}/.config/autostart/pipewire.sh"
 
 cat >"$PIPEWIRE_SCRIPT" <<'EOF'
@@ -242,6 +241,40 @@ EOF
 
 chmod +x "$PIPEWIRE_SCRIPT"
 success "PipeWire autostart configured."
+
+# Nemo terminal autostart (runs once on first login then deletes itself)
+NEMO_TERMINAL_SCRIPT="${HOME}/.config/autostart/set-nemo-terminal.sh"
+
+cat >"$NEMO_TERMINAL_SCRIPT" <<'EOF'
+#!/bin/bash
+until [ -n "$DBUS_SESSION_BUS_ADDRESS" ]; do
+    sleep 1
+done
+gsettings set org.cinnamon.desktop.default-applications.terminal exec kitty
+gsettings set org.gnome.desktop.default-applications.terminal exec kitty
+rm -- "$0"
+EOF
+
+chmod +x "$NEMO_TERMINAL_SCRIPT"
+success "Nemo terminal autostart configured."
+
+# GTK theme autostart (runs once on first login then deletes itself)
+GTK_THEME_SCRIPT="${HOME}/.config/autostart/set-gtk-theme.sh"
+
+cat >"$GTK_THEME_SCRIPT" <<'EOF'
+#!/bin/bash
+until [ -n "$DBUS_SESSION_BUS_ADDRESS" ]; do
+    sleep 1
+done
+gsettings set org.gnome.desktop.interface gtk-theme "Nordic-bluish-accent-v40"
+gsettings set org.gnome.desktop.interface icon-theme "Papirus"
+gsettings set org.gnome.desktop.interface cursor-theme "ArcDusk-cursors"
+gsettings set org.gnome.desktop.interface cursor-size 24
+rm -- "$0"
+EOF
+
+chmod +x "$GTK_THEME_SCRIPT"
+success "GTK theme autostart configured."
 
 # --- Done --------------------------------------------------------------------
 echo ""
