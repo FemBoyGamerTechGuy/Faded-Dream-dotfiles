@@ -29,7 +29,7 @@ step() {
 }
 
 DOTFILES_DIR="${HOME}/Faded-Dream-dotfiles"
-TOTAL_STEPS=9
+TOTAL_STEPS=10
 
 # --- Preflight Checks --------------------------------------------------------
 [[ "$(id -u)" -eq 0 ]] && die "Do not run this script as root."
@@ -43,7 +43,7 @@ echo "  ║   Faded Dream Dotfiles  -  Installer  ║"
 echo "  ╚══════════════════════════════════════╝"
 echo -e "${RESET}"
 
-# --- [1/9] Arch Repositories -------------------------------------------------
+# --- [1/10] Arch Repositories ------------------------------------------------
 step "[1/${TOTAL_STEPS}] Setting up Arch Linux repositories"
 
 sudo pacman -S --noconfirm --needed archlinux-keyring archlinux-mirrorlist artix-archlinux-support ||
@@ -58,7 +58,7 @@ sudo pacman -Sy --noconfirm
 
 success "Arch repositories configured."
 
-# --- [2/9] Directory Structure -----------------------------------------------
+# --- [2/10] Directory Structure ----------------------------------------------
 step "[2/${TOTAL_STEPS}] Creating directory structure"
 
 mkdir -p \
@@ -69,7 +69,7 @@ mkdir -p \
 
 success "Directories ready."
 
-# --- [3/9] Core Packages -----------------------------------------------------
+# --- [3/10] Core Packages ----------------------------------------------------
 step "[3/${TOTAL_STEPS}] Installing core packages"
 
 PACKAGES=(
@@ -128,8 +128,73 @@ sudo pacman -S --noconfirm --needed "${PACKAGES[@]}" ||
 
 success "Core packages installed."
 
-# --- [4/9] Set zsh as default shell ------------------------------------------
-step "[4/${TOTAL_STEPS}] Setting zsh as default shell"
+# --- [4/10] GPU Drivers ------------------------------------------------------
+step "[4/${TOTAL_STEPS}] Installing GPU drivers"
+
+# Detect kernel and set appropriate headers
+KERNEL=$(uname -r)
+case "$KERNEL" in
+*zen*) HEADERS="linux-zen-headers" ;;
+*lts*) HEADERS="linux-lts-headers" ;;
+*hardened*) HEADERS="linux-hardened-headers" ;;
+*) HEADERS="linux-headers" ;;
+esac
+info "Detected kernel: $KERNEL — will install $HEADERS"
+
+echo ""
+echo -e "${BOLD}${CYAN}  Which GPU do you have?${RESET}"
+echo -e "  1) AMD"
+echo -e "  2) Nvidia (16 series and newer)"
+echo -e "  3) Nvidia (10 series and older)"
+echo -e "  4) Intel"
+echo -e "  5) Skip (no drivers needed)"
+echo ""
+read -rp "  Enter choice [1-5]: " GPU_CHOICE
+
+case "$GPU_CHOICE" in
+1)
+  info "AMD selected — installing AMD drivers."
+  sudo pacman -S --noconfirm --needed \
+    mesa vulkan-radeon xf86-video-amdgpu dkms "$HEADERS" ||
+    die "Failed to install AMD drivers."
+  success "AMD drivers installed."
+  ;;
+2)
+  info "Nvidia 16 series+ selected — installing Nvidia drivers."
+  sudo pacman -S --noconfirm --needed \
+    nvidia-open-dkms nvidia-utils lib32-nvidia-utils \
+    lib32-opencl-nvidia opencl-nvidia nvidia-settings \
+    dkms "$HEADERS" ||
+    die "Failed to install Nvidia drivers."
+  success "Nvidia drivers installed."
+  ;;
+3)
+  info "Nvidia 10 series and older selected — installing legacy Nvidia drivers."
+  sudo pacman -S --noconfirm --needed \
+    nvidia-580xx-dkms nvidia-580xx-utils lib32-nvidia-580xx-utils \
+    opencl-nvidia-580xx lib32-opencl-nvidia-580xx nvidia-580xx-settings \
+    dkms "$HEADERS" ||
+    die "Failed to install legacy Nvidia drivers."
+  success "Legacy Nvidia drivers installed."
+  ;;
+4)
+  info "Intel selected — installing Intel drivers."
+  sudo pacman -S --noconfirm --needed \
+    mesa vulkan-intel libva-intel-driver xf86-video-intel \
+    dkms "$HEADERS" ||
+    die "Failed to install Intel drivers."
+  success "Intel drivers installed."
+  ;;
+5)
+  warn "Skipping GPU driver installation."
+  ;;
+*)
+  warn "Invalid choice, skipping GPU driver installation."
+  ;;
+esac
+
+# --- [5/10] Set zsh as default shell -----------------------------------------
+step "[5/${TOTAL_STEPS}] Setting zsh as default shell"
 
 ZSH_PATH="$(command -v zsh)"
 [[ -z "$ZSH_PATH" ]] && die "zsh not found after installation, something went wrong."
@@ -142,8 +207,8 @@ else
   success "Default shell changed to zsh for $USER."
 fi
 
-# --- [5/9] AUR Helper (paru) -------------------------------------------------
-step "[5/${TOTAL_STEPS}] Installing paru and AUR packages"
+# --- [6/10] AUR Helper (paru) ------------------------------------------------
+step "[6/${TOTAL_STEPS}] Installing paru and AUR packages"
 
 if command -v paru &>/dev/null; then
   warn "paru already installed, skipping build."
@@ -161,8 +226,8 @@ paru -S --noconfirm --needed waypaper mpvpaper clipse-wayland-bin ||
 
 success "paru and AUR packages installed."
 
-# --- [6/9] Rofi Power Menu ---------------------------------------------------
-step "[6/${TOTAL_STEPS}] Installing rofi-power-menu (non-systemd)"
+# --- [7/10] Rofi Power Menu --------------------------------------------------
+step "[7/${TOTAL_STEPS}] Installing rofi-power-menu (non-systemd)"
 
 POWER_MENU_TMP=$(mktemp -d)
 
@@ -182,8 +247,8 @@ PKGBUILD_DIR="$POWER_MENU_TMP/rofi-power-menu/rofi-power-menu-PKG"
 rm -rf "$POWER_MENU_TMP"
 success "rofi-power-menu installed."
 
-# --- [7/9] LazyVim -----------------------------------------------------------
-step "[7/${TOTAL_STEPS}] Installing LazyVim starter config"
+# --- [8/10] LazyVim ----------------------------------------------------------
+step "[8/${TOTAL_STEPS}] Installing LazyVim starter config"
 
 if [[ -d "${HOME}/.config/nvim" ]]; then
   warn "~/.config/nvim already exists, skipping LazyVim clone."
@@ -193,8 +258,8 @@ else
   success "LazyVim starter cloned to ~/.config/nvim."
 fi
 
-# --- [8/9] Dotfile Deployment ------------------------------------------------
-step "[8/${TOTAL_STEPS}] Deploying dotfiles"
+# --- [9/10] Dotfile Deployment -----------------------------------------------
+step "[9/${TOTAL_STEPS}] Deploying dotfiles"
 
 deploy() {
   local src="$1" dst="$2"
@@ -206,9 +271,39 @@ deploy() {
   cp -r "$src" "$dst" && info "Deployed: $(basename "$src") → $dst"
 }
 
+# Waybar config selection
+echo ""
+echo -e "${BOLD}${CYAN}  Are you installing on a laptop or a PC?${RESET}"
+echo -e "  1) Laptop"
+echo -e "  2) PC"
+echo ""
+read -rp "  Enter choice [1/2]: " WAYBAR_CHOICE
+
+case "$WAYBAR_CHOICE" in
+1)
+  info "Laptop selected — deploying laptop waybar config."
+  mkdir -p "${HOME}/.config/waybar"
+  cp "$DOTFILES_DIR/waybar laptop/config-laptop.jsonc" "${HOME}/.config/waybar/config.jsonc"
+  cp "$DOTFILES_DIR/waybar laptop/style-laptop.css" "${HOME}/.config/waybar/style.css"
+  success "Laptop waybar config deployed."
+  ;;
+2)
+  info "PC selected — deploying desktop waybar config."
+  mkdir -p "${HOME}/.config/waybar"
+  cp "$DOTFILES_DIR/waybar pc/config.jsonc" "${HOME}/.config/waybar/config.jsonc"
+  cp "$DOTFILES_DIR/waybar pc/style.css" "${HOME}/.config/waybar/style.css"
+  success "Desktop waybar config deployed."
+  ;;
+*)
+  warn "Invalid choice, defaulting to PC waybar config."
+  mkdir -p "${HOME}/.config/waybar"
+  cp "$DOTFILES_DIR/waybar pc/config.jsonc" "${HOME}/.config/waybar/config.jsonc"
+  cp "$DOTFILES_DIR/waybar pc/style.css" "${HOME}/.config/waybar/style.css"
+  ;;
+esac
+
 # Config folder deployments
 deploy "$DOTFILES_DIR/hypr" "${HOME}/.config/hypr"
-deploy "$DOTFILES_DIR/waybar" "${HOME}/.config/waybar"
 deploy "$DOTFILES_DIR/kitty" "${HOME}/.config/kitty"
 deploy "$DOTFILES_DIR/rofi for .config" "${HOME}/.config/rofi"
 deploy "$DOTFILES_DIR/rofi for local then share" "${HOME}/.local/share/rofi"
@@ -226,8 +321,8 @@ deploy "$DOTFILES_DIR/.icons" "${HOME}/.icons"
 
 success "Dotfiles deployed."
 
-# --- [9/9] Autostart Scripts -------------------------------------------------
-step "[9/${TOTAL_STEPS}] Setting up autostart scripts"
+# --- [10/10] Autostart Scripts -----------------------------------------------
+step "[10/${TOTAL_STEPS}] Setting up autostart scripts"
 
 # PipeWire autostart
 PIPEWIRE_SCRIPT="${HOME}/.config/autostart/pipewire.sh"
