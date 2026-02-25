@@ -65,7 +65,9 @@ mkdir -p \
   "${HOME}/.config" \
   "${HOME}/.local/share" \
   "${HOME}/.config/autostart" \
-  "${HOME}/.icons/default"
+  "${HOME}/.config/waypaper" \
+  "${HOME}/.icons/default" \
+  "${HOME}/Live&NON Live Wallpapers"
 
 success "Directories ready."
 
@@ -351,6 +353,7 @@ deploy "$DOTFILES_DIR/fastfetch" "${HOME}/.config/fastfetch"
 deploy "$DOTFILES_DIR/gtk configs/gtk-3.0" "${HOME}/.config/gtk-3.0"
 deploy "$DOTFILES_DIR/gtk configs/gtk-4.0" "${HOME}/.config/gtk-4.0"
 deploy "$DOTFILES_DIR/gtk configs/xsettingsd" "${HOME}/.config/xsettingsd"
+deploy "$DOTFILES_DIR/config.ini for waypaper/config.ini" "${HOME}/.config/waypaper/config.ini"
 
 # Home directory deployments
 deploy "$DOTFILES_DIR/.zshrc" "${HOME}/.zshrc"
