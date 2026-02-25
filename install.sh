@@ -128,8 +128,38 @@ sudo pacman -S --noconfirm --needed "${PACKAGES[@]}" ||
 
 success "Core packages installed."
 
-# --- [4/10] GPU Drivers ------------------------------------------------------
-step "[4/${TOTAL_STEPS}] Installing GPU drivers"
+# --- [4/10] Set zsh as default shell -----------------------------------------
+step "[4/${TOTAL_STEPS}] Setting zsh as default shell"
+
+ZSH_PATH="$(command -v zsh)"
+[[ -z "$ZSH_PATH" ]] && die "zsh not found after installation, something went wrong."
+
+if [[ "$(getent passwd "$USER" | cut -d: -f7)" == "$ZSH_PATH" ]]; then
+  warn "zsh is already the default shell for $USER, skipping."
+else
+  sudo chsh -s "$ZSH_PATH" "$USER" ||
+    die "Failed to change default shell to zsh."
+  success "Default shell changed to zsh for $USER."
+fi
+
+# --- [5/10] AUR Helper (paru) ------------------------------------------------
+step "[5/${TOTAL_STEPS}] Installing paru"
+
+if command -v paru &>/dev/null; then
+  warn "paru already installed, skipping build."
+else
+  PARU_TMP=$(mktemp -d)
+  git clone https://aur.archlinux.org/paru.git "$PARU_TMP/paru" ||
+    die "Failed to clone paru."
+  (cd "$PARU_TMP/paru" && makepkg -si --noconfirm) ||
+    die "Failed to build paru."
+  rm -rf "$PARU_TMP"
+fi
+
+success "paru installed."
+
+# --- [6/10] GPU Drivers ------------------------------------------------------
+step "[6/${TOTAL_STEPS}] Installing GPU drivers"
 
 # Detect kernel and set appropriate headers
 KERNEL=$(uname -r)
@@ -143,13 +173,16 @@ info "Detected kernel: $KERNEL — will install $HEADERS"
 
 echo ""
 echo -e "${BOLD}${CYAN}  Which GPU do you have?${RESET}"
-echo -e "  1) AMD"
-echo -e "  2) Nvidia (16 series and newer)"
-echo -e "  3) Nvidia (10 series and older)"
-echo -e "  4) Intel"
-echo -e "  5) Skip (no drivers needed)"
+echo -e "  1) AMD (discrete + iGPU / Ryzen APU)"
+echo -e "  2) Nvidia RTX 50 series - GTX 16 series"
+echo -e "  3) Nvidia GTX 1080 Ti - GTX 1010"
+echo -e "  4) Nvidia GTX 700 - GTX 600 series"
+echo -e "  5) Nvidia GTX 500 - GTX 400 series"
+echo -e "  6) Nvidia GeForce 8/9/100/200/300 series"
+echo -e "  7) Intel (discrete + iGPU)"
+echo -e "  8) Skip (no drivers needed)"
 echo ""
-read -rp "  Enter choice [1-5]: " GPU_CHOICE
+read -rp "  Enter choice [1-8]: " GPU_CHOICE
 
 case "$GPU_CHOICE" in
 1)
@@ -160,24 +193,56 @@ case "$GPU_CHOICE" in
   success "AMD drivers installed."
   ;;
 2)
-  info "Nvidia 16 series+ selected — installing Nvidia drivers."
+  info "Nvidia RTX 50 - GTX 16 series selected — installing drivers."
+  sudo pacman -S --noconfirm --needed dkms "$HEADERS" ||
+    die "Failed to install dkms and headers."
   sudo pacman -S --noconfirm --needed \
     nvidia-open-dkms nvidia-utils lib32-nvidia-utils \
-    lib32-opencl-nvidia opencl-nvidia nvidia-settings \
-    dkms "$HEADERS" ||
+    lib32-opencl-nvidia opencl-nvidia nvidia-settings ||
     die "Failed to install Nvidia drivers."
   success "Nvidia drivers installed."
   ;;
 3)
-  info "Nvidia 10 series and older selected — installing legacy Nvidia drivers."
+  info "Nvidia GTX 1080 Ti - GTX 1010 selected — installing drivers."
+  sudo pacman -S --noconfirm --needed dkms "$HEADERS" ||
+    die "Failed to install dkms and headers."
   sudo pacman -S --noconfirm --needed \
     nvidia-580xx-dkms nvidia-580xx-utils lib32-nvidia-580xx-utils \
-    opencl-nvidia-580xx lib32-opencl-nvidia-580xx nvidia-580xx-settings \
-    dkms "$HEADERS" ||
-    die "Failed to install legacy Nvidia drivers."
-  success "Legacy Nvidia drivers installed."
+    opencl-nvidia-580xx lib32-opencl-nvidia-580xx nvidia-580xx-settings ||
+    die "Failed to install Nvidia 580xx drivers."
+  success "Nvidia 580xx drivers installed."
   ;;
 4)
+  info "Nvidia GTX 700 - GTX 600 series selected — installing drivers."
+  sudo pacman -S --noconfirm --needed dkms "$HEADERS" ||
+    die "Failed to install dkms and headers."
+  paru -S --noconfirm --needed \
+    nvidia-470xx-dkms nvidia-470xx-utils nvidia-470xx-settings \
+    opencl-nvidia-470xx lib32-nvidia-470xx-utils lib32-opencl-nvidia-470xx ||
+    die "Failed to install Nvidia 470xx drivers."
+  success "Nvidia 470xx drivers installed."
+  ;;
+5)
+  info "Nvidia GTX 500 - GTX 400 series selected — installing drivers."
+  sudo pacman -S --noconfirm --needed dkms "$HEADERS" ||
+    die "Failed to install dkms and headers."
+  paru -S --noconfirm --needed \
+    nvidia-390xx-dkms nvidia-390xx-utils nvidia-390xx-settings \
+    opencl-nvidia-390xx lib32-nvidia-390xx-utils lib32-opencl-nvidia-390xx ||
+    die "Failed to install Nvidia 390xx drivers."
+  success "Nvidia 390xx drivers installed."
+  ;;
+6)
+  info "Nvidia GeForce 8/9/100/200/300 series selected — installing drivers."
+  sudo pacman -S --noconfirm --needed dkms "$HEADERS" ||
+    die "Failed to install dkms and headers."
+  paru -S --noconfirm --needed \
+    nvidia-340xx-dkms nvidia-340xx-utils nvidia-340xx-settings \
+    opencl-nvidia-340xx lib32-nvidia-340xx-utils lib32-opencl-nvidia-340xx ||
+    die "Failed to install Nvidia 340xx drivers."
+  success "Nvidia 340xx drivers installed."
+  ;;
+7)
   info "Intel selected — installing Intel drivers."
   sudo pacman -S --noconfirm --needed \
     mesa vulkan-intel libva-intel-driver xf86-video-intel \
@@ -185,7 +250,7 @@ case "$GPU_CHOICE" in
     die "Failed to install Intel drivers."
   success "Intel drivers installed."
   ;;
-5)
+8)
   warn "Skipping GPU driver installation."
   ;;
 *)
@@ -193,41 +258,16 @@ case "$GPU_CHOICE" in
   ;;
 esac
 
-# --- [5/10] Set zsh as default shell -----------------------------------------
-step "[5/${TOTAL_STEPS}] Setting zsh as default shell"
-
-ZSH_PATH="$(command -v zsh)"
-[[ -z "$ZSH_PATH" ]] && die "zsh not found after installation, something went wrong."
-
-if [[ "$(getent passwd "$USER" | cut -d: -f7)" == "$ZSH_PATH" ]]; then
-  warn "zsh is already the default shell for $USER, skipping."
-else
-  sudo chsh -s "$ZSH_PATH" "$USER" ||
-    die "Failed to change default shell to zsh."
-  success "Default shell changed to zsh for $USER."
-fi
-
-# --- [6/10] AUR Helper (paru) ------------------------------------------------
-step "[6/${TOTAL_STEPS}] Installing paru and AUR packages"
-
-if command -v paru &>/dev/null; then
-  warn "paru already installed, skipping build."
-else
-  PARU_TMP=$(mktemp -d)
-  git clone https://aur.archlinux.org/paru.git "$PARU_TMP/paru" ||
-    die "Failed to clone paru."
-  (cd "$PARU_TMP/paru" && makepkg -si --noconfirm) ||
-    die "Failed to build paru."
-  rm -rf "$PARU_TMP"
-fi
+# --- [7/10] AUR Packages -----------------------------------------------------
+step "[7/${TOTAL_STEPS}] Installing AUR packages"
 
 paru -S --noconfirm --needed waypaper mpvpaper clipse-wayland-bin ||
   die "Failed to install AUR packages."
 
-success "paru and AUR packages installed."
+success "AUR packages installed."
 
-# --- [7/10] Rofi Power Menu --------------------------------------------------
-step "[7/${TOTAL_STEPS}] Installing rofi-power-menu (non-systemd)"
+# --- [8/10] Rofi Power Menu --------------------------------------------------
+step "[8/${TOTAL_STEPS}] Installing rofi-power-menu (non-systemd)"
 
 POWER_MENU_TMP=$(mktemp -d)
 
@@ -247,8 +287,8 @@ PKGBUILD_DIR="$POWER_MENU_TMP/rofi-power-menu/rofi-power-menu-PKG"
 rm -rf "$POWER_MENU_TMP"
 success "rofi-power-menu installed."
 
-# --- [8/10] LazyVim ----------------------------------------------------------
-step "[8/${TOTAL_STEPS}] Installing LazyVim starter config"
+# --- [9/10] LazyVim ----------------------------------------------------------
+step "[9/${TOTAL_STEPS}] Installing LazyVim starter config"
 
 if [[ -d "${HOME}/.config/nvim" ]]; then
   warn "~/.config/nvim already exists, skipping LazyVim clone."
@@ -258,8 +298,8 @@ else
   success "LazyVim starter cloned to ~/.config/nvim."
 fi
 
-# --- [9/10] Dotfile Deployment -----------------------------------------------
-step "[9/${TOTAL_STEPS}] Deploying dotfiles"
+# --- [10/10] Dotfile Deployment + Autostart ----------------------------------
+step "[10/${TOTAL_STEPS}] Deploying dotfiles and autostart scripts"
 
 deploy() {
   local src="$1" dst="$2"
@@ -320,9 +360,6 @@ deploy "$DOTFILES_DIR/.themes" "${HOME}/.themes"
 deploy "$DOTFILES_DIR/.icons" "${HOME}/.icons"
 
 success "Dotfiles deployed."
-
-# --- [10/10] Autostart Scripts -----------------------------------------------
-step "[10/${TOTAL_STEPS}] Setting up autostart scripts"
 
 # PipeWire autostart
 PIPEWIRE_SCRIPT="${HOME}/.config/autostart/pipewire.sh"
