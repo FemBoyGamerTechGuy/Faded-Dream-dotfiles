@@ -1,15 +1,14 @@
 /* =====================================================
- * Waybar Style — Transparent, Clean, Nerd Font Ready
- * Slight "Module Depth" for subtle layering
+ * Waybar Style — Laptop — Transparent, Clean, Nerd Font Ready
  * ===================================================== */
 
 /* ---------- Global Bar ---------- */
 window#waybar {
-    background-color: rgba(0, 0, 0, 0.0); /* fully transparent */
+    background-color: rgba(0, 0, 0, 0.0);
     color: #ffffff;
-    font-family: "JetBrains Mono", monospace;
+    font-family: "JetBrainsMono Nerd Font", monospace;
     font-size: 13px;
-    font-weight: 600; /* slightly thicker text */
+    font-weight: 600;
 }
 
 /* ---------- Power Menu Icon ---------- */
@@ -17,7 +16,7 @@ window#waybar {
     font-family: "JetBrainsMono Nerd Font", monospace;
     font-size: 20px;
     padding: 6px 10px;
-    background-color: rgba(0, 0, 0, 0.28); /* slightly darker for emphasis */
+    background-color: rgba(0, 0, 0, 0.28);
     margin: 5px;
     border-radius: 6px;
 }
@@ -34,10 +33,10 @@ window#waybar {
 
 /* ---------- App Button ---------- */
 #custom-appbutton {
-    font-family: "JetBrains Mono", monospace;
+    font-family: "JetBrainsMono Nerd Font", monospace;
     font-size: 13px;
     font-weight: 600;
-    background-color: rgba(0, 0, 0, 0.20); /* lighter to differentiate */
+    background-color: rgba(0, 0, 0, 0.20);
     padding: 4px 8px;
     margin: 5px;
     border-radius: 6px;
@@ -49,7 +48,7 @@ window#waybar {
     padding: 4px 8px;
     margin: 5px;
     border-radius: 6px;
-    font-family: "JetBrains Mono", monospace;
+    font-family: "JetBrainsMono Nerd Font", monospace;
     font-size: 13px;
 }
 
@@ -57,7 +56,7 @@ window#waybar {
     background: transparent;
     color: #ccc;
     padding: 0 6px;
-    font-weight: 600; /* thicker workspace text */
+    font-weight: 600;
 }
 
 #workspaces button.active {
@@ -68,13 +67,13 @@ window#waybar {
 
 /* ---------- Window Title ---------- */
 #window {
-    font-weight: 700; /* bold window title */
+    font-weight: 700;
     color: #ffffff;
-    background-color: rgba(0, 0, 0, 0.30); /* slightly darker */
+    background-color: rgba(0, 0, 0, 0.30);
     padding: 4px 8px;
     margin: 5px;
     border-radius: 6px;
-    font-family: "JetBrains Mono", monospace;
+    font-family: "JetBrainsMono Nerd Font", monospace;
     font-size: 13px;
 }
 
@@ -84,7 +83,7 @@ window#waybar {
     padding: 4px 8px;
     margin: 5px;
     border-radius: 6px;
-    font-family: "JetBrains Mono", monospace;
+    font-family: "JetBrainsMono Nerd Font", monospace;
     font-size: 13px;
     font-weight: 600;
 }
@@ -95,7 +94,7 @@ window#waybar {
     padding: 4px 8px;
     margin: 5px;
     border-radius: 6px;
-    font-family: "JetBrainsMono Nerd Font", monospace; /* icons use Nerd Font */
+    font-family: "JetBrainsMono Nerd Font", monospace;
     font-size: 13px;
     font-weight: 600;
 }
@@ -106,20 +105,68 @@ window#waybar {
     padding: 4px 8px;
     margin: 5px;
     border-radius: 6px;
-    font-family: "JetBrainsMono Nerd Font", monospace; /* icon font */
+    font-family: "JetBrainsMono Nerd Font", monospace;
     font-size: 13px;
     font-weight: 600;
 }
 
-/* ---------- CPU Module ---------- */
+/* ---------- CPU ---------- */
 #cpu {
-    background-color: rgba(0, 0, 0, 0.20); /* lighter to differentiate */
+    background-color: rgba(0, 0, 0, 0.20);
     padding: 4px 8px;
     margin: 5px;
     border-radius: 6px;
-    font-family: "JetBrains Mono", monospace;
+    font-family: "JetBrainsMono Nerd Font", monospace;
     font-size: 13px;
     font-weight: 600;
+}
+
+/* ---------- Memory ---------- */
+#memory {
+    background-color: rgba(0, 0, 0, 0.20);
+    padding: 4px 8px;
+    margin: 5px;
+    border-radius: 6px;
+    font-family: "JetBrainsMono Nerd Font", monospace;
+    font-size: 13px;
+    font-weight: 600;
+}
+
+/* ---------- Backlight ---------- */
+#backlight {
+    background-color: rgba(0, 0, 0, 0.25);
+    padding: 4px 8px;
+    margin: 5px;
+    border-radius: 6px;
+    font-family: "JetBrainsMono Nerd Font", monospace;
+    font-size: 13px;
+    font-weight: 600;
+}
+
+/* ---------- Battery ---------- */
+#battery {
+    background-color: rgba(0, 0, 0, 0.25);
+    padding: 4px 8px;
+    margin: 5px;
+    border-radius: 6px;
+    font-family: "JetBrainsMono Nerd Font", monospace;
+    font-size: 13px;
+    font-weight: 600;
+}
+
+#battery.warning {
+    background-color: rgba(255, 170, 0, 0.3);
+    color: #ffaa00;
+}
+
+#battery.critical {
+    background-color: rgba(255, 50, 50, 0.3);
+    color: #ff3232;
+    animation: blink 1s infinite;
+}
+
+@keyframes blink {
+    to { background-color: rgba(255, 50, 50, 0.6); }
 }
 
 /* ---------- Tray ---------- */
