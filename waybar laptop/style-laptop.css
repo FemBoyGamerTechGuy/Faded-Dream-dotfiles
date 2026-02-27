@@ -121,17 +121,6 @@ window#waybar {
     font-weight: 600;
 }
 
-/* ---------- Memory ---------- */
-#memory {
-    background-color: rgba(0, 0, 0, 0.20);
-    padding: 4px 8px;
-    margin: 5px;
-    border-radius: 6px;
-    font-family: "JetBrainsMono Nerd Font", monospace;
-    font-size: 13px;
-    font-weight: 600;
-}
-
 /* ---------- Backlight ---------- */
 #backlight {
     background-color: rgba(0, 0, 0, 0.25);

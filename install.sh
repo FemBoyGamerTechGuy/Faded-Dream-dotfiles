@@ -29,7 +29,7 @@ step() {
 }
 
 DOTFILES_DIR="${HOME}/Faded-Dream-dotfiles"
-TOTAL_STEPS=10
+TOTAL_STEPS=11
 
 # --- Preflight Checks --------------------------------------------------------
 [[ "$(id -u)" -eq 0 ]] && die "Do not run this script as root."
@@ -43,7 +43,7 @@ echo "  ║   Faded Dream Dotfiles  -  Installer  ║"
 echo "  ╚══════════════════════════════════════╝"
 echo -e "${RESET}"
 
-# --- [1/10] Arch Repositories ------------------------------------------------
+# --- [1/11] Arch Repositories ------------------------------------------------
 step "[1/${TOTAL_STEPS}] Setting up Arch Linux repositories"
 
 sudo pacman -S --noconfirm --needed archlinux-keyring archlinux-mirrorlist artix-archlinux-support ||
@@ -58,7 +58,7 @@ sudo pacman -Sy --noconfirm
 
 success "Arch repositories configured."
 
-# --- [2/10] Directory Structure ----------------------------------------------
+# --- [2/11] Directory Structure ----------------------------------------------
 step "[2/${TOTAL_STEPS}] Creating directory structure"
 
 mkdir -p \
@@ -71,7 +71,7 @@ mkdir -p \
 
 success "Directories ready."
 
-# --- [3/10] Core Packages ----------------------------------------------------
+# --- [3/11] Core Packages ----------------------------------------------------
 step "[3/${TOTAL_STEPS}] Installing core packages"
 
 PACKAGES=(
@@ -130,8 +130,31 @@ sudo pacman -S --noconfirm --needed "${PACKAGES[@]}" ||
 
 success "Core packages installed."
 
-# --- [4/10] Set zsh as default shell -----------------------------------------
-step "[4/${TOTAL_STEPS}] Setting zsh as default shell"
+# --- [4/11] Device Type ------------------------------------------------------
+step "[4/${TOTAL_STEPS}] Device type selection"
+
+echo ""
+echo -e "${BOLD}${CYAN}  What type of device are you installing on?${RESET}"
+echo -e "  1) Laptop"
+echo -e "  2) PC"
+echo ""
+read -rp "  Enter choice [1/2]: " DEVICE_CHOICE
+
+if [[ "$DEVICE_CHOICE" == "1" ]]; then
+  info "Laptop selected — installing laptop specific packages."
+  sudo pacman -S --noconfirm --needed \
+    tlp-runit brightnessctl acpi acpid \
+    bluez bluez-utils cpupower powertop ||
+    die "Failed to install laptop packages."
+  sudo ln -s /etc/runit/sv/tlp /run/runit/service 2>/dev/null || warn "tlp service link already exists."
+  sv up tlp || warn "Could not start tlp — it will start on next boot."
+  success "Laptop packages installed."
+else
+  info "PC selected — skipping laptop specific packages."
+fi
+
+# --- [5/11] Set zsh as default shell -----------------------------------------
+step "[5/${TOTAL_STEPS}] Setting zsh as default shell"
 
 ZSH_PATH="$(command -v zsh)"
 [[ -z "$ZSH_PATH" ]] && die "zsh not found after installation, something went wrong."
@@ -144,8 +167,8 @@ else
   success "Default shell changed to zsh for $USER."
 fi
 
-# --- [5/10] AUR Helper (paru) ------------------------------------------------
-step "[5/${TOTAL_STEPS}] Installing paru"
+# --- [6/11] AUR Helper (paru) ------------------------------------------------
+step "[6/${TOTAL_STEPS}] Installing paru"
 
 if command -v paru &>/dev/null; then
   warn "paru already installed, skipping build."
@@ -160,8 +183,8 @@ fi
 
 success "paru installed."
 
-# --- [6/10] GPU Drivers ------------------------------------------------------
-step "[6/${TOTAL_STEPS}] Installing GPU drivers"
+# --- [7/11] GPU Drivers ------------------------------------------------------
+step "[7/${TOTAL_STEPS}] Installing GPU drivers"
 
 # Detect kernel and set appropriate headers
 KERNEL=$(uname -r)
@@ -260,16 +283,16 @@ case "$GPU_CHOICE" in
   ;;
 esac
 
-# --- [7/10] AUR Packages -----------------------------------------------------
-step "[7/${TOTAL_STEPS}] Installing AUR packages"
+# --- [8/11] AUR Packages -----------------------------------------------------
+step "[8/${TOTAL_STEPS}] Installing AUR packages"
 
 paru -S --noconfirm --needed waypaper mpvpaper clipse-wayland-bin ||
   die "Failed to install AUR packages."
 
 success "AUR packages installed."
 
-# --- [8/10] Rofi Power Menu --------------------------------------------------
-step "[8/${TOTAL_STEPS}] Installing rofi-power-menu (non-systemd)"
+# --- [9/11] Rofi Power Menu --------------------------------------------------
+step "[9/${TOTAL_STEPS}] Installing rofi-power-menu (non-systemd)"
 
 POWER_MENU_TMP=$(mktemp -d)
 
@@ -289,8 +312,8 @@ PKGBUILD_DIR="$POWER_MENU_TMP/rofi-power-menu/rofi-power-menu-PKG"
 rm -rf "$POWER_MENU_TMP"
 success "rofi-power-menu installed."
 
-# --- [9/10] LazyVim ----------------------------------------------------------
-step "[9/${TOTAL_STEPS}] Installing LazyVim starter config"
+# --- [10/11] LazyVim ---------------------------------------------------------
+step "[10/${TOTAL_STEPS}] Installing LazyVim starter config"
 
 if [[ -d "${HOME}/.config/nvim" ]]; then
   warn "~/.config/nvim already exists, skipping LazyVim clone."
@@ -300,8 +323,8 @@ else
   success "LazyVim starter cloned to ~/.config/nvim."
 fi
 
-# --- [10/10] Dotfile Deployment + Autostart ----------------------------------
-step "[10/${TOTAL_STEPS}] Deploying dotfiles and autostart scripts"
+# --- [11/11] Dotfile Deployment + Autostart ----------------------------------
+step "[11/${TOTAL_STEPS}] Deploying dotfiles and autostart scripts"
 
 deploy() {
   local src="$1" dst="$2"
@@ -315,29 +338,29 @@ deploy() {
 
 # Waybar config selection
 echo ""
-echo -e "${BOLD}${CYAN}  Are you installing on a laptop or a PC?${RESET}"
-echo -e "  1) Laptop"
-echo -e "  2) PC"
+echo -e "${BOLD}${CYAN}  Which Waybar layout would you like to use for your device?${RESET}"
+echo -e "  1) Laptop  — includes battery, backlight and memory modules"
+echo -e "  2) PC      — standard layout"
 echo ""
 read -rp "  Enter choice [1/2]: " WAYBAR_CHOICE
 
 case "$WAYBAR_CHOICE" in
 1)
-  info "Laptop selected — deploying laptop waybar config."
+  info "Laptop Waybar selected — deploying laptop waybar config."
   mkdir -p "${HOME}/.config/waybar"
   cp "$DOTFILES_DIR/waybar laptop/config-laptop.jsonc" "${HOME}/.config/waybar/config.jsonc"
   cp "$DOTFILES_DIR/waybar laptop/style-laptop.css" "${HOME}/.config/waybar/style.css"
-  success "Laptop waybar config deployed."
+  success "Laptop Waybar config deployed."
   ;;
 2)
-  info "PC selected — deploying desktop waybar config."
+  info "PC Waybar selected — deploying desktop waybar config."
   mkdir -p "${HOME}/.config/waybar"
   cp "$DOTFILES_DIR/waybar pc/config.jsonc" "${HOME}/.config/waybar/config.jsonc"
   cp "$DOTFILES_DIR/waybar pc/style.css" "${HOME}/.config/waybar/style.css"
-  success "Desktop waybar config deployed."
+  success "PC Waybar config deployed."
   ;;
 *)
-  warn "Invalid choice, defaulting to PC waybar config."
+  warn "Invalid choice, defaulting to PC Waybar config."
   mkdir -p "${HOME}/.config/waybar"
   cp "$DOTFILES_DIR/waybar pc/config.jsonc" "${HOME}/.config/waybar/config.jsonc"
   cp "$DOTFILES_DIR/waybar pc/style.css" "${HOME}/.config/waybar/style.css"
@@ -353,7 +376,7 @@ deploy "$DOTFILES_DIR/fastfetch" "${HOME}/.config/fastfetch"
 deploy "$DOTFILES_DIR/gtk configs/gtk-3.0" "${HOME}/.config/gtk-3.0"
 deploy "$DOTFILES_DIR/gtk configs/gtk-4.0" "${HOME}/.config/gtk-4.0"
 deploy "$DOTFILES_DIR/gtk configs/xsettingsd" "${HOME}/.config/xsettingsd"
-deploy "$DOTFILES_DIR/config.ini for waypaper/config.ini" "${HOME}/.config/waypaper/config.ini"
+deploy "$DOTFILES_DIR/config.ini for waypaper" "${HOME}/.config/waypaper/config.ini"
 
 # Home directory deployments
 deploy "$DOTFILES_DIR/.zshrc" "${HOME}/.zshrc"
@@ -369,18 +392,9 @@ PIPEWIRE_SCRIPT="${HOME}/.config/autostart/pipewire.sh"
 
 cat >"$PIPEWIRE_SCRIPT" <<'EOF'
 #!/bin/bash
-# Wait for XDG_RUNTIME_DIR before starting audio services.
-until [[ -d "/run/user/$(id -u)" ]]; do
-    sleep 0.5
-done
-sleep 1
 /usr/bin/pipewire &
 /usr/bin/pipewire-pulse &
 /usr/bin/wireplumber &
-# Wait for pipewire to be ready then restart waybar to pick up audio
-sleep 2
-pkill waybar || true
-waybar &
 EOF
 
 chmod +x "$PIPEWIRE_SCRIPT"
@@ -391,7 +405,6 @@ NEMO_TERMINAL_SCRIPT="${HOME}/.config/autostart/set-nemo-terminal.sh"
 
 cat >"$NEMO_TERMINAL_SCRIPT" <<'EOF'
 #!/bin/bash
-sleep 2
 gsettings set org.cinnamon.desktop.default-applications.terminal exec kitty
 gsettings set org.gnome.desktop.default-applications.terminal exec kitty
 rm -- "$0"
@@ -405,12 +418,10 @@ GTK_THEME_SCRIPT="${HOME}/.config/autostart/set-gtk-theme.sh"
 
 cat >"$GTK_THEME_SCRIPT" <<'EOF'
 #!/bin/bash
-sleep 2
 gsettings set org.gnome.desktop.interface gtk-theme "Nordic-bluish-accent-v40"
 gsettings set org.gnome.desktop.interface icon-theme "Papirus"
 gsettings set org.gnome.desktop.interface cursor-theme "ArcDusk-cursors"
 gsettings set org.gnome.desktop.interface cursor-size 24
-# Fix cursor theme for all environments including XWayland
 echo '[Icon Theme]' > ~/.icons/default/index.theme
 echo 'Name=ArcDusk-cursors' >> ~/.icons/default/index.theme
 echo 'Inherits=ArcDusk-cursors' >> ~/.icons/default/index.theme
