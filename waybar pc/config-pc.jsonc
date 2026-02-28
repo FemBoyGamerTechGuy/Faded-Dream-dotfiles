@@ -68,27 +68,28 @@
   },
 
   "clock": {
-    "format": "{:%H:%M}",
+    "format": "󰥔  {:%H:%M}",
     "on-click": "kitty calcurse"
   },
 
   "network": {
-    "format-wifi": "{essid}",
-    "format-ethernet": "Ethernet",
-    "format-disconnected": "",
-    "on-click": "kitty -- nmtui"
+    "format-wifi": "󰤨  {essid}",
+    "format-ethernet": "󰈀  Ethernet",
+    "format-disconnected": "󰤭  Disconnected",
+    "on-click": "kitty -- nmtui",
+    "tooltip-format-wifi": "{signalStrength}% {frequency}MHz"
   },
 
   "pulseaudio": {
-    "format": "   {volume}",
+    "format": "󰕾  {volume}%",
+    "format-muted": "󰝟  Muted",
     "on-click": "pavucontrol",
     "tooltip": true
   },
 
   "cpu": {
-    "format": "  {usage}%",
+    "format": "󰻠  {usage}%",
     "max-length": 50,
     "on-click": "kitty btop"
   }
 }
-

@@ -186,7 +186,6 @@ success "paru installed."
 # --- [7/11] GPU Drivers ------------------------------------------------------
 step "[7/${TOTAL_STEPS}] Installing GPU drivers"
 
-# Detect kernel and set appropriate headers
 KERNEL=$(uname -r)
 case "$KERNEL" in
 *zen*) HEADERS="linux-zen-headers" ;;
@@ -339,7 +338,7 @@ deploy() {
 # Waybar config selection
 echo ""
 echo -e "${BOLD}${CYAN}  Which Waybar layout would you like to use for your device?${RESET}"
-echo -e "  1) Laptop  — includes battery, backlight and memory modules"
+echo -e "  1) Laptop  — includes battery and backlight modules"
 echo -e "  2) PC      — standard layout"
 echo ""
 read -rp "  Enter choice [1/2]: " WAYBAR_CHOICE
@@ -355,15 +354,15 @@ case "$WAYBAR_CHOICE" in
 2)
   info "PC Waybar selected — deploying desktop waybar config."
   mkdir -p "${HOME}/.config/waybar"
-  cp "$DOTFILES_DIR/waybar pc/config.jsonc" "${HOME}/.config/waybar/config.jsonc"
-  cp "$DOTFILES_DIR/waybar pc/style.css" "${HOME}/.config/waybar/style.css"
+  cp "$DOTFILES_DIR/waybar pc/config-pc.jsonc" "${HOME}/.config/waybar/config.jsonc"
+  cp "$DOTFILES_DIR/waybar pc/style-pc.css" "${HOME}/.config/waybar/style.css"
   success "PC Waybar config deployed."
   ;;
 *)
   warn "Invalid choice, defaulting to PC Waybar config."
   mkdir -p "${HOME}/.config/waybar"
-  cp "$DOTFILES_DIR/waybar pc/config.jsonc" "${HOME}/.config/waybar/config.jsonc"
-  cp "$DOTFILES_DIR/waybar pc/style.css" "${HOME}/.config/waybar/style.css"
+  cp "$DOTFILES_DIR/waybar pc/config-pc.jsonc" "${HOME}/.config/waybar/config.jsonc"
+  cp "$DOTFILES_DIR/waybar pc/style-pc.css" "${HOME}/.config/waybar/style.css"
   ;;
 esac
 
@@ -383,7 +382,7 @@ deploy "$DOTFILES_DIR/.zshrc" "${HOME}/.zshrc"
 deploy "$DOTFILES_DIR/.zsh" "${HOME}/.zsh"
 deploy "$DOTFILES_DIR/gtk configs/.gtkrc-2.0" "${HOME}/.gtkrc-2.0"
 deploy "$DOTFILES_DIR/.themes" "${HOME}/.themes"
-deploy "$DOTFILES_DIR/.icons" "${HOME}/.icons"
+cp -r "$DOTFILES_DIR/.icons/." "${HOME}/.icons/" && info "Deployed: .icons → ${HOME}/.icons"
 
 success "Dotfiles deployed."
 
