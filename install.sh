@@ -83,8 +83,6 @@ PACKAGES=(
   swaync
   rofi
   nwg-look
-  # Browser
-  librewolf
   # Audio
   pipewire
   pipewire-pulse
@@ -117,6 +115,7 @@ PACKAGES=(
   rust
   go
   python-pip
+  python-pyqt6
   jdk-openjdk
   julia
   php
@@ -383,6 +382,11 @@ deploy "$DOTFILES_DIR/.zsh" "${HOME}/.zsh"
 deploy "$DOTFILES_DIR/gtk configs/.gtkrc-2.0" "${HOME}/.gtkrc-2.0"
 deploy "$DOTFILES_DIR/.themes" "${HOME}/.themes"
 cp -r "$DOTFILES_DIR/.icons/." "${HOME}/.icons/" && info "Deployed: .icons → ${HOME}/.icons"
+
+# First-run setup GUI — launched on first Hyprland login via exec-once in hyprland.conf.
+# Lets the user pick browser + optional packages. Writes ~/.config/faded-dream/.setup-done then self-destructs.
+deploy "$DOTFILES_DIR/faded-dream-setup.py" "${HOME}/faded-dream-setup.py"
+chmod +x "${HOME}/faded-dream-setup.py"
 
 success "Dotfiles deployed."
 

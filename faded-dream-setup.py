@@ -2,11 +2,11 @@
 # =============================================================================
 # Faded Dream — First Run Setup
 # PyQt6 · Fusion · animated checkmarks · shimmer · glow · pill browser rows
-# Runs once on first login, self-destructs after install, skip writes flag too.
+# Runs once on first login via exec-once in hyprland.conf, self-destructs after.
 # dep: sudo pacman -S python-pyqt6
 #
 # hyprland.conf:
-#   exec-once = [ ! -f ~/.config/faded-dream/.setup-done ] && python3 ~/faded-dream-setup.py
+#   exec-once = [ -f ~/faded-dream-setup.py ] && python3 ~/faded-dream-setup.py
 # =============================================================================
 
 import sys, os, subprocess, math, random
@@ -23,14 +23,6 @@ from PyQt6.QtGui import (
     QCursor, QPainter, QColor, QPen, QBrush, QLinearGradient,
     QPainterPath
 )
-
-# ── Flag file ─────────────────────────────────────────────────────────────────
-FLAG_DIR  = os.path.expanduser("~/.config/faded-dream")
-FLAG_FILE = os.path.join(FLAG_DIR, ".setup-done")
-
-def write_flag():
-    os.makedirs(FLAG_DIR, exist_ok=True)
-    open(FLAG_FILE, "w").close()
 
 # ── Package data ──────────────────────────────────────────────────────────────
 BROWSERS = [
@@ -99,6 +91,20 @@ COMMS = [
     ]},
     {"section":"Notes","packages":[
         {"pkg":"obsidian","name":"Obsidian","desc":"Markdown note taking","icon":"💎","repo":"extra","aur":False,"sub":[]},
+    ]},
+]
+
+PERIPHERALS = [
+    {"section":"RGB / Razer","packages":[
+        {"pkg":"openrazer-daemon","name":"OpenRazer Daemon","desc":"Background service that\ncommunicates with Razer hardware","icon":"🐍","repo":"extra","aur":False,"sub":[
+            {"pkg":"openrazer-driver-dkms","name":"OpenRazer Driver","repo":"extra","aur":False},
+            {"pkg":"python-openrazer",     "name":"Python OpenRazer","repo":"extra","aur":False},
+        ]},
+        {"pkg":"polychromatic","name":"Polychromatic","desc":"OpenRazer GUI — per-key RGB,\neffects and DPI profiles","icon":"🌈","repo":"AUR","aur":True,"sub":[]},
+    ]},
+    {"section":"Peripherals","packages":[
+        {"pkg":"piper","name":"Piper","desc":"Mouse & keyboard configurator — DPI,\nbutttons, polling rate. Multi-brand support","icon":"🖱️","repo":"extra","aur":False,"sub":[]},
+        {"pkg":"solaar","name":"Solaar","desc":"Logitech device manager — Unifying/Bolt\nreceiver pairing and battery levels","icon":"⌨️","repo":"galaxy","aur":False,"sub":[]},
     ]},
 ]
 
@@ -431,6 +437,7 @@ def add_sep(layout, text):
 # ── Install worker ────────────────────────────────────────────────────────────
 class Worker(QObject):
     progress = pyqtSignal(str, float)
+    log_line = pyqtSignal(str, str)   # (text, kind)  kind: header|repo|aur|patch|done|raw
     done     = pyqtSignal()
 
     def __init__(self, repo_pkgs, aur_pkgs, browser):
@@ -438,6 +445,24 @@ class Worker(QObject):
         self.repo_pkgs = repo_pkgs
         self.aur_pkgs  = aur_pkgs
         self.browser   = browser
+
+    def _stream(self, cmd, kind="raw"):
+        """Run cmd, emit every stdout+stderr line as it arrives."""
+        try:
+            proc = subprocess.Popen(
+                cmd,
+                stdout=subprocess.PIPE,
+                stderr=subprocess.STDOUT,
+                text=True,
+                bufsize=1,
+            )
+            for line in proc.stdout:
+                stripped = line.rstrip("\n")
+                if stripped:
+                    self.log_line.emit(stripped, kind)
+            proc.wait()
+        except Exception as exc:
+            self.log_line.emit(f"[error] {exc}", "raw")
 
     def run(self):
         total = max(len(self.repo_pkgs) + len(self.aur_pkgs) + (1 if self.browser else 0), 1)
@@ -447,23 +472,37 @@ class Worker(QObject):
             self.progress.emit(msg, f if f is not None else done / total)
 
         if self.repo_pkgs:
+            header = f"── pacman  ({len(self.repo_pkgs)} packages) " + "─" * 30
+            self.log_line.emit(header, "header")
             ui(f"Installing {len(self.repo_pkgs)} repo packages...")
-            subprocess.run(["sudo","pacman","-S","--noconfirm","--needed"] + self.repo_pkgs)
+            self._stream(
+                ["sudo","pacman","-S","--noconfirm","--needed","--color=never"] + self.repo_pkgs,
+                kind="repo"
+            )
             done += len(self.repo_pkgs)
 
         for pkg in self.aur_pkgs:
+            header = f"── paru  {pkg} " + "─" * 40
+            self.log_line.emit(header, "header")
             ui(f"Installing {pkg}...")
-            subprocess.run(["paru","-S","--noconfirm","--needed", pkg])
+            self._stream(
+                ["paru","-S","--noconfirm","--needed","--color=never", pkg],
+                kind="aur"
+            )
             done += 1
 
         if self.browser:
+            self.log_line.emit("── hyprland.conf " + "─" * 35, "header")
             ui(f"Patching hyprland.conf → {self.browser['exec']}...")
             conf = os.path.expanduser("~/.config/hypr/hyprland.conf")
             if os.path.exists(conf):
                 subprocess.run(["sed","-i",
                     f"s|^\\$Browser = .*|\\$Browser = {self.browser['exec']}|", conf])
+            self.log_line.emit(f"  $Browser = {self.browser['exec']}", "patch")
             done += 1
 
+        self.log_line.emit("", "raw")
+        self.log_line.emit("✓  All done!", "done")
         ui("✓ All done!", 1.0)
         self.done.emit()
 
@@ -479,6 +518,8 @@ class SetupWindow(QMainWindow):
         self._thread   = None
         self._worker   = None
         self._br_frames = []
+        self._tabs_widget = None   # set after build
+        self._log_tab_idx = 7      # Log is the 8th tab (0-indexed)
 
         self.setWindowTitle("Faded Dream Setup")
         self.setFixedSize(840, 700)
@@ -535,12 +576,16 @@ class SetupWindow(QMainWindow):
     # ── Tabs ──────────────────────────────────────────────────────────────────
     def _build_tabs(self):
         tabs = QTabWidget(); tabs.setDocumentMode(True)
-        tabs.addTab(self._page_welcome(),            "🌙  Welcome")
-        tabs.addTab(self._page_browser(),            "🌐  Browser")
-        tabs.addTab(self._page_sections(GAMING),     "🎮  Gaming")
-        tabs.addTab(self._page_office(),             "📄  Office")
-        tabs.addTab(self._page_flat(MEDIA),          "🎬  Media")
-        tabs.addTab(self._page_sections(COMMS,True), "💬  Comms")
+        tabs.addTab(self._page_welcome(),                  "🌙  Welcome")
+        tabs.addTab(self._page_browser(),                  "🌐  Browser")
+        tabs.addTab(self._page_sections(GAMING),           "🎮  Gaming")
+        tabs.addTab(self._page_sections(PERIPHERALS),      "💡  Peripherals")
+        tabs.addTab(self._page_office(),                   "📄  Office")
+        tabs.addTab(self._page_flat(MEDIA),                "🎬  Media")
+        tabs.addTab(self._page_sections(COMMS,True),       "💬  Comms")
+        tabs.addTab(self._page_log(),                      "📋  Log")
+        self._tabs_widget = tabs
+        self._log_tab_idx = 7
         return tabs
 
     # ── Footer ────────────────────────────────────────────────────────────────
@@ -569,6 +614,112 @@ class SetupWindow(QMainWindow):
 
         return foot
 
+    # ── Log page ──────────────────────────────────────────────────────────────
+    def _page_log(self):
+        outer = QWidget()
+        v = QVBoxLayout(outer); v.setContentsMargins(16,16,16,16); v.setSpacing(8)
+
+        # description panel — shown before install, hidden during
+        self._log_desc = QWidget()
+        dv = QVBoxLayout(self._log_desc); dv.setContentsMargins(0,0,0,0); dv.setSpacing(6)
+
+        add_sep(dv, "What This Installer Does")
+
+        desc_lines = [
+            ("🌐", "Browser",
+             "Pick one browser — LibreWolf, Zen, Firefox, Vivaldi, Chrome or Edge. "
+             "Your choice is installed and $Browser in hyprland.conf is patched "
+             "automatically so Super+B opens it."),
+            ("🎮", "Gaming",
+             "Steam (lib32), Heroic Games Launcher, Wine + Winetricks/Mono/Gecko, "
+             "ProtonPlus, GameMode + 32-bit, MangoHud + 32-bit, MangoJuice. "
+             "Selecting Wine auto-selects its three sub-packages."),
+            ("💡", "Peripherals",
+             "OpenRazer daemon + kernel driver (DKMS) + Python library for Razer hardware. "
+             "Polychromatic for per-key RGB and effects. "
+             "Piper for multi-brand mouse/keyboard config (Logitech, SteelSeries, Roccat…). "
+             "Solaar for Logitech Unifying/Bolt receivers."),
+            ("📄", "Office",
+             "LibreOffice Fresh plus any of 12 language packs you select "
+             "(English UK, Romanian, French, German, Spanish, Italian, Portuguese, "
+             "Russian, Japanese, Chinese, Korean, Arabic)."),
+            ("🎬", "Media",
+             "Mirage image viewer, GIMP, Inkscape, Kdenlive video editor, "
+             "HandBrake converter, OBS Studio Liberty (libre build)."),
+            ("💬", "Comms",
+             "Vesktop (Discord + Vencord), Telegram, Element (Matrix), "
+             "Thunderbird + optional language packs, Obsidian notes."),
+            ("🔧", "How It Works",
+             "Repo packages are installed in one pacman batch. "
+             "Each AUR package (paru) is built and installed individually — "
+             "you will see full compile output here in real time. "
+             "After install the script deletes itself so it never runs again."),
+        ]
+
+        for icon, title, body in desc_lines:
+            row = QHBoxLayout(); row.setSpacing(10); row.setContentsMargins(0,2,0,2)
+            il = QLabel(icon); il.setFixedWidth(22)
+            il.setStyleSheet("font-size:16px; background:transparent;")
+            il.setAlignment(Qt.AlignmentFlag.AlignTop); row.addWidget(il)
+            col = QVBoxLayout(); col.setSpacing(2)
+            tl = QLabel(title); tl.setObjectName("pkg-name"); col.addWidget(tl)
+            bl = QLabel(body);  bl.setObjectName("pkg-desc")
+            bl.setWordWrap(True); col.addWidget(bl)
+            row.addLayout(col)
+            dv.addLayout(row)
+
+        v.addWidget(self._log_desc)
+
+        # terminal output area
+        self._log_term = QScrollArea()
+        self._log_term.setWidgetResizable(True)
+        self._log_term.setHorizontalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOff)
+        self._log_term.setStyleSheet(
+            "QScrollArea { background:#080810; border:1px solid #1e1e2c; border-radius:8px; }"
+            "QScrollBar:vertical { background:#080810; width:5px; }"
+            "QScrollBar::handle:vertical { background:#2a2a3a; border-radius:2px; }"
+        )
+
+        self._log_inner = QWidget()
+        self._log_inner.setStyleSheet("background:#080810;")
+        self._log_vbox = QVBoxLayout(self._log_inner)
+        self._log_vbox.setContentsMargins(14, 10, 14, 10)
+        self._log_vbox.setSpacing(1)
+        self._log_vbox.addStretch()
+
+        self._log_term.setWidget(self._log_inner)
+        self._log_term.setVisible(False)   # hidden until install starts
+        v.addWidget(self._log_term, 1)
+
+        return outer
+
+    def _log_append(self, text, kind):
+        colors = {
+            "header": "#7c6af7",
+            "repo":   "#6aaff7",
+            "aur":    "#4fd9c4",
+            "patch":  "#b46af7",
+            "done":   "#4fd9c4",
+            "raw":    "#888899",
+        }
+        color = colors.get(kind, "#888899")
+        bold  = kind in ("header", "done")
+
+        lbl = QLabel(text)
+        lbl.setWordWrap(True)
+        lbl.setTextInteractionFlags(Qt.TextInteractionFlag.TextSelectableByMouse)
+        weight = "bold" if bold else "normal"
+        lbl.setStyleSheet(
+            f"color:{color}; font-family:'JetBrainsMono Nerd Font','Noto Mono',monospace;"
+            f"font-size:11px; font-weight:{weight}; background:transparent;"
+        )
+        # insert before the trailing stretch
+        count = self._log_vbox.count()
+        self._log_vbox.insertWidget(count - 1, lbl)
+        # auto-scroll to bottom
+        QTimer.singleShot(0, lambda: self._log_term.verticalScrollBar().setValue(
+            self._log_term.verticalScrollBar().maximum()))
+
     # ── Welcome page ──────────────────────────────────────────────────────────
     def _page_welcome(self):
         inner = QWidget()
@@ -584,23 +735,28 @@ class SetupWindow(QMainWindow):
                    "This app runs once and deletes itself.")
         s.setObjectName("wsub"); s.setAlignment(Qt.AlignmentFlag.AlignCenter); v.addWidget(s)
 
-        row = QHBoxLayout(); row.setSpacing(8)
-        for icon, title, desc in [
-            ("🌐","Browser", "Pick your default browser"),
-            ("🎮","Gaming",  "Steam, Heroic, Wine, MangoHud"),
-            ("📄","Office",  "LibreOffice + language packs"),
-            ("🎬","Media",   "GIMP, Kdenlive, OBS Liberty"),
-            ("💬","Comms",   "Vesktop, Telegram, Thunderbird"),
-        ]:
-            card = GlowFrame(radius=10); card.setFixedWidth(134)
+        cards_data = [
+            ("🌐","Browser",     "Pick your default browser"),
+            ("🎮","Gaming",      "Steam, Heroic, Wine, MangoHud"),
+            ("💡","Peripherals", "OpenRazer, Polychromatic, Piper, Solaar"),
+            ("📄","Office",      "LibreOffice + language packs"),
+            ("🎬","Media",       "GIMP, Kdenlive, OBS Liberty"),
+            ("💬","Comms",       "Vesktop, Telegram, Thunderbird"),
+        ]
+
+        grid_w = QWidget(); grid_w.setFixedWidth(452)
+        grid = QGridLayout(grid_w); grid.setSpacing(8); grid.setContentsMargins(0,0,0,0)
+        for i, (icon, title, desc) in enumerate(cards_data):
+            card = GlowFrame(radius=10); card.setFixedWidth(140)
             cv = QVBoxLayout(card); cv.setContentsMargins(14,14,14,14); cv.setSpacing(4)
             for txt, obj in [(icon, None),(title,"ctitle"),(desc,"cdesc")]:
                 l = QLabel(txt)
                 if obj: l.setObjectName(obj)
                 l.setWordWrap(True); cv.addWidget(l)
-            row.addWidget(card)
+            grid.addWidget(card, i // 3, i % 3)
 
-        v.addLayout(row); v.addStretch()
+        v.addWidget(grid_w, 0, Qt.AlignmentFlag.AlignHCenter)
+        v.addStretch()
         return scroll_wrap(inner)
 
     # ── Browser page ──────────────────────────────────────────────────────────
@@ -743,7 +899,7 @@ class SetupWindow(QMainWindow):
 
         info = QVBoxLayout(); info.setSpacing(1)
         nl = QLabel(pkg["name"]); nl.setObjectName("pkg-name"); info.addWidget(nl)
-        dl = QLabel(pkg["desc"]); dl.setObjectName("pkg-desc"); info.addWidget(dl)
+        dl = QLabel(pkg["desc"]); dl.setObjectName("pkg-desc"); dl.setWordWrap(True); info.addWidget(dl)
         h.addLayout(info, 1)
         h.addWidget(repo_badge(pkg["repo"]))
 
@@ -795,7 +951,6 @@ class SetupWindow(QMainWindow):
 
     # ── Skip (write flag, close — no install) ─────────────────────────────────
     def _on_skip(self):
-        write_flag()
         self.close()
 
     # ── Install ───────────────────────────────────────────────────────────────
@@ -806,14 +961,26 @@ class SetupWindow(QMainWindow):
         self._install_btn.setEnabled(False)
         self._prog_w.setVisible(True)
 
+        # switch to log tab and show terminal
+        self._log_desc.setVisible(False)
+        self._log_term.setVisible(True)
+        self._tabs_widget.setCurrentIndex(self._log_tab_idx)
+
+        # seed the log with what we're about to do
+        self._log_append("╔══════════════════════════════════════════════╗", "header")
+        self._log_append("  Faded Dream — Installing selected packages", "header")
+        self._log_append("╚══════════════════════════════════════════════╝", "header")
+        self._log_append("", "raw")
+
         # build AUR lookup map
         aur_map = {}
         def idx(items):
             for it in items:
                 aur_map[it["pkg"]] = it.get("aur", False)
                 for s in it.get("sub", []): aur_map[s["pkg"]] = s.get("aur", False)
-        for sec in GAMING: idx(sec["packages"])
-        for sec in COMMS:  idx(sec["packages"])
+        for sec in GAMING:       idx(sec["packages"])
+        for sec in PERIPHERALS:  idx(sec["packages"])
+        for sec in COMMS:        idx(sec["packages"])
         idx(MEDIA); idx(OFFICE_BASE)
         for br in BROWSERS: aur_map[br["pkg"]] = br.get("aur", False)
 
@@ -821,11 +988,20 @@ class SetupWindow(QMainWindow):
         repo_pkgs = [p for p in all_pkgs if not aur_map.get(p, False)]
         aur_pkgs  = [p for p in all_pkgs if     aur_map.get(p, False)]
 
+        if repo_pkgs:
+            self._log_append(f"  repo packages  ({len(repo_pkgs)}): {', '.join(repo_pkgs)}", "repo")
+        if aur_pkgs:
+            self._log_append(f"  AUR packages   ({len(aur_pkgs)}): {', '.join(aur_pkgs)}", "aur")
+        if self.browser:
+            self._log_append(f"  browser patch: $Browser = {self.browser['exec']}", "patch")
+        self._log_append("", "raw")
+
         self._worker = Worker(repo_pkgs, aur_pkgs, self.browser)
         self._thread = QThread()
         self._worker.moveToThread(self._thread)
         self._thread.started.connect(self._worker.run)
         self._worker.progress.connect(self._on_progress)
+        self._worker.log_line.connect(self._log_append)
         self._worker.done.connect(self._on_done)
         self._thread.start()
 
@@ -835,10 +1011,10 @@ class SetupWindow(QMainWindow):
 
     def _on_done(self):
         self._thread.quit()
-        write_flag()
         try: os.remove(os.path.abspath(sys.argv[0]))
         except: pass
-        self.close()
+        # give user a moment to read the log before closing
+        QTimer.singleShot(2000, self.close)
 
 # ── Entry ─────────────────────────────────────────────────────────────────────
 if __name__ == "__main__":
