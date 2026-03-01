@@ -12,7 +12,7 @@
 import sys, os, subprocess, math, random
 from PyQt6.QtWidgets import (
     QApplication, QMainWindow, QWidget, QVBoxLayout, QHBoxLayout,
-    QLabel, QScrollArea, QTabWidget, QFrame,
+    QLabel, QScrollArea, QStackedWidget, QFrame,
     QProgressBar, QPushButton, QGridLayout
 )
 from PyQt6.QtCore import (
@@ -96,15 +96,19 @@ COMMS = [
 
 PERIPHERALS = [
     {"section":"RGB / Razer","packages":[
-        {"pkg":"openrazer-daemon","name":"OpenRazer Daemon","desc":"Background service that\ncommunicates with Razer hardware","icon":"🐍","repo":"extra","aur":False,"sub":[
+        {"pkg":"openrazer-daemon","name":"OpenRazer Daemon","desc":"Background service that communicates with Razer hardware","icon":"🐍","repo":"extra","aur":False,"sub":[
             {"pkg":"openrazer-driver-dkms","name":"OpenRazer Driver","repo":"extra","aur":False},
             {"pkg":"python-openrazer",     "name":"Python OpenRazer","repo":"extra","aur":False},
         ]},
-        {"pkg":"polychromatic","name":"Polychromatic","desc":"OpenRazer GUI — per-key RGB,\neffects and DPI profiles","icon":"🌈","repo":"AUR","aur":True,"sub":[]},
+        {"pkg":"polychromatic","name":"Polychromatic","desc":"OpenRazer GUI — per-key RGB, effects and DPI profiles","icon":"🌈","repo":"AUR","aur":True,"sub":[]},
     ]},
     {"section":"Peripherals","packages":[
-        {"pkg":"piper","name":"Piper","desc":"Mouse & keyboard configurator — DPI,\nbutttons, polling rate. Multi-brand support","icon":"🖱️","repo":"extra","aur":False,"sub":[]},
-        {"pkg":"solaar","name":"Solaar","desc":"Logitech device manager — Unifying/Bolt\nreceiver pairing and battery levels","icon":"⌨️","repo":"galaxy","aur":False,"sub":[]},
+        {"pkg":"piper","name":"Piper","desc":"Mouse & keyboard configurator — DPI, buttons, polling rate. Multi-brand support","icon":"🖱️","repo":"extra","aur":False,"sub":[]},
+        {"pkg":"solaar","name":"Solaar","desc":"Logitech device manager — Unifying/Bolt receiver pairing and battery levels","icon":"⌨️","repo":"galaxy","aur":False,"sub":[]},
+    ]},
+    {"section":"File Transfer","packages":[
+        {"pkg":"jmtpfs",  "name":"jmtpfs",  "desc":"Mount Android phones via MTP — works with Android 4–14. Usage: jmtpfs ~/Phone", "icon":"📱","repo":"AUR","aur":True, "sub":[]},
+        {"pkg":"gphotofs","name":"gphotofs", "desc":"PTP protocol mount via FUSE — works better with older devices and cameras",      "icon":"📷","repo":"AUR","aur":True, "sub":[]},
     ]},
 ]
 
@@ -134,16 +138,6 @@ QScrollBar:vertical{ background:#0d0d12; width:5px; border:none; }
 QScrollBar::handle:vertical{ background:#2a2a3a; border-radius:2px; min-height:20px; }
 QScrollBar::handle:vertical:hover{ background:#7c6af7; }
 QScrollBar::add-line:vertical, QScrollBar::sub-line:vertical{ height:0; }
-QTabWidget::pane{ border:none; background:#0d0d12; }
-QTabBar{ background:#13131a; }
-QTabBar::tab{
-    background:transparent; color:#444455;
-    padding:10px 14px; border:none;
-    border-bottom:2px solid transparent;
-    font-size:12px; font-weight:bold;
-}
-QTabBar::tab:hover{ color:#aaaacc; }
-QTabBar::tab:selected{ color:#e8e8f0; border-bottom:2px solid #7c6af7; background:#16152a; }
 QWidget#titlebar{ background:#13131a; border-bottom:1px solid #1e1e2c; }
 QLabel#title{ color:#555566; font-size:12px; font-weight:bold; background:transparent; }
 QPushButton#close{
@@ -506,20 +500,114 @@ class Worker(QObject):
         ui("✓ All done!", 1.0)
         self.done.emit()
 
+# ── Sidebar nav button ────────────────────────────────────────────────────────
+class _NavButton(QWidget):
+    clicked = pyqtSignal()
+
+    def __init__(self, icon, label, parent=None):
+        super().__init__(parent)
+        self._active   = False
+        self._glow_op  = 0.0
+        self._hover    = False
+        self.setFixedHeight(42)
+        self.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
+
+        self._glow_anim = QPropertyAnimation(self, b"glow_op")
+        self._glow_anim.setDuration(180)
+        self._glow_anim.setEasingCurve(QEasingCurve.Type.OutCubic)
+
+        h = QHBoxLayout(self); h.setContentsMargins(12, 0, 12, 0); h.setSpacing(10)
+        self._icon_lbl = QLabel(icon)
+        self._icon_lbl.setStyleSheet("font-size:16px; background:transparent;")
+        self._icon_lbl.setFixedWidth(20)
+        h.addWidget(self._icon_lbl)
+        self._text_lbl = QLabel(label)
+        self._text_lbl.setStyleSheet(
+            "font-size:12px; font-weight:bold; background:transparent; color:#444455;")
+        h.addWidget(self._text_lbl, 1)
+
+    @pyqtProperty(float)
+    def glow_op(self): return self._glow_op
+
+    @glow_op.setter
+    def glow_op(self, v):
+        self._glow_op = max(0.0, min(1.0, v))
+        self.update()
+
+    def set_active(self, active):
+        self._active = active
+        self._glow_anim.stop()
+        self._glow_anim.setStartValue(self._glow_op)
+        self._glow_anim.setEndValue(1.0 if active else (0.3 if self._hover else 0.0))
+        self._glow_anim.start()
+        color = "#e8e8f0" if active else ("#aaaacc" if self._hover else "#444455")
+        self._text_lbl.setStyleSheet(
+            f"font-size:12px; font-weight:bold; background:transparent; color:{color};")
+
+    def enterEvent(self, e):
+        self._hover = True
+        if not self._active:
+            self._glow_anim.stop()
+            self._glow_anim.setStartValue(self._glow_op)
+            self._glow_anim.setEndValue(0.3)
+            self._glow_anim.start()
+            self._text_lbl.setStyleSheet(
+                "font-size:12px; font-weight:bold; background:transparent; color:#aaaacc;")
+
+    def leaveEvent(self, e):
+        self._hover = False
+        if not self._active:
+            self._glow_anim.stop()
+            self._glow_anim.setStartValue(self._glow_op)
+            self._glow_anim.setEndValue(0.0)
+            self._glow_anim.start()
+            self._text_lbl.setStyleSheet(
+                "font-size:12px; font-weight:bold; background:transparent; color:#444455;")
+
+    def mousePressEvent(self, e):
+        if e.button() == Qt.MouseButton.LeftButton:
+            self.clicked.emit()
+
+    def paintEvent(self, _e):
+        p = QPainter(self)
+        p.setRenderHint(QPainter.RenderHint.Antialiasing)
+        r = self.height() // 2
+
+        if self._glow_op > 0.01:
+            # pill background
+            bg = QColor("#1e1c38") if self._active else QColor("#1a1a24")
+            bg.setAlphaF(min(1.0, self._glow_op * (1.0 if self._active else 0.6)))
+            p.setBrush(QBrush(bg)); p.setPen(Qt.PenStyle.NoPen)
+            p.drawRoundedRect(self.rect(), r, r)
+
+            # glow border
+            ac = QColor(ACCENT); ac.setAlphaF(self._glow_op * (1.0 if self._active else 0.4))
+            p.setPen(QPen(ac, 1.5)); p.setBrush(Qt.BrushStyle.NoBrush)
+            p.drawRoundedRect(QRectF(0.75, 0.75, self.width()-1.5, self.height()-1.5), r, r)
+
+            if self._active:
+                for i in range(2):
+                    gc = QColor(ACCENT)
+                    gc.setAlphaF(max(0.0, min(1.0, self._glow_op * (0.12 - i*0.04))))
+                    p.setPen(QPen(gc, 3 + i*2))
+                    p.drawRoundedRect(
+                        QRectF(1+i, 1+i, self.width()-2-i*2, self.height()-2-i*2), r, r)
+
 # ── Main window ───────────────────────────────────────────────────────────────
 class SetupWindow(QMainWindow):
     def __init__(self):
         super().__init__()
-        self.selected  = set()
-        self.browser   = None
-        self.lo_langs  = set()
-        self.tb_langs  = set()
-        self._drag     = None
-        self._thread   = None
-        self._worker   = None
+        self.selected   = set()
+        self.browser    = None
+        self.lo_langs   = set()
+        self.tb_langs   = set()
+        self._drag      = None
+        self._thread    = None
+        self._worker    = None
         self._br_frames = []
-        self._tabs_widget = None   # set after build
-        self._log_tab_idx = 7      # Log is the 8th tab (0-indexed)
+        self._stack     = None   # set in _build_main
+        self._nav_btns  = []
+        self._log_tab_idx = 7
 
         self.setWindowTitle("Faded Dream Setup")
         self.setFixedSize(840, 700)
@@ -530,7 +618,7 @@ class SetupWindow(QMainWindow):
         vl = QVBoxLayout(root); vl.setContentsMargins(0,0,0,0); vl.setSpacing(0)
 
         vl.addWidget(self._build_titlebar())
-        vl.addWidget(self._build_tabs(), 1)
+        vl.addWidget(self._build_main(), 1)
 
         # progress bar (hidden until install starts)
         self._prog_w = QWidget()
@@ -573,20 +661,72 @@ class SetupWindow(QMainWindow):
         h.addSpacing(13)
         return bar
 
-    # ── Tabs ──────────────────────────────────────────────────────────────────
-    def _build_tabs(self):
-        tabs = QTabWidget(); tabs.setDocumentMode(True)
-        tabs.addTab(self._page_welcome(),                  "🌙  Welcome")
-        tabs.addTab(self._page_browser(),                  "🌐  Browser")
-        tabs.addTab(self._page_sections(GAMING),           "🎮  Gaming")
-        tabs.addTab(self._page_sections(PERIPHERALS),      "💡  Peripherals")
-        tabs.addTab(self._page_office(),                   "📄  Office")
-        tabs.addTab(self._page_flat(MEDIA),                "🎬  Media")
-        tabs.addTab(self._page_sections(COMMS,True),       "💬  Comms")
-        tabs.addTab(self._page_log(),                      "📋  Log")
-        self._tabs_widget = tabs
+    # ── Sidebar nav ───────────────────────────────────────────────────────────
+    def _build_nav(self):
+        """200px sidebar with pill-highlighted nav items."""
+        nav = QWidget(); nav.setFixedWidth(200)
+        nav.setStyleSheet("background:#0d0d12;")
+        vl = QVBoxLayout(nav); vl.setContentsMargins(12, 16, 12, 16); vl.setSpacing(4)
+        self._nav_btns = []
+
+        sections = [
+            ("🌙", "Welcome"),
+            ("🌐", "Browser"),
+            ("🎮", "Gaming"),
+            ("💡", "Peripherals"),
+            ("📄", "Office"),
+            ("🎬", "Media"),
+            ("💬", "Comms"),
+            ("📋", "Log"),
+        ]
+
+        for i, (icon, label) in enumerate(sections):
+            btn = _NavButton(icon, label)
+            btn.clicked.connect(lambda checked=False, idx=i: self._nav_select(idx))
+            self._nav_btns.append(btn)
+            vl.addWidget(btn)
+
+        vl.addStretch()
+        return nav
+
+    def _nav_select(self, idx):
+        for i, btn in enumerate(self._nav_btns):
+            btn.set_active(i == idx)
+        self._stack.setCurrentIndex(idx)
+        # if switching to log and install is running, keep log visible
+        if idx == self._log_tab_idx:
+            if not self._log_term.isVisible():
+                pass  # description is showing, that's fine
+
+    # ── Main content area (sidebar + stack) ───────────────────────────────────
+    def _build_main(self):
+        container = QWidget()
+        h = QHBoxLayout(container); h.setContentsMargins(0,0,0,0); h.setSpacing(0)
+
+        nav = self._build_nav()
+        h.addWidget(nav)
+
+        # thin separator line
+        sep = QFrame(); sep.setFrameShape(QFrame.Shape.VLine)
+        sep.setStyleSheet("background:#1e1e2c; max-width:1px;")
+        h.addWidget(sep)
+
+        self._stack = QStackedWidget()
+        self._stack.setStyleSheet("background:#0d0d12;")
+        self._stack.addWidget(self._page_welcome())      # 0
+        self._stack.addWidget(self._page_browser())      # 1
+        self._stack.addWidget(self._page_sections(GAMING))          # 2
+        self._stack.addWidget(self._page_sections(PERIPHERALS))     # 3
+        self._stack.addWidget(self._page_office())       # 4
+        self._stack.addWidget(self._page_flat(MEDIA))    # 5
+        self._stack.addWidget(self._page_sections(COMMS, True))     # 6
+        self._stack.addWidget(self._page_log())          # 7
+        h.addWidget(self._stack, 1)
+
         self._log_tab_idx = 7
-        return tabs
+        # activate welcome by default
+        self._nav_btns[0].set_active(True)
+        return container
 
     # ── Footer ────────────────────────────────────────────────────────────────
     def _build_footer(self):
@@ -638,7 +778,8 @@ class SetupWindow(QMainWindow):
              "OpenRazer daemon + kernel driver (DKMS) + Python library for Razer hardware. "
              "Polychromatic for per-key RGB and effects. "
              "Piper for multi-brand mouse/keyboard config (Logitech, SteelSeries, Roccat…). "
-             "Solaar for Logitech Unifying/Bolt receivers."),
+             "Solaar for Logitech Unifying/Bolt receivers. "
+             "jmtpfs, go-mtpfs or gphotofs for mounting Android phones and cameras — all AUR."),
             ("📄", "Office",
              "LibreOffice Fresh plus any of 12 language packs you select "
              "(English UK, Romanian, French, German, Spanish, Italian, Portuguese, "
@@ -961,10 +1102,10 @@ class SetupWindow(QMainWindow):
         self._install_btn.setEnabled(False)
         self._prog_w.setVisible(True)
 
-        # switch to log tab and show terminal
+        # switch to log and show terminal
         self._log_desc.setVisible(False)
         self._log_term.setVisible(True)
-        self._tabs_widget.setCurrentIndex(self._log_tab_idx)
+        self._nav_select(self._log_tab_idx)
 
         # seed the log with what we're about to do
         self._log_append("╔══════════════════════════════════════════════╗", "header")

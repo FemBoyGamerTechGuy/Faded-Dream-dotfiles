@@ -33,6 +33,7 @@
 - **Single central config** — one `hyprland.conf` to rule them all *(may split in the future)*
 - **XWayland compatibility** — Xorg apps run smoothly under Wayland
 - **Lightweight** — works on most hardware including integrated GPUs
+- **[First-run setup GUI](faded-dream-setup.py)** — PyQt6 app that launches on first login to choose your browser and optional packages (gaming, peripherals, office, media, comms). Installs your selection and self-destructs.
 - **[Rofi](https://github.com/davatorium/rofi)** — application launcher
 - **[mpvpaper](https://github.com/GhostNaN/mpvpaper)** — video wallpaper support
 - **[swaync](https://github.com/ErikReider/SwayNotificationCenter)** — notifications
@@ -57,7 +58,7 @@
 | Notifications | [swaync](https://github.com/ErikReider/SwayNotificationCenter) |
 | Wallpaper | [mpvpaper](https://github.com/GhostNaN/mpvpaper) / [waypaper](https://github.com/anufrievroman/waypaper) |
 | File Manager | [Nemo](https://github.com/linuxmint/nemo) |
-| Browser | [LibreWolf](https://librewolf.net/) |
+| Browser | chosen at first login via setup GUI |
 | Theme | [Catppuccin Macchiato](https://github.com/catppuccin/catppuccin) |
 
 ---
@@ -69,7 +70,7 @@
 | `Super + Enter` | Open terminal (Kitty) |
 | `Super + Q` | Close active window |
 | `Super + E` | Open file manager (Nemo) |
-| `Super + B` | Open browser (LibreWolf) |
+| `Super + B` | Open browser (set at first login) |
 | `Super + V` | Toggle floating |
 | `Super + C` | Open clipboard manager (clipse) |
 | `Super + W` | Restart Waybar |
@@ -120,6 +121,7 @@ $HOME/.zsh/posh-linux-amd64 themes --config $HOME/.zsh/themes/if_tea.omp.json
 
 <details>
 <summary>Click to see all available themes</summary>
+
 ```
 1_shell                   gruvbox                   plague
 M365Princess              half-life                 poshmon
@@ -171,6 +173,8 @@ grandpa-style             pixelrobots
 
 ## Notes
 
+- On first login after install, the **Faded Dream Setup** GUI launches automatically — pick your browser and any optional packages, then hit Install. It self-destructs after running.
+- To re-run the setup manually: `python3 ~/faded-dream-setup.py` *(only works if it hasn't deleted itself yet)*
 - On first boot after install, PipeWire may take a few seconds to start — this is normal
 - `bat` must be installed for the `cat` alias to work — handled automatically by `install.sh`
 - The `if_tea` Oh My Posh theme requires the FiraCode Nerd Font to render correctly
@@ -189,19 +193,27 @@ chmod +x install.sh
 ./install.sh
 ```
 
-The install script will handle everything including packages, AUR helpers, dotfile deployment, and shell setup. A reboot is triggered automatically at the end.
+The install script handles packages, AUR helper, GPU drivers, dotfile deployment, and shell setup. A reboot is triggered automatically at the end. On first Hyprland login the setup GUI launches to let you choose your browser and optional packages.
 
 ---
 
 ## Project Structure
-```bash
+
+```
 Faded-Dream-dotfiles/
+├── Previews/
+│   └── ... (screenshots)
 ├── hypr/
 │   └── hyprland.conf
 ├── kitty/
 │   ├── kitty.conf
 │   └── current-theme.conf
-├── waybar/
+├── waybar laptop/
+│   ├── config-laptop.jsonc
+│   └── style-laptop.css
+├── waybar pc/
+│   ├── config-pc.jsonc
+│   └── style-pc.css
 ├── rofi for .config/
 ├── rofi for local then share/
 ├── fastfetch/
@@ -220,7 +232,9 @@ Faded-Dream-dotfiles/
 ├── .zshrc
 ├── .themes/
 ├── .icons/
+├── config.ini for waypaper
 ├── pacman.conf
+├── faded-dream-setup.py
 └── install.sh
 ```
 
