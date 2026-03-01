@@ -37,6 +37,7 @@
 - **[Rofi](https://github.com/davatorium/rofi)** — application launcher
 - **[mpvpaper](https://github.com/GhostNaN/mpvpaper)** — video wallpaper support
 - **[swaync](https://github.com/ErikReider/SwayNotificationCenter)** — notifications
+- **[Nemo](https://github.com/linuxmint/nemo)** — file manager *(migration to [Yazi](https://github.com/sxyazi/yazi) under consideration)*
 - **[Catppuccin Macchiato](https://github.com/catppuccin/catppuccin)** — theme across terminal and GTK apps
 - **[Oh My Posh](https://ohmyposh.dev/)** — shell prompt with custom `if_tea` theme
 - **Designed for daily use** — no fluff, just a setup that works
