@@ -169,7 +169,7 @@ QLabel#sec{ font-size:10px; font-weight:bold; color:#444455; letter-spacing:2px;
 QLabel#pkg-name{ font-size:13px; font-weight:bold; color:#e8e8f0; background:transparent; }
 QLabel#pkg-desc{ font-size:11px; color:#555566; background:transparent; }
 QLabel#sub-name{ font-size:11px; font-weight:bold; color:#9999bb; background:transparent; }
-QLabel#icon{ font-size:18px; background:transparent; }
+QLabel#icon{ font-size:20px; background:transparent; }
 QLabel#wsub{ font-size:12px; color:#555566; }
 QLabel#ctitle{ font-size:12px; font-weight:bold; }
 QLabel#cdesc{ font-size:10px; color:#555566; }
@@ -336,9 +336,12 @@ class ShimmerOverlay(QWidget):
         p.fillRect(0, 0, w, self.height(), g)
 
 # ── Glow frame ────────────────────────────────────────────────────────────────
-class GlowFrame(QFrame):
+class GlowFrame(QWidget):
     def __init__(self, parent=None, accent=None, radius=10, is_pill=False):
         super().__init__(parent)
+        self.setAutoFillBackground(False)
+        self.setAttribute(Qt.WidgetAttribute.WA_OpaquePaintEvent, False)
+        self.setAttribute(Qt.WidgetAttribute.WA_NoSystemBackground, True)
         self._selected  = False
         self._glow_op   = 0.0
         self._accent    = accent or ACCENT
@@ -402,9 +405,16 @@ class GlowFrame(QFrame):
             p.drawRoundedRect(QRectF(0.5, 0.5, self.width()-1, self.height()-1), r, r)
 
         p.end()
-        super().paintEvent(e)
 
 # ── Helpers ───────────────────────────────────────────────────────────────────
+def make_transparent(widget):
+    """Recursively disable system background on widget and all children."""
+    widget.setAttribute(Qt.WidgetAttribute.WA_NoSystemBackground, True)
+    widget.setAutoFillBackground(False)
+    for child in widget.findChildren(QWidget):
+        child.setAttribute(Qt.WidgetAttribute.WA_NoSystemBackground, True)
+        child.setAutoFillBackground(False)
+
 def repo_badge(repo):
     color, bg, border = REPO_STYLE.get(repo, ("color:#e8e8f0","#1a1a24","#333344"))
     lbl = QLabel(repo)
@@ -518,7 +528,7 @@ class _NavButton(QWidget):
 
         h = QHBoxLayout(self); h.setContentsMargins(12, 0, 12, 0); h.setSpacing(10)
         self._icon_lbl = QLabel(icon)
-        self._icon_lbl.setStyleSheet("font-size:16px; background:transparent;")
+        self._icon_lbl.setStyleSheet("font-size:20px; background:transparent;")
         self._icon_lbl.setFixedWidth(20)
         h.addWidget(self._icon_lbl)
         self._text_lbl = QLabel(label)
@@ -610,7 +620,7 @@ class SetupWindow(QMainWindow):
         self._log_tab_idx = 7
 
         self.setWindowTitle("Faded Dream Setup")
-        self.setFixedSize(840, 700)
+        self.setFixedSize(1080, 920)
         self.setWindowFlags(Qt.WindowType.FramelessWindowHint)
 
         root = QWidget(); root.setObjectName("root")
@@ -631,6 +641,15 @@ class SetupWindow(QMainWindow):
         vl.addWidget(self._prog_w)
 
         vl.addWidget(self._build_footer())
+
+    def keyPressEvent(self, e):
+        self._secret = getattr(self, "_secret", "")
+        self._secret += e.text().upper()
+        if "KOCMOC" in self._secret:
+            self._secret = ""
+            subprocess.Popen(["mpv", "https://www.youtube.com/watch?v=eMDu1byE45A"])
+        elif not "KOCMOC".startswith(self._secret):
+            self._secret = e.text().upper()
 
     # ── Drag to move (frameless) ──────────────────────────────────────────────
     def mousePressEvent(self, e):
@@ -885,15 +904,23 @@ class SetupWindow(QMainWindow):
             ("💬","Comms",       "Vesktop, Telegram, Thunderbird"),
         ]
 
-        grid_w = QWidget(); grid_w.setFixedWidth(452)
-        grid = QGridLayout(grid_w); grid.setSpacing(8); grid.setContentsMargins(0,0,0,0)
+        grid_w = QWidget(); grid_w.setFixedWidth(456)
+        grid_w.setStyleSheet("background:transparent;")
+        grid = QGridLayout(grid_w); grid.setSpacing(4); grid.setContentsMargins(0,0,0,0)
         for i, (icon, title, desc) in enumerate(cards_data):
-            card = GlowFrame(radius=10); card.setFixedWidth(140)
+            card = GlowFrame(radius=10); card.setFixedSize(144, 110)
+            # welcome cards need their own background — don't use make_transparent here
+            card.setAttribute(Qt.WidgetAttribute.WA_NoSystemBackground, True)
+            card.setAutoFillBackground(False)
             cv = QVBoxLayout(card); cv.setContentsMargins(14,14,14,14); cv.setSpacing(4)
             for txt, obj in [(icon, None),(title,"ctitle"),(desc,"cdesc")]:
                 l = QLabel(txt)
                 if obj: l.setObjectName(obj)
-                l.setWordWrap(True); cv.addWidget(l)
+                else: l.setStyleSheet("font-size:20px; background:transparent;")
+                l.setWordWrap(True)
+                l.setAttribute(Qt.WidgetAttribute.WA_NoSystemBackground, True)
+                l.setAutoFillBackground(False)
+                cv.addWidget(l)
             grid.addWidget(card, i // 3, i % 3)
 
         v.addWidget(grid_w, 0, Qt.AlignmentFlag.AlignHCenter)
@@ -942,16 +969,23 @@ class SetupWindow(QMainWindow):
         h.addWidget(repo_badge(br["repo"]))
 
         def on_click(_e=None, f=frame, b=br):
-            for other_f, _ in self._br_frames:
-                if other_f is not f:
-                    other_f.set_selected(False)
-                    other_f._cm.set_checked(False)
-            self.browser = b
-            f.set_selected(True)
-            f._cm.set_checked(True)
+            if self.browser and self.browser["pkg"] == b["pkg"]:
+                # clicking the already-selected browser deselects it
+                self.browser = None
+                f.set_selected(False)
+                f._cm.set_checked(False)
+            else:
+                for other_f, _ in self._br_frames:
+                    if other_f is not f:
+                        other_f.set_selected(False)
+                        other_f._cm.set_checked(False)
+                self.browser = b
+                f.set_selected(True)
+                f._cm.set_checked(True)
             self._update_count()
 
         frame.mousePressEvent = on_click
+        make_transparent(frame)
         return frame
 
     # ── Sections page (gaming / comms) ────────────────────────────────────────
@@ -1057,6 +1091,7 @@ class SetupWindow(QMainWindow):
             self._update_count()
 
         frame.mousePressEvent = on_click
+        make_transparent(frame)
         return frame
 
     # ── Sub-package row ───────────────────────────────────────────────────────
@@ -1081,6 +1116,7 @@ class SetupWindow(QMainWindow):
             self._update_count()
 
         frame.mousePressEvent = on_click
+        make_transparent(frame)
         return frame
 
     # ── Count label ───────────────────────────────────────────────────────────
