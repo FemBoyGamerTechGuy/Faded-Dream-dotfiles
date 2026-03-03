@@ -65,6 +65,7 @@ while true; do
 
   if [[ $fail -eq 0 ]]; then
     echo "[PipeWire] Audio is ready."
+    waybar &
     exit 0
   fi
 
