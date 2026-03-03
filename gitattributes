@@ -1,0 +1,15 @@
+# Tell GitHub what actually matters for language stats
+
+# Ignore config/data files
+*.json    linguist-detectable=false
+*.jsonc   linguist-detectable=false
+*.css     linguist-detectable=false
+*.ini     linguist-detectable=false
+*.conf    linguist-detectable=false
+
+# Ignore vendored/generated stuff
+*.lua     linguist-vendored=true
+
+# Force the important ones
+*.sh      linguist-detectable=true
+*.py      linguist-detectable=true
