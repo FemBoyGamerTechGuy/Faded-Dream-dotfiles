@@ -637,3 +637,31 @@ Program, unless a warranty or assumption of liability accompanies a
 copy of the Program in return for a fee.
 
                      END OF TERMS AND CONDITIONS
+
+───────────────────────────────────────────────────────────────────────────────
+
+                     THIRD-PARTY ASSETS
+
+The following third-party projects are included or used in Faded-Dream-dotfiles.
+They are NOT covered by this repository's GPL v3 license and remain under
+their own respective licenses.
+
+  zsh-syntax-highlighting
+  License: BSD-3 Clause
+  Source:  https://github.com/zsh-users/zsh-syntax-highlighting
+
+  zsh-autosuggestions
+  License: MIT
+  Source:  https://github.com/zsh-users/zsh-autosuggestions
+
+  Papirus Icon Theme
+  License: GPL v3
+  Source:  https://github.com/PapirusDevelopmentTeam/papirus-icon-theme
+
+  Oh My Posh
+  License: MIT
+  Source:  https://github.com/JanDeDobbeleer/oh-my-posh
+
+  Nordic
+  License: GPL v3
+  Source:  https://github.com/EliverLara/Nordic
