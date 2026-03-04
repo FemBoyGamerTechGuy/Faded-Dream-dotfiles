@@ -253,6 +253,7 @@ They are **not** covered by this repository's GPL v3 license and remain under th
 | Papirus Icon Theme | GPL v3 | [github.com/PapirusDevelopmentTeam/papirus-icon-theme](https://github.com/PapirusDevelopmentTeam/papirus-icon-theme) |
 | Oh My Posh | MIT | [github.com/JanDeDobbeleer/oh-my-posh](https://github.com/JanDeDobbeleer/oh-my-posh) |
 | Nordic | GPL v3 | [github.com/EliverLara/Nordic](https://github.com/EliverLara/Nordic) |
+| FastCat | MIT | [github.com/m3tozz/FastCat](https://github.com/m3tozz/FastCat) |
 
 ---
 
