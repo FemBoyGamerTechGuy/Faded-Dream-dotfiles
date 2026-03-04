@@ -2,11 +2,9 @@
 # =============================================================================
 # Faded Dream — First Run Setup
 # PyQt6 · Fusion · animated checkmarks · shimmer · glow · pill browser rows
-# Runs once on first login via exec-once in hyprland.conf, self-destructs after.
+# Lives in ~/Faded-Dream-dotfiles/faded-dream-setup.py
+# Launched via exec-once in hyprland.conf on first login.
 # dep: sudo pacman -S python-pyqt6
-#
-# hyprland.conf:
-#   exec-once = [ -f ~/faded-dream-setup.py ] && python3 ~/faded-dream-setup.py
 # =============================================================================
 
 import sys, os, subprocess, math, random
@@ -174,6 +172,52 @@ QLabel#wsub{ font-size:12px; color:#555566; }
 QLabel#ctitle{ font-size:12px; font-weight:bold; }
 QLabel#cdesc{ font-size:10px; color:#555566; }
 """
+
+# ── Toggle Switch ─────────────────────────────────────────────────────────────
+HYPRLAND_CONF = os.path.expanduser("~/.config/hypr/hyprland.conf")
+EXEC_LINE      = "exec-once = bash -c '[ -f \"$HOME/Faded-Dream-dotfiles/faded-dream-setup.py\" ] && python3 \"$HOME/Faded-Dream-dotfiles/faded-dream-setup.py\"'"
+
+class ToggleSwitch(QWidget):
+    toggled = pyqtSignal(bool)
+
+    def __init__(self, checked=True, parent=None):
+        super().__init__(parent)
+        self.setFixedSize(40, 22)
+        self.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
+        self._checked = checked
+        self._handle  = 20.0 if checked else 2.0
+        self._anim = QPropertyAnimation(self, b"handle_pos")
+        self._anim.setDuration(150)
+        self._anim.setEasingCurve(QEasingCurve.Type.OutCubic)
+
+    @pyqtProperty(float)
+    def handle_pos(self): return self._handle
+
+    @handle_pos.setter
+    def handle_pos(self, v):
+        self._handle = v
+        self.update()
+
+    def mousePressEvent(self, _e):
+        self._checked = not self._checked
+        self._anim.setStartValue(self._handle)
+        self._anim.setEndValue(20.0 if self._checked else 2.0)
+        self._anim.start()
+        self.toggled.emit(self._checked)
+
+    def paintEvent(self, _e):
+        p = QPainter(self)
+        p.setRenderHint(QPainter.RenderHint.Antialiasing)
+        # track
+        track = QColor("#7c6af7") if self._checked else QColor("#2a2a3a")
+        p.setBrush(QBrush(track)); p.setPen(Qt.PenStyle.NoPen)
+        p.drawRoundedRect(0, 3, 40, 16, 8, 8)
+        # handle
+        p.setBrush(QBrush(QColor("#ffffff"))); p.setPen(Qt.PenStyle.NoPen)
+        p.drawEllipse(int(self._handle), 1, 18, 18)
+        p.end()
+
+    def is_checked(self): return self._checked
 
 # ── Particle ──────────────────────────────────────────────────────────────────
 class Particle:
@@ -756,9 +800,20 @@ class SetupWindow(QMainWindow):
         self._count_lbl = QLabel(); self._count_lbl.setObjectName("count")
         self._update_count()
         left.addWidget(self._count_lbl)
-        fsub = QLabel("runs once · self-destructs after install")
+        fsub = QLabel("toggle startup off after install to stop autolaunch")
         fsub.setObjectName("fsub"); left.addWidget(fsub)
         h.addLayout(left, 1)
+
+        # startup toggle
+        tog_w = QWidget(); tog_w.setStyleSheet("background:transparent;")
+        tog_h = QHBoxLayout(tog_w); tog_h.setContentsMargins(0,0,0,0); tog_h.setSpacing(6)
+        tog_lbl = QLabel("Run at startup")
+        tog_lbl.setStyleSheet("font-size:11px; color:#555566; background:transparent;")
+        self._startup_toggle = ToggleSwitch(checked=self._startup_enabled())
+        self._startup_toggle.toggled.connect(self._on_startup_toggle)
+        tog_h.addWidget(tog_lbl)
+        tog_h.addWidget(self._startup_toggle)
+        h.addWidget(tog_w)
 
         skip = QPushButton("Skip All"); skip.setObjectName("skip")
         skip.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
@@ -772,6 +827,26 @@ class SetupWindow(QMainWindow):
         h.addWidget(self._install_btn)
 
         return foot
+
+    def _startup_enabled(self):
+        """Check if exec-once line exists in hyprland.conf."""
+        try:
+            return EXEC_LINE in open(HYPRLAND_CONF).read()
+        except:
+            return False
+
+    def _on_startup_toggle(self, enabled):
+        """Add or remove the exec-once line from hyprland.conf."""
+        try:
+            conf = open(HYPRLAND_CONF).read()
+            if enabled and EXEC_LINE not in conf:
+                conf += f"\n{EXEC_LINE}\n"
+                open(HYPRLAND_CONF, "w").write(conf)
+            elif not enabled and EXEC_LINE in conf:
+                lines = [l for l in conf.splitlines() if EXEC_LINE not in l]
+                open(HYPRLAND_CONF, "w").write("\n".join(lines) + "\n")
+        except Exception as e:
+            print(f"[startup toggle] failed: {e}")
 
     # ── Log page ──────────────────────────────────────────────────────────────
     def _page_log(self):
@@ -813,7 +888,8 @@ class SetupWindow(QMainWindow):
              "Repo packages are installed in one pacman batch. "
              "Each AUR package (paru) is built and installed individually — "
              "you will see full compile output here in real time. "
-             "After install the script deletes itself so it never runs again."),
+             "After install the startup toggle is disabled automatically so it won't launch again. "
+             "You can re-enable it anytime from the footer."),
         ]
 
         for icon, title, body in desc_lines:
@@ -892,7 +968,7 @@ class SetupWindow(QMainWindow):
 
         s = QLabel("Your dotfiles are installed.\n"
                    "Select optional packages across the tabs, then hit Install.\n"
-                   "This app runs once and deletes itself.")
+                   "Toggle 'Run at startup' off after install to stop this from launching again.")
         s.setObjectName("wsub"); s.setAlignment(Qt.AlignmentFlag.AlignCenter); v.addWidget(s)
 
         cards_data = [
@@ -1188,8 +1264,8 @@ class SetupWindow(QMainWindow):
 
     def _on_done(self):
         self._thread.quit()
-        try: os.remove(os.path.abspath(sys.argv[0]))
-        except: pass
+        # Remove the startup exec-once line since install is done
+        self._on_startup_toggle(False)
         # give user a moment to read the log before closing
         QTimer.singleShot(2000, self.close)
 

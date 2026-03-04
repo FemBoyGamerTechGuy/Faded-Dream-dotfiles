@@ -29,10 +29,6 @@ deploy "$DOTFILES_DIR/gtk configs/.gtkrc-2.0"      "${HOME}/.gtkrc-2.0"
 deploy "$DOTFILES_DIR/.themes"                     "${HOME}/.themes"
 cp -r "$DOTFILES_DIR/.icons/." "${HOME}/.icons/"   && info "Deployed: .icons → ${HOME}/.icons"
 
-# First-run setup GUI
-deploy "$DOTFILES_DIR/faded-dream-setup.py" "${HOME}/faded-dream-setup.py"
-chmod +x "${HOME}/faded-dream-setup.py"
-
 success "Dotfiles deployed."
 
 # PipeWire autostart
