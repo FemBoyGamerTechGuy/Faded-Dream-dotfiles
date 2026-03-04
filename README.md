@@ -256,6 +256,13 @@ They are **not** covered by this repository's GPL v3 license and remain under th
 
 ---
 
+## Contributing
+
+Contributions are welcome! Please read the [CONTRIBUTING.md](CONTRIBUTING.md)
+before submitting a pull request.
+
+---
+
 ## License
 
 Copyright (C) 2026 FemBoyGamerTechGuy
