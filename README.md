@@ -241,6 +241,32 @@ Faded-Dream-dotfiles/
 
 ---
 
+## Third-Party Credits
+
+The following third-party projects are included or used in Faded-Dream-dotfiles.
+They are **not** covered by this repository's GPL v3 license and remain under their own respective licenses.
+
+| Project | License | Source |
+|---------|---------|--------|
+| zsh-syntax-highlighting | BSD-3 Clause | [github.com/zsh-users/zsh-syntax-highlighting](https://github.com/zsh-users/zsh-syntax-highlighting) |
+| zsh-autosuggestions | MIT | [github.com/zsh-users/zsh-autosuggestions](https://github.com/zsh-users/zsh-autosuggestions) |
+| Papirus Icon Theme | GPL v3 | [github.com/PapirusDevelopmentTeam/papirus-icon-theme](https://github.com/PapirusDevelopmentTeam/papirus-icon-theme) |
+| Oh My Posh | MIT | [github.com/JanDeDobbeleer/oh-my-posh](https://github.com/JanDeDobbeleer/oh-my-posh) |
+| Nordic | GPL v3 | [github.com/EliverLara/Nordic](https://github.com/EliverLara/Nordic) |
+
+---
+
+## License
+
+Copyright (C) 2026 FemBoyGamerTechGuy
+
+This project is licensed under the **GNU General Public License v3.0**.
+You are free to use, modify, and distribute this project, but any derivative work must also be open source under the same license. Nobody can take this project and release it under a different or proprietary license.
+
+See the [LICENSE](LICENSE) file for the full license text.
+
+---
+
 <div align="center">
 <sub>Built with 💜 on Artix Linux</sub>
 <br>
