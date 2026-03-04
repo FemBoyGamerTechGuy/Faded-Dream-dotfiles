@@ -254,6 +254,8 @@ They are **not** covered by this repository's GPL v3 license and remain under th
 | Oh My Posh | MIT | [github.com/JanDeDobbeleer/oh-my-posh](https://github.com/JanDeDobbeleer/oh-my-posh) |
 | Nordic | GPL v3 | [github.com/EliverLara/Nordic](https://github.com/EliverLara/Nordic) |
 | FastCat | MIT | [github.com/m3tozz/FastCat](https://github.com/m3tozz/FastCat) |
+| ArcDusk-Cursors | GPL v3 | [github.com/yeyushengfan258/ArcDusk-Cursors](https://github.com/yeyushengfan258/ArcDusk-Cursors) |
+| Sweet | GPL v3 | [github.com/EliverLara/Sweet](https://github.com/EliverLara/Sweet) |
 
 ---
 
