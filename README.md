@@ -232,12 +232,12 @@ Faded-Dream-dotfiles/
 │   └── zsh-syntax-highlighting/
 ├── .zshrc
 ├── .themes/
-│   ├── Nordic/
-│   └── Sweet/
+│   ├── Nordic-bluish-accent-v40/
+│   └── Sweet-Dark-v40/
 ├── .icons/
-│   └── Papirus/
-├── .cursors/
-│   └── ArcDusk-Cursors/
+│   ├── ArcDusk-cursors/
+│   ├── Papirus/
+│   └── default/
 ├── config.ini for waypaper
 ├── pacman.conf
 ├── faded-dream-setup.py
