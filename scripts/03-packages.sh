@@ -43,13 +43,19 @@ PACKAGES=(
   rust
   go
   python-pip
-  python-pyqt6
   jdk-openjdk
   julia
   php
   npm
   luarocks
   tectonic
+  # ── Faded Dream Setup (faded-dream-setup-gtk.py) ──────────────────────────
+  # GTK4 + libadwaita UI toolkit
+  gtk4
+  libadwaita
+  # Python GTK4 bindings
+  python-gobject          # gi.repository (Gtk, Adw, GLib, Pango)
+  python-cairo            # cairo drawing for animations
 )
 
 sudo pacman -S --noconfirm --needed "${PACKAGES[@]}" ||
