@@ -35,6 +35,7 @@
 - **Lightweight** — works on most hardware including integrated GPUs
 - **[First-run setup GUI](faded-dream-setup.py)** — PyQt6 app that launches on first login to choose your browser and optional packages (gaming, peripherals, office, media, comms). Installs your selection and self-destructs.
 - **[Rofi](https://github.com/davatorium/rofi)** — application launcher
+- **[rofimoji](https://github.com/fdw/rofimoji)** — emoji picker with recent history
 - **[mpvpaper](https://github.com/GhostNaN/mpvpaper)** — video wallpaper support
 - **[swaync](https://github.com/ErikReider/SwayNotificationCenter)** — notifications
 - **[Nemo](https://github.com/linuxmint/nemo)** — file manager *(migration to [Yazi](https://github.com/sxyazi/yazi) under consideration)*
@@ -60,6 +61,7 @@
 | Wallpaper | [mpvpaper](https://github.com/GhostNaN/mpvpaper) / [waypaper](https://github.com/anufrievroman/waypaper) |
 | File Manager | [Nemo](https://github.com/linuxmint/nemo) |
 | Browser | chosen at first login via setup GUI |
+| Emoji Picker | [rofimoji](https://github.com/fdw/rofimoji) |
 | Theme | [Catppuccin Macchiato](https://github.com/catppuccin/catppuccin) |
 
 ---
