@@ -15,6 +15,1045 @@ gi.require_version("Gtk",  "4.0")
 gi.require_version("Adw",  "1")
 from gi.repository import Gtk, Adw, GLib, Gio, Pango, Gdk, GObject
 
+# ── Translations ──────────────────────────────────────────────────────────────
+import locale as _locale
+
+TRANSLATIONS = {
+    "en": {
+        # window / nav
+        "app_title":            "Faded Dream Setup \u2014 First Run",
+        "sidebar_title":        "Faded Dream",
+        "nav_welcome":          "Welcome",
+        "nav_browser":          "Browser",
+        "nav_gaming":           "Gaming",
+        "nav_peripherals":      "Peripherals",
+        "nav_file_transfer":    "File Transfer",
+        "nav_office":           "Office",
+        "nav_media":            "Media",
+        "nav_comms":            "Comms",
+        "nav_log":              "Log",
+        # bottom bar
+        "packages_selected":    "{n} packages selected",
+        "startup_hint":         "toggle startup off after install to stop autolaunch",
+        "run_at_startup":       "Run at startup",
+        "skip_all":             "Skip All",
+        "install_selected":     "Install Selected",
+        # welcome
+        "welcome_sub":          "Your dotfiles are installed.\nSelect optional packages across the tabs, then hit <b>Install</b>.\nToggle <i>Run at startup</i> off after install.",
+        "card_browser_sub":     "Pick your default browser",
+        "card_gaming_sub":      "Steam, Heroic, Wine, MangoHud",
+        "card_peripherals_sub": "OpenRazer, Polychromatic, Piper",
+        "card_filetransfer_sub":"Android, cameras, LAN sharing",
+        "card_office_sub":      "LibreOffice + language packs",
+        "card_media_sub":       "GIMP, Kdenlive, OBS Liberty",
+        "card_comms_sub":       "Vesktop, Telegram, Thunderbird",
+        # browser page
+        "browser_section":      "Select Your Default Browser",
+        "recommended":          "\u2b50 Recommended",
+        # office page
+        "lo_lang_section":      "LibreOffice Language Packs",
+        # log page — section titles
+        "log_what_title":       "What This Installer Does",
+        "log_row_browser_t":    "Browser",
+        "log_row_browser_b":    "Pick one browser \u2014 LibreWolf, Zen, Firefox, Vivaldi, Chrome or Edge. Your choice is installed and $Browser in hyprland.conf is patched automatically so Super+B opens it.",
+        "log_row_gaming_t":     "Gaming",
+        "log_row_gaming_b":     "Steam (lib32), Heroic Games Launcher, Wine + Winetricks/Mono/Gecko, ProtonPlus, GameMode + 32-bit, MangoHud + 32-bit, MangoJuice. Selecting Wine auto-selects its three sub-packages.",
+        "log_row_periph_t":     "Peripherals",
+        "log_row_periph_b":     "OpenRazer daemon + kernel driver (DKMS) + Python library for Razer hardware. Polychromatic for per-key RGB and effects. Piper for multi-brand mouse/keyboard config (Logitech, SteelSeries, Roccat\u2026). Solaar for Logitech Unifying/Bolt receivers. jmtpfs and gphotofs for mounting Android phones and cameras \u2014 all AUR.",
+        "log_row_office_t":     "Office",
+        "log_row_office_b":     "LibreOffice Fresh plus any of 12 language packs you select (English UK, Romanian, French, German, Spanish, Italian, Portuguese, Russian, Japanese, Chinese, Korean, Arabic).",
+        "log_row_media_t":      "Media",
+        "log_row_media_b":      "Mirage image viewer, GIMP, Inkscape, Kdenlive video editor, HandBrake converter, OBS Studio Liberty (libre build).",
+        "log_row_ft_t":         "File Transfer",
+        "log_row_ft_b":         "Android MTP with jmtpfs and go-mtpfs. Camera PTP via gphotofs and gphoto2. Wireless: Warpinator, LocalSend (cross-platform AirDrop), Croc (encrypted P2P). USB: Android Tools (ADB/fastboot) and Scrcpy for screen mirroring.",
+        "log_row_comms_t":      "Comms",
+        "log_row_comms_b":      "Vesktop (Discord + Vencord), Telegram, Element (Matrix), Thunderbird + optional language packs, Obsidian notes.",
+        "log_row_how_t":        "How It Works",
+        "log_row_how_b":        "Repo packages are installed in one pacman batch. Each AUR package (paru) is built and installed individually \u2014 you will see full compile output here in real time. After install the startup toggle is disabled automatically so it won\u2019t launch again. You can re-enable it anytime from the footer.",
+        # install log lines
+        "log_header":           "Faded Dream \u2014 Installing selected packages",
+        "log_repo_line":        "  repo packages  ({n}): {pkgs}",
+        "log_aur_line":         "  AUR packages   ({n}): {pkgs}",
+        "log_browser_patch":    "  browser patch: $Browser = {exec}",
+        "log_done":             "\u2713  All done!",
+        "log_done_bar":         "\u2713 All done!",
+        "log_error":            "[error] {exc}",
+        # install progress bar
+        "prog_repo":            "Installing {n} repo packages...",
+        "prog_pkg":             "Installing {pkg}...",
+        "prog_patch":           "Patching hyprland.conf \u2192 {exec}...",
+            "log_banner_pacman": "\u2500\u2500 pacman  ({n} pkg) \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500",
+        "log_banner_paru": "\u2500\u2500 paru  {pkg} \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500",
+        "log_banner_hypr": "\u2500\u2500 hyprland.conf \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500",
+        "log_browser_set": "  $Browser = {exec}",
+        "badge_aur": "AUR",
+        "badge_extra": "extra",
+        "badge_galaxy": "galaxy",
+        "badge_world": "world",
+        "badge_lib32": "lib32",
+        "badge_multilib": "multilib",
+        "nothing_selected": "Nothing selected \u2014 closing.",
+        "lang_label": "Language",
+        "welcome_title": "Faded Dream",
+},
+    "ro": {
+        "app_title":            "Configurare Faded Dream \u2014 Prima Rulare",
+        "sidebar_title":        "Faded Dream",
+        "nav_welcome":          "Bun venit",
+        "nav_browser":          "Browser",
+        "nav_gaming":           "Jocuri",
+        "nav_peripherals":      "Periferice",
+        "nav_file_transfer":    "Transfer Fi\u0219iere",
+        "nav_office":           "Birou",
+        "nav_media":            "Media",
+        "nav_comms":            "Comunicare",
+        "nav_log":              "Jurnal",
+        "packages_selected":    "{n} pachete selectate",
+        "startup_hint":         "dezactiveaz\u0103 pornirea automat\u0103 dup\u0103 instalare",
+        "run_at_startup":       "Pornire automat\u0103",
+        "skip_all":             "Sari tot",
+        "install_selected":     "Instaleaz\u0103 Selectate",
+        "welcome_sub":          "Dotfile-urile tale sunt instalate.\nSelecteaz\u0103 pachete op\u021bionale din file, apoi apas\u0103 <b>Instaleaz\u0103</b>.\nDezactiveaz\u0103 <i>Pornire automat\u0103</i> dup\u0103 instalare.",
+        "card_browser_sub":     "Alege browserul implicit",
+        "card_gaming_sub":      "Steam, Heroic, Wine, MangoHud",
+        "card_peripherals_sub": "OpenRazer, Polychromatic, Piper",
+        "card_filetransfer_sub":"Android, camere, partajare LAN",
+        "card_office_sub":      "LibreOffice + pachete de limb\u0103",
+        "card_media_sub":       "GIMP, Kdenlive, OBS Liberty",
+        "card_comms_sub":       "Vesktop, Telegram, Thunderbird",
+        "browser_section":      "Selecteaz\u0103 Browserul Implicit",
+        "recommended":          "\u2b50 Recomandat",
+        "lo_lang_section":      "Pachete de Limb\u0103 LibreOffice",
+        "log_what_title":       "Ce Face Acest Instalator",
+        "log_row_browser_t":    "Browser",
+        "log_row_browser_b":    "Alege un browser \u2014 LibreWolf, Zen, Firefox, Vivaldi, Chrome sau Edge. Alegerea ta este instalat\u0103 \u0219i $Browser din hyprland.conf este actualizat automat astfel \u00eenc\u00e2t Super+B s\u0103 \u00eel deschid\u0103.",
+        "log_row_gaming_t":     "Gaming",
+        "log_row_gaming_b":     "Steam (lib32), Heroic Games Launcher, Wine + Winetricks/Mono/Gecko, ProtonPlus, GameMode + 32-bit, MangoHud + 32-bit, MangoJuice. Selectarea Wine selecteaz\u0103 automat cele trei sub-pachete.",
+        "log_row_periph_t":     "Periferice",
+        "log_row_periph_b":     "Daemon OpenRazer + driver kernel (DKMS) + bibliotec\u0103 Python pentru hardware Razer. Polychromatic pentru RGB per-tast\u0103 \u0219i efecte. Piper pentru configurare mouse/tastatur\u0103 multi-brand (Logitech, SteelSeries, Roccat\u2026). Solaar pentru receptoare Logitech Unifying/Bolt. jmtpfs \u0219i gphotofs pentru montarea telefoanelor Android \u0219i camerelor \u2014 toate AUR.",
+        "log_row_office_t":     "Office",
+        "log_row_office_b":     "LibreOffice Fresh plus oricare dintre cele 12 pachete de limb\u0103 (Englez\u0103 UK, Rom\u00e2n\u0103, Francez\u0103, German\u0103, Spaniol\u0103, Italian\u0103, Portughez\u0103, Rus\u0103, Japonez\u0103, Chineze\u0103, Coreean\u0103, Arab\u0103).",
+        "log_row_media_t":      "Media",
+        "log_row_media_b":      "Vizualizator imagini Mirage, GIMP, Inkscape, editor video Kdenlive, convertor HandBrake, OBS Studio Liberty (build liber).",
+        "log_row_ft_t":         "Transfer Fi\u0219iere",
+        "log_row_ft_b":         "Android MTP cu jmtpfs \u0219i go-mtpfs. Camer\u0103 PTP via gphotofs \u0219i gphoto2. Wireless: Warpinator, LocalSend (AirDrop cross-platform), Croc (P2P criptat). USB: Android Tools (ADB/fastboot) \u0219i Scrcpy pentru oglindire ecran.",
+        "log_row_comms_t":      "Comunicare",
+        "log_row_comms_b":      "Vesktop (Discord + Vencord), Telegram, Element (Matrix), Thunderbird + pachete de limb\u0103 op\u021bionale, noti\u021be Obsidian.",
+        "log_row_how_t":        "Cum Func\u021bioneaz\u0103",
+        "log_row_how_b":        "Pachetele din repo sunt instalate \u00edntr-un singur batch pacman. Fiecare pachet AUR (paru) este compilat \u0219i instalat individual \u2014 vei vedea output-ul complet de compilare \u00een timp real. Dup\u0103 instalare, pornirea automat\u0103 este dezactivat\u0103 automat. O po\u021bi reactiva oric\u00e2nd din footer.",
+        "log_header":           "Faded Dream \u2014 Instalare pachete selectate",
+        "log_repo_line":        "  pachete repo  ({n}): {pkgs}",
+        "log_aur_line":         "  pachete AUR   ({n}): {pkgs}",
+        "log_browser_patch":    "  patch browser: $Browser = {exec}",
+        "log_done":             "\u2713  Gata!",
+        "log_done_bar":         "\u2713 Gata!",
+        "log_error":            "[eroare] {exc}",
+        "prog_repo":            "Instalare {n} pachete repo...",
+        "prog_pkg":             "Instalare {pkg}...",
+        "prog_patch":           "Actualizare hyprland.conf \u2192 {exec}...",
+            "log_banner_pacman": "\u2500\u2500 pacman  ({n} pachete) \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500",
+        "log_banner_paru": "\u2500\u2500 paru  {pkg} \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500",
+        "log_banner_hypr": "\u2500\u2500 hyprland.conf \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500",
+        "log_browser_set": "  $Browser = {exec}",
+        "badge_aur": "AUR",
+        "badge_extra": "extra",
+        "badge_galaxy": "galaxy",
+        "badge_world": "world",
+        "badge_lib32": "lib32",
+        "badge_multilib": "multilib",
+        "nothing_selected": "Nimic selectat \u2014 se \u00eenchide.",
+        "lang_label": "Limb\u0103",
+        "welcome_title": "Faded Dream",
+},
+    "fr": {
+        "app_title":            "Configuration Faded Dream \u2014 Premi\u00e8re Ex\u00e9cution",
+        "sidebar_title":        "Faded Dream",
+        "nav_welcome":          "Bienvenue",
+        "nav_browser":          "Navigateur",
+        "nav_gaming":           "Jeux",
+        "nav_peripherals":      "P\u00e9riph\u00e9riques",
+        "nav_file_transfer":    "Transfert Fichiers",
+        "nav_office":           "Bureau",
+        "nav_media":            "M\u00e9dias",
+        "nav_comms":            "Communication",
+        "nav_log":              "Journal",
+        "packages_selected":    "{n} paquets s\u00e9lectionn\u00e9s",
+        "startup_hint":         "d\u00e9sactiver le d\u00e9marrage apr\u00e8s l\u2019installation",
+        "run_at_startup":       "D\u00e9marrage auto",
+        "skip_all":             "Tout ignorer",
+        "install_selected":     "Installer la s\u00e9lection",
+        "welcome_sub":          "Vos dotfiles sont install\u00e9s.\nS\u00e9lectionnez des paquets optionnels dans les onglets, puis cliquez sur <b>Installer</b>.\nD\u00e9sactivez <i>D\u00e9marrage auto</i> apr\u00e8s l\u2019installation.",
+        "card_browser_sub":     "Choisissez votre navigateur",
+        "card_gaming_sub":      "Steam, Heroic, Wine, MangoHud",
+        "card_peripherals_sub": "OpenRazer, Polychromatic, Piper",
+        "card_filetransfer_sub":"Android, appareils photo, r\u00e9seau",
+        "card_office_sub":      "LibreOffice + packs de langue",
+        "card_media_sub":       "GIMP, Kdenlive, OBS Liberty",
+        "card_comms_sub":       "Vesktop, Telegram, Thunderbird",
+        "browser_section":      "S\u00e9lectionnez Votre Navigateur Par D\u00e9faut",
+        "recommended":          "\u2b50 Recommand\u00e9",
+        "lo_lang_section":      "Packs de Langue LibreOffice",
+        "log_what_title":       "Ce Que Fait Cet Installateur",
+        "log_row_browser_t":    "Navigateur",
+        "log_row_browser_b":    "Choisissez un navigateur \u2014 LibreWolf, Zen, Firefox, Vivaldi, Chrome ou Edge. Votre choix est install\u00e9 et $Browser dans hyprland.conf est patch\u00e9 automatiquement pour que Super+B l\u2019ouvre.",
+        "log_row_gaming_t":     "Jeux",
+        "log_row_gaming_b":     "Steam (lib32), Heroic Games Launcher, Wine + Winetricks/Mono/Gecko, ProtonPlus, GameMode + 32 bits, MangoHud + 32 bits, MangoJuice. S\u00e9lectionner Wine s\u00e9lectionne automatiquement ses trois sous-paquets.",
+        "log_row_periph_t":     "P\u00e9riph\u00e9riques",
+        "log_row_periph_b":     "D\u00e9mon OpenRazer + pilote noyau (DKMS) + biblioth\u00e8que Python pour le mat\u00e9riel Razer. Polychromatic pour le RGB par touche et les effets. Piper pour la configuration souris/clavier multi-marque (Logitech, SteelSeries, Roccat\u2026). Solaar pour les r\u00e9cepteurs Logitech Unifying/Bolt. jmtpfs et gphotofs pour monter les t\u00e9l\u00e9phones Android et appareils photo \u2014 tous AUR.",
+        "log_row_office_t":     "Bureau",
+        "log_row_office_b":     "LibreOffice Fresh plus n\u2019importe lequel des 12 packs de langue (Anglais UK, Roumain, Fran\u00e7ais, Allemand, Espagnol, Italien, Portugais, Russe, Japonais, Chinois, Cor\u00e9en, Arabe).",
+        "log_row_media_t":      "M\u00e9dias",
+        "log_row_media_b":      "Visionneuse d\u2019images Mirage, GIMP, Inkscape, \u00e9diteur vid\u00e9o Kdenlive, convertisseur HandBrake, OBS Studio Liberty (build libre).",
+        "log_row_ft_t":         "Transfert Fichiers",
+        "log_row_ft_b":         "Android MTP avec jmtpfs et go-mtpfs. Camera PTP via gphotofs et gphoto2. Sans fil\u00a0: Warpinator, LocalSend (AirDrop multiplateforme), Croc (P2P chiffr\u00e9). USB\u00a0: Android Tools (ADB/fastboot) et Scrcpy pour la mise en miroir d\u2019\u00e9cran.",
+        "log_row_comms_t":      "Communication",
+        "log_row_comms_b":      "Vesktop (Discord + Vencord), Telegram, Element (Matrix), Thunderbird + packs de langue optionnels, notes Obsidian.",
+        "log_row_how_t":        "Comment \u00c7a Fonctionne",
+        "log_row_how_b":        "Les paquets du d\u00e9p\u00f4t sont install\u00e9s en un seul batch pacman. Chaque paquet AUR (paru) est compil\u00e9 et install\u00e9 individuellement \u2014 vous verrez la sortie compl\u00e8te de compilation en temps r\u00e9el. Apr\u00e8s l\u2019installation le d\u00e9marrage automatique est d\u00e9sactiv\u00e9 automatiquement. Vous pouvez le r\u00e9activer \u00e0 tout moment depuis le pied de page.",
+        "log_header":           "Faded Dream \u2014 Installation des paquets s\u00e9lectionn\u00e9s",
+        "log_repo_line":        "  paquets d\u00e9p\u00f4t  ({n}): {pkgs}",
+        "log_aur_line":         "  paquets AUR    ({n}): {pkgs}",
+        "log_browser_patch":    "  patch navigateur: $Browser = {exec}",
+        "log_done":             "\u2713  Termin\u00e9\u00a0!",
+        "log_done_bar":         "\u2713 Termin\u00e9\u00a0!",
+        "log_error":            "[erreur] {exc}",
+        "prog_repo":            "Installation de {n} paquets du d\u00e9p\u00f4t...",
+        "prog_pkg":             "Installation de {pkg}...",
+        "prog_patch":           "Mise \u00e0 jour de hyprland.conf \u2192 {exec}...",
+            "log_banner_pacman": "\u2500\u2500 pacman  ({n} paquets) \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500",
+        "log_banner_paru": "\u2500\u2500 paru  {pkg} \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500",
+        "log_banner_hypr": "\u2500\u2500 hyprland.conf \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500",
+        "log_browser_set": "  $Browser = {exec}",
+        "badge_aur": "AUR",
+        "badge_extra": "extra",
+        "badge_galaxy": "galaxy",
+        "badge_world": "world",
+        "badge_lib32": "lib32",
+        "badge_multilib": "multilib",
+        "nothing_selected": "Rien de s\u00e9lectionn\u00e9 \u2014 fermeture.",
+        "lang_label": "Langue",
+        "welcome_title": "Faded Dream",
+},
+    "de": {
+        "app_title":            "Faded Dream Einrichtung \u2014 Erster Start",
+        "sidebar_title":        "Faded Dream",
+        "nav_welcome":          "Willkommen",
+        "nav_browser":          "Browser",
+        "nav_gaming":           "Gaming",
+        "nav_peripherals":      "Peripherie",
+        "nav_file_transfer":    "Datei\u00fcbertragung",
+        "nav_office":           "B\u00fcro",
+        "nav_media":            "Medien",
+        "nav_comms":            "Kommunikation",
+        "nav_log":              "Protokoll",
+        "packages_selected":    "{n} Pakete ausgew\u00e4hlt",
+        "startup_hint":         "Autostart nach Installation deaktivieren",
+        "run_at_startup":       "Autostart",
+        "skip_all":             "Alles \u00fcberspringen",
+        "install_selected":     "Auswahl installieren",
+        "welcome_sub":          "Deine Dotfiles sind installiert.\nW\u00e4hle optionale Pakete in den Tabs und klicke auf <b>Installieren</b>.\nDeaktiviere <i>Autostart</i> nach der Installation.",
+        "card_browser_sub":     "Standardbrowser w\u00e4hlen",
+        "card_gaming_sub":      "Steam, Heroic, Wine, MangoHud",
+        "card_peripherals_sub": "OpenRazer, Polychromatic, Piper",
+        "card_filetransfer_sub":"Android, Kameras, LAN-Freigabe",
+        "card_office_sub":      "LibreOffice + Sprachpakete",
+        "card_media_sub":       "GIMP, Kdenlive, OBS Liberty",
+        "card_comms_sub":       "Vesktop, Telegram, Thunderbird",
+        "browser_section":      "Standardbrowser Ausw\u00e4hlen",
+        "recommended":          "\u2b50 Empfohlen",
+        "lo_lang_section":      "LibreOffice-Sprachpakete",
+        "log_what_title":       "Was Dieser Installer Macht",
+        "log_row_browser_t":    "Browser",
+        "log_row_browser_b":    "W\u00e4hle einen Browser \u2014 LibreWolf, Zen, Firefox, Vivaldi, Chrome oder Edge. Deine Wahl wird installiert und $Browser in hyprland.conf wird automatisch angepasst, damit Super+B ihn \u00f6ffnet.",
+        "log_row_gaming_t":     "Gaming",
+        "log_row_gaming_b":     "Steam (lib32), Heroic Games Launcher, Wine + Winetricks/Mono/Gecko, ProtonPlus, GameMode + 32-bit, MangoHud + 32-bit, MangoJuice. Die Auswahl von Wine w\u00e4hlt automatisch die drei Unterpakete.",
+        "log_row_periph_t":     "Peripherie",
+        "log_row_periph_b":     "OpenRazer-Daemon + Kernel-Treiber (DKMS) + Python-Bibliothek f\u00fcr Razer-Hardware. Polychromatic f\u00fcr Einzel-Tasten-RGB und Effekte. Piper f\u00fcr Multi-Marken Maus-/Tastaturkonfiguration (Logitech, SteelSeries, Roccat\u2026). Solaar f\u00fcr Logitech Unifying/Bolt-Empf\u00e4nger. jmtpfs und gphotofs zum Einbinden von Android-Telefonen und Kameras \u2014 alles AUR.",
+        "log_row_office_t":     "B\u00fcro",
+        "log_row_office_b":     "LibreOffice Fresh plus beliebige der 12 Sprachpakete (Englisch UK, Rum\u00e4nisch, Franz\u00f6sisch, Deutsch, Spanisch, Italienisch, Portugiesisch, Russisch, Japanisch, Chinesisch, Koreanisch, Arabisch).",
+        "log_row_media_t":      "Medien",
+        "log_row_media_b":      "Mirage-Bildbetrachter, GIMP, Inkscape, Kdenlive-Videoeditor, HandBrake-Konverter, OBS Studio Liberty (freier Build).",
+        "log_row_ft_t":         "Datei\u00fcbertragung",
+        "log_row_ft_b":         "Android MTP mit jmtpfs und go-mtpfs. Kamera PTP via gphotofs und gphoto2. Drahtlos: Warpinator, LocalSend (plattform\u00fcbergreifendes AirDrop), Croc (verschl\u00fcsseltes P2P). USB: Android Tools (ADB/fastboot) und Scrcpy f\u00fcr Screen-Mirroring.",
+        "log_row_comms_t":      "Kommunikation",
+        "log_row_comms_b":      "Vesktop (Discord + Vencord), Telegram, Element (Matrix), Thunderbird + optionale Sprachpakete, Obsidian-Notizen.",
+        "log_row_how_t":        "So Funktioniert Es",
+        "log_row_how_b":        "Repository-Pakete werden in einem einzigen pacman-Batch installiert. Jedes AUR-Paket (paru) wird einzeln kompiliert und installiert \u2014 du siehst die vollst\u00e4ndige Kompilierungsausgabe in Echtzeit. Nach der Installation wird der Autostart automatisch deaktiviert. Du kannst ihn jederzeit \u00fcber die Fu\u00dfzeile wieder aktivieren.",
+        "log_header":           "Faded Dream \u2014 Ausgew\u00e4hlte Pakete werden installiert",
+        "log_repo_line":        "  Repo-Pakete  ({n}): {pkgs}",
+        "log_aur_line":         "  AUR-Pakete   ({n}): {pkgs}",
+        "log_browser_patch":    "  Browser-Patch: $Browser = {exec}",
+        "log_done":             "\u2713  Fertig!",
+        "log_done_bar":         "\u2713 Fertig!",
+        "log_error":            "[Fehler] {exc}",
+        "prog_repo":            "{n} Repo-Pakete werden installiert...",
+        "prog_pkg":             "{pkg} wird installiert...",
+        "prog_patch":           "hyprland.conf wird aktualisiert \u2192 {exec}...",
+            "log_banner_pacman": "\u2500\u2500 pacman  ({n} Pakete) \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500",
+        "log_banner_paru": "\u2500\u2500 paru  {pkg} \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500",
+        "log_banner_hypr": "\u2500\u2500 hyprland.conf \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500",
+        "log_browser_set": "  $Browser = {exec}",
+        "badge_aur": "AUR",
+        "badge_extra": "extra",
+        "badge_galaxy": "galaxy",
+        "badge_world": "world",
+        "badge_lib32": "lib32",
+        "badge_multilib": "multilib",
+        "nothing_selected": "Nichts ausgew\u00e4hlt \u2014 wird geschlossen.",
+        "lang_label": "Sprache",
+        "welcome_title": "Faded Dream",
+},
+    "es": {
+        "app_title":            "Configuraci\u00f3n Faded Dream \u2014 Primera Ejecuci\u00f3n",
+        "sidebar_title":        "Faded Dream",
+        "nav_welcome":          "Bienvenido",
+        "nav_browser":          "Navegador",
+        "nav_gaming":           "Juegos",
+        "nav_peripherals":      "Perif\u00e9ricos",
+        "nav_file_transfer":    "Transferencia",
+        "nav_office":           "Oficina",
+        "nav_media":            "Medios",
+        "nav_comms":            "Comunicaci\u00f3n",
+        "nav_log":              "Registro",
+        "packages_selected":    "{n} paquetes seleccionados",
+        "startup_hint":         "desactivar inicio autom\u00e1tico tras instalar",
+        "run_at_startup":       "Inicio autom\u00e1tico",
+        "skip_all":             "Omitir todo",
+        "install_selected":     "Instalar selecci\u00f3n",
+        "welcome_sub":          "Tus dotfiles est\u00e1n instalados.\nSelecciona paquetes opcionales en las pesta\u00f1as y pulsa <b>Instalar</b>.\nDesactiva <i>Inicio autom\u00e1tico</i> tras instalar.",
+        "card_browser_sub":     "Elige tu navegador predeterminado",
+        "card_gaming_sub":      "Steam, Heroic, Wine, MangoHud",
+        "card_peripherals_sub": "OpenRazer, Polychromatic, Piper",
+        "card_filetransfer_sub":"Android, c\u00e1maras, red local",
+        "card_office_sub":      "LibreOffice + paquetes de idioma",
+        "card_media_sub":       "GIMP, Kdenlive, OBS Liberty",
+        "card_comms_sub":       "Vesktop, Telegram, Thunderbird",
+        "browser_section":      "Selecciona Tu Navegador Predeterminado",
+        "recommended":          "\u2b50 Recomendado",
+        "lo_lang_section":      "Paquetes de Idioma de LibreOffice",
+        "log_what_title":       "Qu\u00e9 Hace Este Instalador",
+        "log_row_browser_t":    "Navegador",
+        "log_row_browser_b":    "Elige un navegador \u2014 LibreWolf, Zen, Firefox, Vivaldi, Chrome o Edge. Tu elecci\u00f3n se instala y $Browser en hyprland.conf se parchea autom\u00e1ticamente para que Super+B lo abra.",
+        "log_row_gaming_t":     "Juegos",
+        "log_row_gaming_b":     "Steam (lib32), Heroic Games Launcher, Wine + Winetricks/Mono/Gecko, ProtonPlus, GameMode + 32 bits, MangoHud + 32 bits, MangoJuice. Seleccionar Wine selecciona autom\u00e1ticamente sus tres subpaquetes.",
+        "log_row_periph_t":     "Perif\u00e9ricos",
+        "log_row_periph_b":     "Daemon OpenRazer + controlador kernel (DKMS) + biblioteca Python para hardware Razer. Polychromatic para RGB por tecla y efectos. Piper para configuraci\u00f3n de rat\u00f3n/teclado multimarca (Logitech, SteelSeries, Roccat\u2026). Solaar para receptores Logitech Unifying/Bolt. jmtpfs y gphotofs para montar tel\u00e9fonos Android y c\u00e1maras \u2014 todo AUR.",
+        "log_row_office_t":     "Oficina",
+        "log_row_office_b":     "LibreOffice Fresh m\u00e1s cualquiera de los 12 paquetes de idioma (Ingl\u00e9s UK, Rumano, Franc\u00e9s, Alem\u00e1n, Espa\u00f1ol, Italiano, Portugu\u00e9s, Ruso, Japon\u00e9s, Chino, Coreano, \u00c1rabe).",
+        "log_row_media_t":      "Medios",
+        "log_row_media_b":      "Visor de im\u00e1genes Mirage, GIMP, Inkscape, editor de v\u00eddeo Kdenlive, conversor HandBrake, OBS Studio Liberty (build libre).",
+        "log_row_ft_t":         "Transferencia",
+        "log_row_ft_b":         "Android MTP con jmtpfs y go-mtpfs. C\u00e1mara PTP via gphotofs y gphoto2. Inal\u00e1mbrico: Warpinator, LocalSend (AirDrop multiplataforma), Croc (P2P cifrado). USB: Android Tools (ADB/fastboot) y Scrcpy para duplicaci\u00f3n de pantalla.",
+        "log_row_comms_t":      "Comunicaci\u00f3n",
+        "log_row_comms_b":      "Vesktop (Discord + Vencord), Telegram, Element (Matrix), Thunderbird + paquetes de idioma opcionales, notas Obsidian.",
+        "log_row_how_t":        "C\u00f3mo Funciona",
+        "log_row_how_b":        "Los paquetes del repositorio se instalan en un \u00fanico batch de pacman. Cada paquete AUR (paru) se compila e instala individualmente \u2014 ver\u00e1s la salida completa de compilaci\u00f3n en tiempo real. Tras la instalaci\u00f3n el inicio autom\u00e1tico se desactiva autom\u00e1ticamente. Puedes reactivarlo en cualquier momento desde el pie de p\u00e1gina.",
+        "log_header":           "Faded Dream \u2014 Instalando paquetes seleccionados",
+        "log_repo_line":        "  paquetes repo  ({n}): {pkgs}",
+        "log_aur_line":         "  paquetes AUR   ({n}): {pkgs}",
+        "log_browser_patch":    "  parche navegador: $Browser = {exec}",
+        "log_done":             "\u2713  \u00a1Listo!",
+        "log_done_bar":         "\u2713 \u00a1Listo!",
+        "log_error":            "[error] {exc}",
+        "prog_repo":            "Instalando {n} paquetes del repositorio...",
+        "prog_pkg":             "Instalando {pkg}...",
+        "prog_patch":           "Actualizando hyprland.conf \u2192 {exec}...",
+            "log_banner_pacman": "\u2500\u2500 pacman  ({n} paquetes) \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500",
+        "log_banner_paru": "\u2500\u2500 paru  {pkg} \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500",
+        "log_banner_hypr": "\u2500\u2500 hyprland.conf \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500",
+        "log_browser_set": "  $Browser = {exec}",
+        "badge_aur": "AUR",
+        "badge_extra": "extra",
+        "badge_galaxy": "galaxy",
+        "badge_world": "world",
+        "badge_lib32": "lib32",
+        "badge_multilib": "multilib",
+        "nothing_selected": "Nada seleccionado \u2014 cerrando.",
+        "lang_label": "Idioma",
+        "welcome_title": "Faded Dream",
+},
+    "it": {
+        "app_title":                   "Configurazione Faded Dream \u2014 Primo Avvio",
+        "sidebar_title":               "Faded Dream",
+        "nav_welcome":                 "Benvenuto",
+        "nav_browser":                 "Browser",
+        "nav_gaming":                  "Gaming",
+        "nav_peripherals":             "Periferiche",
+        "nav_file_transfer":           "Trasferimento File",
+        "nav_office":                  "Ufficio",
+        "nav_media":                   "Media",
+        "nav_comms":                   "Comunicazione",
+        "nav_log":                     "Registro",
+        "packages_selected":           "{n} pacchetti selezionati",
+        "startup_hint":                "disattiva l\u2019avvio automatico dopo l\u2019installazione",
+        "run_at_startup":              "Avvio automatico",
+        "skip_all":                    "Salta tutto",
+        "install_selected":            "Installa selezionati",
+        "welcome_sub":                 "I tuoi dotfile sono installati.\nSeleziona i pacchetti opzionali nelle schede, poi clicca <b>Installa</b>.\nDisattiva <i>Avvio automatico</i> dopo l\u2019installazione.",
+        "card_browser_sub":            "Scegli il browser predefinito",
+        "card_gaming_sub":             "Steam, Heroic, Wine, MangoHud",
+        "card_peripherals_sub":        "OpenRazer, Polychromatic, Piper",
+        "card_filetransfer_sub":       "Android, fotocamere, condivisione LAN",
+        "card_office_sub":             "LibreOffice + pacchetti lingua",
+        "card_media_sub":              "GIMP, Kdenlive, OBS Liberty",
+        "card_comms_sub":              "Vesktop, Telegram, Thunderbird",
+        "browser_section":             "Seleziona il Browser Predefinito",
+        "recommended":                 "\u2b50 Consigliato",
+        "lo_lang_section":             "Pacchetti Lingua LibreOffice",
+        "log_what_title":              "Cosa Fa Questo Installer",
+        "log_row_browser_t":           "Browser",
+        "log_row_browser_b":           "Scegli un browser \u2014 LibreWolf, Zen, Firefox, Vivaldi, Chrome o Edge. La tua scelta viene installata e $Browser in hyprland.conf viene aggiornato automaticamente in modo che Super+B lo apra.",
+        "log_row_gaming_t":            "Gaming",
+        "log_row_gaming_b":            "Steam (lib32), Heroic Games Launcher, Wine + Winetricks/Mono/Gecko, ProtonPlus, GameMode + 32-bit, MangoHud + 32-bit, MangoJuice. Selezionare Wine seleziona automaticamente i tre sotto-pacchetti.",
+        "log_row_periph_t":            "Periferiche",
+        "log_row_periph_b":            "Daemon OpenRazer + driver kernel (DKMS) + libreria Python per hardware Razer. Polychromatic per RGB per tasto ed effetti. Piper per configurazione mouse/tastiera multi-brand (Logitech, SteelSeries, Roccat\u2026). Solaar per ricevitori Logitech Unifying/Bolt. jmtpfs e gphotofs per montare telefoni Android e fotocamere \u2014 tutti AUR.",
+        "log_row_office_t":            "Ufficio",
+        "log_row_office_b":            "LibreOffice Fresh pi\u00f9 qualsiasi dei 12 pacchetti lingua (Inglese UK, Rumeno, Francese, Tedesco, Spagnolo, Italiano, Portoghese, Russo, Giapponese, Cinese, Coreano, Arabo).",
+        "log_row_media_t":             "Media",
+        "log_row_media_b":             "Visualizzatore immagini Mirage, GIMP, Inkscape, editor video Kdenlive, convertitore HandBrake, OBS Studio Liberty (build libera).",
+        "log_row_ft_t":                "Trasferimento File",
+        "log_row_ft_b":                "Android MTP con jmtpfs e go-mtpfs. Fotocamera PTP via gphotofs e gphoto2. Wireless: Warpinator, LocalSend (AirDrop multipiattaforma), Croc (P2P cifrato). USB: Android Tools (ADB/fastboot) e Scrcpy per il mirroring dello schermo.",
+        "log_row_comms_t":             "Comunicazione",
+        "log_row_comms_b":             "Vesktop (Discord + Vencord), Telegram, Element (Matrix), Thunderbird + pacchetti lingua opzionali, note Obsidian.",
+        "log_row_how_t":               "Come Funziona",
+        "log_row_how_b":               "I pacchetti del repository vengono installati in un unico batch pacman. Ogni pacchetto AUR (paru) viene compilato e installato singolarmente \u2014 vedrai l\u2019output completo di compilazione in tempo reale. Dopo l\u2019installazione l\u2019avvio automatico viene disabilitato automaticamente. Puoi riattivarlo in qualsiasi momento dal pi\u00e8 di pagina.",
+        "log_header":                  "Faded Dream \u2014 Installazione pacchetti selezionati",
+        "log_repo_line":               "  pacchetti repo  ({n}): {pkgs}",
+        "log_aur_line":                "  pacchetti AUR   ({n}): {pkgs}",
+        "log_browser_patch":           "  patch browser: $Browser = {exec}",
+        "log_done":                    "\u2713  Fatto!",
+        "log_done_bar":                "\u2713 Fatto!",
+        "log_error":                   "[errore] {exc}",
+        "prog_repo":                   "Installazione di {n} pacchetti repo...",
+        "prog_pkg":                    "Installazione di {pkg}...",
+        "prog_patch":                  "Aggiornamento hyprland.conf \u2192 {exec}...",
+            "log_banner_pacman": "\u2500\u2500 pacman  ({n} pacchetti) \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500",
+        "log_banner_paru": "\u2500\u2500 paru  {pkg} \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500",
+        "log_banner_hypr": "\u2500\u2500 hyprland.conf \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500",
+        "log_browser_set": "  $Browser = {exec}",
+        "badge_aur": "AUR",
+        "badge_extra": "extra",
+        "badge_galaxy": "galaxy",
+        "badge_world": "world",
+        "badge_lib32": "lib32",
+        "badge_multilib": "multilib",
+        "nothing_selected": "Nulla selezionato \u2014 chiusura.",
+        "lang_label": "Lingua",
+        "welcome_title": "Faded Dream",
+},
+    "pt": {
+        "app_title":                   "Configura\u00e7\u00e3o Faded Dream \u2014 Primeira Execu\u00e7\u00e3o",
+        "sidebar_title":               "Faded Dream",
+        "nav_welcome":                 "Bem-vindo",
+        "nav_browser":                 "Navegador",
+        "nav_gaming":                  "Jogos",
+        "nav_peripherals":             "Perif\u00e9ricos",
+        "nav_file_transfer":           "Transfer\u00eancia",
+        "nav_office":                  "Escrit\u00f3rio",
+        "nav_media":                   "M\u00eddia",
+        "nav_comms":                   "Comunica\u00e7\u00e3o",
+        "nav_log":                     "Registo",
+        "packages_selected":           "{n} pacotes selecionados",
+        "startup_hint":                "desativar arranque autom\u00e1tico ap\u00f3s instala\u00e7\u00e3o",
+        "run_at_startup":              "Arranque autom\u00e1tico",
+        "skip_all":                    "Ignorar tudo",
+        "install_selected":            "Instalar selecionados",
+        "welcome_sub":                 "Os teus dotfiles est\u00e3o instalados.\nSeleciona pacotes opcionais nos separadores e clica em <b>Instalar</b>.\nDesativa <i>Arranque autom\u00e1tico</i> ap\u00f3s instalar.",
+        "card_browser_sub":            "Escolhe o teu navegador padr\u00e3o",
+        "card_gaming_sub":             "Steam, Heroic, Wine, MangoHud",
+        "card_peripherals_sub":        "OpenRazer, Polychromatic, Piper",
+        "card_filetransfer_sub":       "Android, c\u00e2meras, partilha LAN",
+        "card_office_sub":             "LibreOffice + pacotes de idioma",
+        "card_media_sub":              "GIMP, Kdenlive, OBS Liberty",
+        "card_comms_sub":              "Vesktop, Telegram, Thunderbird",
+        "browser_section":             "Seleciona o Teu Navegador Padr\u00e3o",
+        "recommended":                 "\u2b50 Recomendado",
+        "lo_lang_section":             "Pacotes de Idioma LibreOffice",
+        "log_what_title":              "O Que Este Instalador Faz",
+        "log_row_browser_t":           "Navegador",
+        "log_row_browser_b":           "Escolhe um navegador \u2014 LibreWolf, Zen, Firefox, Vivaldi, Chrome ou Edge. A tua escolha \u00e9 instalada e $Browser em hyprland.conf \u00e9 atualizado automaticamente para que Super+B o abra.",
+        "log_row_gaming_t":            "Jogos",
+        "log_row_gaming_b":            "Steam (lib32), Heroic Games Launcher, Wine + Winetricks/Mono/Gecko, ProtonPlus, GameMode + 32-bit, MangoHud + 32-bit, MangoJuice. Selecionar Wine seleciona automaticamente os tr\u00eas subpacotes.",
+        "log_row_periph_t":            "Perif\u00e9ricos",
+        "log_row_periph_b":            "Daemon OpenRazer + driver kernel (DKMS) + biblioteca Python para hardware Razer. Polychromatic para RGB por tecla e efeitos. Piper para configura\u00e7\u00e3o de rato/teclado multi-marca (Logitech, SteelSeries, Roccat\u2026). Solaar para recetores Logitech Unifying/Bolt. jmtpfs e gphotofs para montar telef\u00f3nes Android e c\u00e2meras \u2014 todos AUR.",
+        "log_row_office_t":            "Escrit\u00f3rio",
+        "log_row_office_b":            "LibreOffice Fresh mais qualquer um dos 12 pacotes de idioma (Ingl\u00eas UK, Romeno, Franc\u00eas, Alem\u00e3o, Espanhol, Italiano, Portugu\u00eas, Russo, Japon\u00eas, Chin\u00eas, Coreano, \u00c1rabe).",
+        "log_row_media_t":             "M\u00eddia",
+        "log_row_media_b":             "Visualizador de imagens Mirage, GIMP, Inkscape, editor de v\u00eddeo Kdenlive, conversor HandBrake, OBS Studio Liberty (build livre).",
+        "log_row_ft_t":                "Transfer\u00eancia",
+        "log_row_ft_b":                "Android MTP com jmtpfs e go-mtpfs. C\u00e2mera PTP via gphotofs e gphoto2. Sem fios: Warpinator, LocalSend (AirDrop multiplataforma), Croc (P2P cifrado). USB: Android Tools (ADB/fastboot) e Scrcpy para espelhamento de ecr\u00e3.",
+        "log_row_comms_t":             "Comunica\u00e7\u00e3o",
+        "log_row_comms_b":             "Vesktop (Discord + Vencord), Telegram, Element (Matrix), Thunderbird + pacotes de idioma opcionais, notas Obsidian.",
+        "log_row_how_t":               "Como Funciona",
+        "log_row_how_b":               "Os pacotes do reposit\u00f3rio s\u00e3o instalados num \u00fanico batch pacman. Cada pacote AUR (paru) \u00e9 compilado e instalado individualmente \u2014 ver\u00e1s a sa\u00edda completa de compila\u00e7\u00e3o em tempo real. Ap\u00f3s a instala\u00e7\u00e3o o arranque autom\u00e1tico \u00e9 desativado automaticamente. Podes reativ\u00e1-lo a qualquer momento no rodap\u00e9.",
+        "log_header":                  "Faded Dream \u2014 Instala\u00e7\u00e3o de pacotes selecionados",
+        "log_repo_line":               "  pacotes repo  ({n}): {pkgs}",
+        "log_aur_line":                "  pacotes AUR   ({n}): {pkgs}",
+        "log_browser_patch":           "  patch navegador: $Browser = {exec}",
+        "log_done":                    "\u2713  Conclu\u00eddo!",
+        "log_done_bar":                "\u2713 Conclu\u00eddo!",
+        "log_error":                   "[erro] {exc}",
+        "prog_repo":                   "A instalar {n} pacotes repo...",
+        "prog_pkg":                    "A instalar {pkg}...",
+        "prog_patch":                  "A atualizar hyprland.conf \u2192 {exec}...",
+            "log_banner_pacman": "\u2500\u2500 pacman  ({n} pacotes) \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500",
+        "log_banner_paru": "\u2500\u2500 paru  {pkg} \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500",
+        "log_banner_hypr": "\u2500\u2500 hyprland.conf \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500",
+        "log_browser_set": "  $Browser = {exec}",
+        "badge_aur": "AUR",
+        "badge_extra": "extra",
+        "badge_galaxy": "galaxy",
+        "badge_world": "world",
+        "badge_lib32": "lib32",
+        "badge_multilib": "multilib",
+        "nothing_selected": "Nada selecionado \u2014 a fechar.",
+        "lang_label": "Idioma",
+        "welcome_title": "Faded Dream",
+},
+    "ru": {
+        "app_title":                   "Faded Dream \u2014 \u041f\u0435\u0440\u0432\u044b\u0439 \u0437\u0430\u043f\u0443\u0441\u043a",
+        "sidebar_title":               "Faded Dream",
+        "nav_welcome":                 "\u0414\u043e\u0431\u0440\u043e \u043f\u043e\u0436\u0430\u043b\u043e\u0432\u0430\u0442\u044c",
+        "nav_browser":                 "\u0411\u0440\u0430\u0443\u0437\u0435\u0440",
+        "nav_gaming":                  "\u0418\u0433\u0440\u044b",
+        "nav_peripherals":             "\u041f\u0435\u0440\u0438\u0444\u0435\u0440\u0438\u044f",
+        "nav_file_transfer":           "\u041f\u0435\u0440\u0435\u0434\u0430\u0447\u0430 \u0444\u0430\u0439\u043b\u043e\u0432",
+        "nav_office":                  "\u041e\u0444\u0438\u0441",
+        "nav_media":                   "\u041c\u0435\u0434\u0438\u0430",
+        "nav_comms":                   "\u041e\u0431\u0449\u0435\u043d\u0438\u0435",
+        "nav_log":                     "\u0416\u0443\u0440\u043d\u0430\u043b",
+        "packages_selected":           "\u0432\u044b\u0431\u0440\u0430\u043d\u043e {n} \u043f\u0430\u043a\u0435\u0442\u043e\u0432",
+        "startup_hint":                "\u043e\u0442\u043a\u043b\u044e\u0447\u0438\u0442\u0435 \u0430\u0432\u0442\u043e\u0437\u0430\u043f\u0443\u0441\u043a \u043f\u043e\u0441\u043b\u0435 \u0443\u0441\u0442\u0430\u043d\u043e\u0432\u043a\u0438",
+        "run_at_startup":              "\u0410\u0432\u0442\u043e\u0437\u0430\u043f\u0443\u0441\u043a",
+        "skip_all":                    "\u041f\u0440\u043e\u043f\u0443\u0441\u0442\u0438\u0442\u044c \u0432\u0441\u0451",
+        "install_selected":            "\u0423\u0441\u0442\u0430\u043d\u043e\u0432\u0438\u0442\u044c \u0432\u044b\u0431\u0440\u0430\u043d\u043d\u043e\u0435",
+        "welcome_sub":                 "\u0412\u0430\u0448\u0438 dotfile\u0443 \u0443\u0441\u0442\u0430\u043d\u043e\u0432\u043b\u0435\u043d\u044b.\n\u0412\u044b\u0431\u0435\u0440\u0438\u0442\u0435 \u043e\u043f\u0446\u0438\u043e\u043d\u0430\u043b\u044c\u043d\u044b\u0435 \u043f\u0430\u043a\u0435\u0442\u044b \u043d\u0430 \u0432\u043a\u043b\u0430\u0434\u043a\u0430\u0445, \u0437\u0430\u0442\u0435\u043c \u043d\u0430\u0436\u043c\u0438\u0442\u0435 <b>\u0423\u0441\u0442\u0430\u043d\u043e\u0432\u0438\u0442\u044c</b>.\n\u041e\u0442\u043a\u043b\u044e\u0447\u0438\u0442\u0435 <i>\u0410\u0432\u0442\u043e\u0437\u0430\u043f\u0443\u0441\u043a</i> \u043f\u043e\u0441\u043b\u0435 \u0443\u0441\u0442\u0430\u043d\u043e\u0432\u043a\u0438.",
+        "card_browser_sub":            "\u0412\u044b\u0431\u0435\u0440\u0438\u0442\u0435 \u0431\u0440\u0430\u0443\u0437\u0435\u0440 \u043f\u043e \u0443\u043c\u043e\u043b\u0447\u0430\u043d\u0438\u044e",
+        "card_gaming_sub":             "Steam, Heroic, Wine, MangoHud",
+        "card_peripherals_sub":        "OpenRazer, Polychromatic, Piper",
+        "card_filetransfer_sub":       "Android, \u043a\u0430\u043c\u0435\u0440\u044b, \u043e\u0431\u043c\u0435\u043d LAN",
+        "card_office_sub":             "LibreOffice + \u044f\u0437\u044b\u043a\u043e\u0432\u044b\u0435 \u043f\u0430\u043a\u0435\u0442\u044b",
+        "card_media_sub":              "GIMP, Kdenlive, OBS Liberty",
+        "card_comms_sub":              "Vesktop, Telegram, Thunderbird",
+        "browser_section":             "\u0412\u044b\u0431\u0435\u0440\u0438\u0442\u0435 \u0431\u0440\u0430\u0443\u0437\u0435\u0440 \u043f\u043e \u0443\u043c\u043e\u043b\u0447\u0430\u043d\u0438\u044e",
+        "recommended":                 "\u2b50 \u0420\u0435\u043a\u043e\u043c\u0435\u043d\u0434\u0443\u0435\u0442\u0441\u044f",
+        "lo_lang_section":             "\u042f\u0437\u044b\u043a\u043e\u0432\u044b\u0435 \u043f\u0430\u043a\u0435\u0442\u044b LibreOffice",
+        "log_what_title":              "\u0427\u0442\u043e \u0434\u0435\u043b\u0430\u0435\u0442 \u044d\u0442\u043e\u0442 \u0443\u0441\u0442\u0430\u043d\u043e\u0432\u0449\u0438\u043a",
+        "log_row_browser_t":           "\u0411\u0440\u0430\u0443\u0437\u0435\u0440",
+        "log_row_browser_b":           "\u0412\u044b\u0431\u0435\u0440\u0438\u0442\u0435 \u0431\u0440\u0430\u0443\u0437\u0435\u0440 \u2014 LibreWolf, Zen, Firefox, Vivaldi, Chrome \u0438\u043b\u0438 Edge. \u0412\u044b\u0431\u0440\u0430\u043d\u043d\u044b\u0439 \u0431\u0440\u0430\u0443\u0437\u0435\u0440 \u0443\u0441\u0442\u0430\u043d\u0430\u0432\u043b\u0438\u0432\u0430\u0435\u0442\u0441\u044f, \u0430 $Browser \u0432 hyprland.conf \u043e\u0431\u043d\u043e\u0432\u043b\u044f\u0435\u0442\u0441\u044f \u0430\u0432\u0442\u043e\u043c\u0430\u0442\u0438\u0447\u0435\u0441\u043a\u0438, \u0447\u0442\u043e\u0431\u044b Super+B \u0435\u0433\u043e \u043e\u0442\u043a\u0440\u044b\u0432\u0430\u043b.",
+        "log_row_gaming_t":            "\u0418\u0433\u0440\u044b",
+        "log_row_gaming_b":            "Steam (lib32), Heroic Games Launcher, Wine + Winetricks/Mono/Gecko, ProtonPlus, GameMode + 32-bit, MangoHud + 32-bit, MangoJuice. \u041f\u0440\u0438 \u0432\u044b\u0431\u043e\u0440\u0435 Wine \u0430\u0432\u0442\u043e\u043c\u0430\u0442\u0438\u0447\u0435\u0441\u043a\u0438 \u0432\u044b\u0431\u0438\u0440\u0430\u044e\u0442\u0441\u044f \u0442\u0440\u0438 \u0441\u0443\u0431\u043f\u0430\u043a\u0435\u0442\u0430.",
+        "log_row_periph_t":            "\u041f\u0435\u0440\u0438\u0444\u0435\u0440\u0438\u044f",
+        "log_row_periph_b":            "\u0414\u0435\u043c\u043e\u043d OpenRazer + \u0434\u0440\u0430\u0439\u0432\u0435\u0440 \u044f\u0434\u0440\u0430 (DKMS) + \u0431\u0438\u0431\u043b\u0438\u043e\u0442\u0435\u043a\u0430 Python \u0434\u043b\u044f Razer. Polychromatic \u0434\u043b\u044f RGB \u043f\u043e\u043a\u043b\u0430\u0432\u0438\u0448\u043d\u043e \u0438 \u044d\u0444\u0444\u0435\u043a\u0442\u043e\u0432. Piper \u0434\u043b\u044f \u043d\u0430\u0441\u0442\u0440\u043e\u0439\u043a\u0438 \u043c\u044b\u0448\u0435\u0439/\u043a\u043b\u0430\u0432\u0438\u0430\u0442\u0443\u0440 \u0440\u0430\u0437\u043d\u044b\u0445 \u0431\u0440\u0435\u043d\u0434\u043e\u0432. Solaar \u0434\u043b\u044f Logitech Unifying/Bolt. jmtpfs \u0438 gphotofs \u0434\u043b\u044f \u043f\u043e\u0434\u043a\u043b\u044e\u0447\u0435\u043d\u0438\u044f Android-\u0443\u0441\u0442\u0440\u043e\u0439\u0441\u0442\u0432 \u0438 \u043a\u0430\u043c\u0435\u0440 \u2014 \u0432\u0441\u0451 AUR.",
+        "log_row_office_t":            "\u041e\u0444\u0438\u0441",
+        "log_row_office_b":            "LibreOffice Fresh \u043f\u043b\u044e\u0441 \u043b\u044e\u0431\u043e\u0439 \u0438\u0437 12 \u044f\u0437\u044b\u043a\u043e\u0432\u044b\u0445 \u043f\u0430\u043a\u0435\u0442\u043e\u0432 (\u0410\u043d\u0433\u043b\u0438\u0439\u0441\u043a\u0438\u0439 UK, \u0420\u0443\u043c\u044b\u043d\u0441\u043a\u0438\u0439, \u0424\u0440\u0430\u043d\u0446\u0443\u0437\u0441\u043a\u0438\u0439, \u041d\u0435\u043c\u0435\u0446\u043a\u0438\u0439, \u0418\u0441\u043f\u0430\u043d\u0441\u043a\u0438\u0439, \u0418\u0442\u0430\u043b\u044c\u044f\u043d\u0441\u043a\u0438\u0439, \u041f\u043e\u0440\u0442\u0443\u0433\u0430\u043b\u044c\u0441\u043a\u0438\u0439, \u0420\u0443\u0441\u0441\u043a\u0438\u0439, \u042f\u043f\u043e\u043d\u0441\u043a\u0438\u0439, \u041a\u0438\u0442\u0430\u0439\u0441\u043a\u0438\u0439, \u041a\u043e\u0440\u0435\u0439\u0441\u043a\u0438\u0439, \u0410\u0440\u0430\u0431\u0441\u043a\u0438\u0439).",
+        "log_row_media_t":             "\u041c\u0435\u0434\u0438\u0430",
+        "log_row_media_b":             "\u041f\u0440\u043e\u0441\u043c\u043e\u0442\u0440\u0449\u0438\u043a Mirage, GIMP, Inkscape, \u0432\u0438\u0434\u0435\u043e\u0440\u0435\u0434\u0430\u043a\u0442\u043e\u0440 Kdenlive, \u043a\u043e\u043d\u0432\u0435\u0440\u0442\u0435\u0440 HandBrake, OBS Studio Liberty (\u0441\u0432\u043e\u0431\u043e\u0434\u043d\u0430\u044f \u0441\u0431\u043e\u0440\u043a\u0430).",
+        "log_row_ft_t":                "\u041f\u0435\u0440\u0435\u0434\u0430\u0447\u0430 \u0444\u0430\u0439\u043b\u043e\u0432",
+        "log_row_ft_b":                "Android MTP \u0447\u0435\u0440\u0435\u0437 jmtpfs \u0438 go-mtpfs. \u041a\u0430\u043c\u0435\u0440\u0430 PTP \u0447\u0435\u0440\u0435\u0437 gphotofs \u0438 gphoto2. \u0411\u0435\u0441\u043f\u0440\u043e\u0432\u043e\u0434\u043d\u043e: Warpinator, LocalSend (AirDrop \u043c\u0435\u0436\u043f\u043b\u0430\u0442\u0444\u043e\u0440\u043c\u0435\u043d\u043d\u044b\u0439), Croc (\u0437\u0430\u0448\u0438\u0444\u0440\u043e\u0432\u0430\u043d\u043d\u044b\u0439 P2P). USB: Android Tools (ADB/fastboot) \u0438 Scrcpy \u0434\u043b\u044f \u0437\u0435\u0440\u043a\u0430\u043b\u0438\u0440\u043e\u0432\u0430\u043d\u0438\u044f \u044d\u043a\u0440\u0430\u043d\u0430.",
+        "log_row_comms_t":             "\u041e\u0431\u0449\u0435\u043d\u0438\u0435",
+        "log_row_comms_b":             "Vesktop (Discord + Vencord), Telegram, Element (Matrix), Thunderbird + \u043e\u043f\u0446\u0438\u043e\u043d\u0430\u043b\u044c\u043d\u044b\u0435 \u044f\u0437\u044b\u043a\u043e\u0432\u044b\u0435 \u043f\u0430\u043a\u0435\u0442\u044b, \u0437\u0430\u043c\u0435\u0442\u043a\u0438 Obsidian.",
+        "log_row_how_t":               "\u041a\u0430\u043a \u044d\u0442\u043e \u0440\u0430\u0431\u043e\u0442\u0430\u0435\u0442",
+        "log_row_how_b":               "\u041f\u0430\u043a\u0435\u0442\u044b \u0440\u0435\u043f\u043e\u0437\u0438\u0442\u043e\u0440\u0438\u044f \u0443\u0441\u0442\u0430\u043d\u0430\u0432\u043b\u0438\u0432\u0430\u044e\u0442\u0441\u044f \u0432 \u043e\u0434\u0438\u043d\u043e\u043c batch pacman. \u041a\u0430\u0436\u0434\u044b\u0439 AUR-\u043f\u0430\u043a\u0435\u0442 (paru) \u0441\u043e\u0431\u0438\u0440\u0430\u0435\u0442\u0441\u044f \u0438 \u0443\u0441\u0442\u0430\u043d\u0430\u0432\u043b\u0438\u0432\u0430\u0435\u0442\u0441\u044f \u043e\u0442\u0434\u0435\u043b\u044c\u043d\u043e \u2014 \u0432\u0435\u0441\u044c \u0432\u044b\u0432\u043e\u0434 \u043a\u043e\u043c\u043f\u0438\u043b\u044f\u0446\u0438\u0438 \u043e\u0442\u043e\u0431\u0440\u0430\u0436\u0430\u0435\u0442\u0441\u044f \u0432 \u0440\u0435\u0430\u043b\u044c\u043d\u043e\u043c \u0432\u0440\u0435\u043c\u0435\u043d\u0438. \u041f\u043e\u0441\u043b\u0435 \u0443\u0441\u0442\u0430\u043d\u043e\u0432\u043a\u0438 \u0430\u0432\u0442\u043e\u0437\u0430\u043f\u0443\u0441\u043a \u043e\u0442\u043a\u043b\u044e\u0447\u0430\u0435\u0442\u0441\u044f \u0430\u0432\u0442\u043e\u043c\u0430\u0442\u0438\u0447\u0435\u0441\u043a\u0438. \u0412\u044b \u043c\u043e\u0436\u0435\u0442\u0435 \u0432\u043a\u043b\u044e\u0447\u0438\u0442\u044c \u0435\u0433\u043e \u0432 \u043b\u044e\u0431\u043e\u0435 \u0432\u0440\u0435\u043c\u044f.",
+        "log_header":                  "Faded Dream \u2014 \u0423\u0441\u0442\u0430\u043d\u043e\u0432\u043a\u0430 \u0432\u044b\u0431\u0440\u0430\u043d\u043d\u044b\u0445 \u043f\u0430\u043a\u0435\u0442\u043e\u0432",
+        "log_repo_line":               "  \u043f\u0430\u043a\u0435\u0442\u044b repo  ({n}): {pkgs}",
+        "log_aur_line":                "  \u043f\u0430\u043a\u0435\u0442\u044b AUR   ({n}): {pkgs}",
+        "log_browser_patch":           "  \u043f\u0430\u0442\u0447 \u0431\u0440\u0430\u0443\u0437\u0435\u0440\u0430: $Browser = {exec}",
+        "log_done":                    "\u2713  \u0413\u043e\u0442\u043e\u0432\u043e!",
+        "log_done_bar":                "\u2713 \u0413\u043e\u0442\u043e\u0432\u043e!",
+        "log_error":                   "[\u043e\u0448\u0438\u0431\u043a\u0430] {exc}",
+        "prog_repo":                   "\u0423\u0441\u0442\u0430\u043d\u043e\u0432\u043a\u0430 {n} \u043f\u0430\u043a\u0435\u0442\u043e\u0432 repo...",
+        "prog_pkg":                    "\u0423\u0441\u0442\u0430\u043d\u043e\u0432\u043a\u0430 {pkg}...",
+        "prog_patch":                  "\u041e\u0431\u043d\u043e\u0432\u043b\u0435\u043d\u0438\u0435 hyprland.conf \u2192 {exec}...",
+            "log_banner_pacman": "\u2500\u2500 pacman  ({n} \u043f\u0430\u043a\u0435\u0442(\u043e\u0432)) \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500",
+        "log_banner_paru": "\u2500\u2500 paru  {pkg} \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500",
+        "log_banner_hypr": "\u2500\u2500 hyprland.conf \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500",
+        "log_browser_set": "  $Browser = {exec}",
+        "badge_aur": "AUR",
+        "badge_extra": "extra",
+        "badge_galaxy": "galaxy",
+        "badge_world": "world",
+        "badge_lib32": "lib32",
+        "badge_multilib": "multilib",
+        "nothing_selected": "\u041d\u0438\u0447\u0435\u0433\u043e \u043d\u0435 \u0432\u044b\u0431\u0440\u0430\u043d\u043e \u2014 \u0437\u0430\u043a\u0440\u044b\u0432\u0430\u044e.",
+        "lang_label": "\u042f\u0437\u044b\u043a",
+        "welcome_title": "Faded Dream",
+},
+    "ja": {
+        "app_title":                   "Faded Dream \u30bb\u30c3\u30c8\u30a2\u30c3\u30d7 \u2014 \u521d\u56de\u8d77\u52d5",
+        "sidebar_title":               "Faded Dream",
+        "nav_welcome":                 "\u30a6\u30a7\u30eb\u30ab\u30e0",
+        "nav_browser":                 "\u30d6\u30e9\u30a6\u30b6",
+        "nav_gaming":                  "\u30b2\u30fc\u30df\u30f3\u30b0",
+        "nav_peripherals":             "\u5468\u8fba\u6a5f\u5668",
+        "nav_file_transfer":           "\u30d5\u30a1\u30a4\u30eb\u8ee2\u9001",
+        "nav_office":                  "\u30aa\u30d5\u30a3\u30b9",
+        "nav_media":                   "\u30e1\u30c7\u30a3\u30a2",
+        "nav_comms":                   "\u901a\u4fe1",
+        "nav_log":                     "\u30ed\u30b0",
+        "packages_selected":           "{n} \u500b\u306e\u30d1\u30c3\u30b1\u30fc\u30b8\u3092\u9078\u629e",
+        "startup_hint":                "\u30a4\u30f3\u30b9\u30c8\u30fc\u30eb\u5f8c\u306b\u81ea\u52d5\u8d77\u52d5\u3092\u7121\u52b9\u306b\u3057\u3066\u304f\u3060\u3055\u3044",
+        "run_at_startup":              "\u81ea\u52d5\u8d77\u52d5",
+        "skip_all":                    "\u3059\u3079\u3066\u30b9\u30ad\u30c3\u30d7",
+        "install_selected":            "\u9078\u629e\u3057\u305f\u3082\u306e\u3092\u30a4\u30f3\u30b9\u30c8\u30fc\u30eb",
+        "welcome_sub":                 "dotfiles\u304c\u30a4\u30f3\u30b9\u30c8\u30fc\u30eb\u3055\u308c\u307e\u3057\u305f\u3002\n\u30bf\u30d6\u304b\u3089\u30aa\u30d7\u30b7\u30e7\u30ca\u30eb\u30d1\u30c3\u30b1\u30fc\u30b8\u3092\u9078\u629e\u3057\u3001<b>\u30a4\u30f3\u30b9\u30c8\u30fc\u30eb</b>\u3092\u30af\u30ea\u30c3\u30af\u3057\u3066\u304f\u3060\u3055\u3044\u3002\n\u30a4\u30f3\u30b9\u30c8\u30fc\u30eb\u5f8c\u306f<i>\u81ea\u52d5\u8d77\u52d5</i>\u3092\u30aa\u30d5\u306b\u3057\u3066\u304f\u3060\u3055\u3044\u3002",
+        "card_browser_sub":            "\u30c7\u30d5\u30a9\u30eb\u30c8\u30d6\u30e9\u30a6\u30b6\u3092\u9078\u629e",
+        "card_gaming_sub":             "Steam, Heroic, Wine, MangoHud",
+        "card_peripherals_sub":        "OpenRazer, Polychromatic, Piper",
+        "card_filetransfer_sub":       "Android\u3001\u30ab\u30e1\u30e9\u3001LAN\u5171\u6709",
+        "card_office_sub":             "LibreOffice + \u8a00\u8a9e\u30d1\u30c3\u30af",
+        "card_media_sub":              "GIMP, Kdenlive, OBS Liberty",
+        "card_comms_sub":              "Vesktop, Telegram, Thunderbird",
+        "browser_section":             "\u30c7\u30d5\u30a9\u30eb\u30c8\u30d6\u30e9\u30a6\u30b6\u306e\u9078\u629e",
+        "recommended":                 "\u2b50 \u304a\u3059\u3059\u3081",
+        "lo_lang_section":             "LibreOffice \u8a00\u8a9e\u30d1\u30c3\u30af",
+        "log_what_title":              "\u30a4\u30f3\u30b9\u30c8\u30fc\u30e9\u30fc\u306e\u6a5f\u80fd",
+        "log_row_browser_t":           "\u30d6\u30e9\u30a6\u30b6",
+        "log_row_browser_b":           "\u30d6\u30e9\u30a6\u30b6\u3092\u9078\u629e\u3057\u3066\u304f\u3060\u3055\u3044 \u2014 LibreWolf\u3001Zen\u3001Firefox\u3001Vivaldi\u3001Chrome\u3001Edge\u3002\u9078\u629e\u3057\u305f\u30d6\u30e9\u30a6\u30b6\u304c\u30a4\u30f3\u30b9\u30c8\u30fc\u30eb\u3055\u308c\u3001hyprland.conf\u306e$Browser\u304c\u81ea\u52d5\u66f4\u65b0\u3055\u308c\u3066Super+B\u3067\u958b\u304f\u3088\u3046\u306b\u306a\u308a\u307e\u3059\u3002",
+        "log_row_gaming_t":            "\u30b2\u30fc\u30df\u30f3\u30b0",
+        "log_row_gaming_b":            "Steam (lib32)\u3001Heroic Games Launcher\u3001Wine + Winetricks/Mono/Gecko\u3001ProtonPlus\u3001GameMode + 32bit\u3001MangoHud + 32bit\u3001MangoJuice\u3002Wine\u3092\u9078\u629e\u3059\u308b\u3068\u30b5\u30d6\u30d1\u30c3\u30b1\u30fc\u30b8\u306e3\u3064\u304c\u81ea\u52d5\u9078\u629e\u3055\u308c\u307e\u3059\u3002",
+        "log_row_periph_t":            "\u5468\u8fba\u6a5f\u5668",
+        "log_row_periph_b":            "OpenRazer\u30c7\u30fc\u30e2\u30f3 + \u30ab\u30fc\u30cd\u30eb\u30c9\u30e9\u30a4\u30d0\u30fc (DKMS) + Razer\u30cf\u30fc\u30c9\u30a6\u30a7\u30a2\u7528Python\u30e9\u30a4\u30d6\u30e9\u30ea\u3002Polychromatic\u3067\u30ad\u30fc\u3054\u3068\u306eRGB\u3068\u30a8\u30d5\u30a7\u30af\u30c8\u8a2d\u5b9a\u3002Piper\u3067\u30de\u30eb\u30c1\u30d6\u30e9\u30f3\u30c9\u306e\u30de\u30a6\u30b9\uff0f\u30ad\u30fc\u30dc\u30fc\u30c9\u3092\u8a2d\u5b9a\u3002Solaar\u3067Logitech Unifying/Bolt\u30ec\u30b7\u30fc\u30d0\u30fc\u3002jmtpfs\u3068gphotofs\u3067Android\u3084\u30ab\u30e1\u30e9\u3092\u30de\u30a6\u30f3\u30c8 \u2014 \u3059\u3079\u3066AUR\u3002",
+        "log_row_office_t":            "\u30aa\u30d5\u30a3\u30b9",
+        "log_row_office_b":            "LibreOffice Fresh\u306b\u52a0\u3048\u300112\u7a2e\u306e\u8a00\u8a9e\u30d1\u30c3\u30af\u304b\u3089\u9078\u629e\u3067\u304d\u307e\u3059\uff08\u82f1\u8a9eUK\u3001\u30eb\u30fc\u30de\u30cb\u30a2\u8a9e\u3001\u30d5\u30e9\u30f3\u30b9\u8a9e\u3001\u30c9\u30a4\u30c4\u8a9e\u3001\u30b9\u30da\u30a4\u30f3\u8a9e\u3001\u30a4\u30bf\u30ea\u30a2\u8a9e\u3001\u30dd\u30eb\u30c8\u30ac\u30eb\u8a9e\u3001\u30ed\u30b7\u30a2\u8a9e\u3001\u65e5\u672c\u8a9e\u3001\u4e2d\u56fd\u8a9e\u3001\u97d3\u56fd\u8a9e\u3001\u30a2\u30e9\u30d3\u30a2\u8a9e\uff09\u3002",
+        "log_row_media_t":             "\u30e1\u30c7\u30a3\u30a2",
+        "log_row_media_b":             "\u753b\u50cf\u30d3\u30e5\u30fc\u30a2\u30fcMirage\u3001GIMP\u3001Inkscape\u3001\u52d5\u753b\u7de8\u96c6Kdenlive\u3001\u5909\u63db\u30bd\u30d5\u30c8HandBrake\u3001OBS Studio Liberty\uff08\u30d5\u30ea\u30fc\u30d3\u30eb\u30c9\uff09\u3002",
+        "log_row_ft_t":                "\u30d5\u30a1\u30a4\u30eb\u8ee2\u9001",
+        "log_row_ft_b":                "jmtpfs\u3068go-mtpfs\u3067Android MTP\u3002gphotofs\u3068gphoto2\u3067\u30ab\u30e1\u30e9PTP\u3002\u7121\u7dda: Warpinator\u3001LocalSend\uff08\u30af\u30ed\u30b9\u30d7\u30e9\u30c3\u30c8\u30d5\u30a9\u30fc\u30e0AirDrop\uff09\u3001Croc\uff08\u6697\u53f7\u5316P2P\uff09\u3002USB: Android Tools\uff08ADB/fastboot\uff09\u3068\u30b9\u30af\u30ea\u30fc\u30f3\u30df\u30e9\u30fc\u30ea\u30f3\u30b0Scrcpy\u3002",
+        "log_row_comms_t":             "\u901a\u4fe1",
+        "log_row_comms_b":             "Vesktop\uff08Discord + Vencord\uff09\u3001Telegram\u3001Element\uff08Matrix\uff09\u3001Thunderbird + \u30aa\u30d7\u30b7\u30e7\u30ca\u30eb\u8a00\u8a9e\u30d1\u30c3\u30af\u3001Obsidian\u30e1\u30e2\u3002",
+        "log_row_how_t":               "\u52d5\u4f5c\u306e\u4ed5\u7d44\u307f",
+        "log_row_how_b":               "\u30ea\u30dd\u30b8\u30c8\u30ea\u30d1\u30c3\u30b1\u30fc\u30b8\u306f\u4e00\u62ecpacman\u3067\u30a4\u30f3\u30b9\u30c8\u30fc\u30eb\u3055\u308c\u307e\u3059\u3002AUR\u30d1\u30c3\u30b1\u30fc\u30b8\uff08paru\uff09\u306f\u500b\u5225\u306b\u30d3\u30eb\u30c9\u30fb\u30a4\u30f3\u30b9\u30c8\u30fc\u30eb \u2014 \u30b3\u30f3\u30d1\u30a4\u30eb\u51fa\u529b\u3092\u30ea\u30a2\u30eb\u30bf\u30a4\u30e0\u3067\u78ba\u8a8d\u3067\u304d\u307e\u3059\u3002\u5b8c\u4e86\u5f8c\u306f\u81ea\u52d5\u8d77\u52d5\u304c\u81ea\u52d5\u7121\u52b9\u5316\u3055\u308c\u307e\u3059\u3002\u30d5\u30c3\u30bf\u30fc\u304b\u3089\u518d\u6709\u52b9\u5316\u3067\u304d\u307e\u3059\u3002",
+        "log_header":                  "Faded Dream \u2014 \u9078\u629e\u3057\u305f\u30d1\u30c3\u30b1\u30fc\u30b8\u3092\u30a4\u30f3\u30b9\u30c8\u30fc\u30eb\u4e2d",
+        "log_repo_line":               "  repo\u30d1\u30c3\u30b1\u30fc\u30b8  ({n}): {pkgs}",
+        "log_aur_line":                "  AUR\u30d1\u30c3\u30b1\u30fc\u30b8   ({n}): {pkgs}",
+        "log_browser_patch":           "  \u30d6\u30e9\u30a6\u30b6\u30d1\u30c3\u30c1: $Browser = {exec}",
+        "log_done":                    "\u2713  \u5b8c\u4e86\uff01",
+        "log_done_bar":                "\u2713 \u5b8c\u4e86\uff01",
+        "log_error":                   "[\u30a8\u30e9\u30fc] {exc}",
+        "prog_repo":                   "repo\u30d1\u30c3\u30b1\u30fc\u30b8 {n}\u500b\u3092\u30a4\u30f3\u30b9\u30c8\u30fc\u30eb\u4e2d...",
+        "prog_pkg":                    "{pkg}\u3092\u30a4\u30f3\u30b9\u30c8\u30fc\u30eb\u4e2d...",
+        "prog_patch":                  "hyprland.conf\u3092\u66f4\u65b0\u4e2d \u2192 {exec}...",
+            "log_banner_pacman": "\u2500\u2500 pacman  ({n} \u30d1\u30c3\u30b1\u30fc\u30b8) \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500",
+        "log_banner_paru": "\u2500\u2500 paru  {pkg} \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500",
+        "log_banner_hypr": "\u2500\u2500 hyprland.conf \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500",
+        "log_browser_set": "  $Browser = {exec}",
+        "badge_aur": "AUR",
+        "badge_extra": "extra",
+        "badge_galaxy": "galaxy",
+        "badge_world": "world",
+        "badge_lib32": "lib32",
+        "badge_multilib": "multilib",
+        "nothing_selected": "\u9078\u629e\u306a\u3057 \u2014 \u9589\u3058\u307e\u3059\u3002",
+        "lang_label": "\u8a00\u8a9e",
+        "welcome_title": "Faded Dream",
+},
+    "zh": {
+        "app_title":                   "Faded Dream \u8bbe\u7f6e \u2014 \u9996\u6b21\u8fd0\u884c",
+        "sidebar_title":               "Faded Dream",
+        "nav_welcome":                 "\u6b22\u8fce",
+        "nav_browser":                 "\u6d4f\u89c8\u5668",
+        "nav_gaming":                  "\u6e38\u620f",
+        "nav_peripherals":             "\u5916\u8bbe",
+        "nav_file_transfer":           "\u6587\u4ef6\u4f20\u8f93",
+        "nav_office":                  "\u529e\u516c",
+        "nav_media":                   "\u5a92\u4f53",
+        "nav_comms":                   "\u901a\u8baf",
+        "nav_log":                     "\u65e5\u5fd7",
+        "packages_selected":           "\u5df2\u9009\u62e9 {n} \u4e2a\u8f6f\u4ef6\u5305",
+        "startup_hint":                "\u5b89\u88c5\u540e\u8bf7\u5173\u95ed\u81ea\u52a8\u542f\u52a8",
+        "run_at_startup":              "\u5f00\u673a\u81ea\u542f",
+        "skip_all":                    "\u8df3\u8fc7\u5168\u90e8",
+        "install_selected":            "\u5b89\u88c5\u6240\u9009",
+        "welcome_sub":                 "\u60a8\u7684 dotfiles \u5df2\u5b89\u88c5\u5b8c\u6210\u3002\n\u5728\u6807\u7b7e\u9875\u4e2d\u9009\u62e9\u53ef\u9009\u8f6f\u4ef6\u5305\uff0c\u7136\u540e\u70b9\u51fb<b>\u5b89\u88c5</b>\u3002\n\u5b89\u88c5\u5b8c\u6210\u540e\u8bf7\u5173\u95ed<i>\u5f00\u673a\u81ea\u542f</i>\u3002",
+        "card_browser_sub":            "\u9009\u62e9\u9ed8\u8ba4\u6d4f\u89c8\u5668",
+        "card_gaming_sub":             "Steam, Heroic, Wine, MangoHud",
+        "card_peripherals_sub":        "OpenRazer, Polychromatic, Piper",
+        "card_filetransfer_sub":       "Android\u3001\u76f8\u673a\u3001\u5c40\u57df\u7f51\u5171\u4eab",
+        "card_office_sub":             "LibreOffice + \u8bed\u8a00\u5305",
+        "card_media_sub":              "GIMP, Kdenlive, OBS Liberty",
+        "card_comms_sub":              "Vesktop, Telegram, Thunderbird",
+        "browser_section":             "\u9009\u62e9\u9ed8\u8ba4\u6d4f\u89c8\u5668",
+        "recommended":                 "\u2b50 \u63a8\u8350",
+        "lo_lang_section":             "LibreOffice \u8bed\u8a00\u5305",
+        "log_what_title":              "\u6b64\u5b89\u88c5\u7a0b\u5e8f\u7684\u529f\u80fd",
+        "log_row_browser_t":           "\u6d4f\u89c8\u5668",
+        "log_row_browser_b":           "\u9009\u62e9\u4e00\u4e2a\u6d4f\u89c8\u5668 \u2014 LibreWolf\u3001Zen\u3001Firefox\u3001Vivaldi\u3001Chrome \u6216 Edge\u3002\u60a8\u7684\u9009\u62e9\u5c06\u88ab\u5b89\u88c5\uff0c\u5e76\u81ea\u52a8\u66f4\u65b0 hyprland.conf \u4e2d\u7684 $Browser\uff0c\u4f7f Super+B \u53ef\u4ee5\u6253\u5f00\u5b83\u3002",
+        "log_row_gaming_t":            "\u6e38\u620f",
+        "log_row_gaming_b":            "Steam (lib32)\u3001Heroic Games Launcher\u3001Wine + Winetricks/Mono/Gecko\u3001ProtonPlus\u3001GameMode + 32\u4f4d\u3001MangoHud + 32\u4f4d\u3001MangoJuice\u3002\u9009\u62e9 Wine \u4f1a\u81ea\u52a8\u9009\u4e2d\u4e09\u4e2a\u5b50\u5305\u3002",
+        "log_row_periph_t":            "\u5916\u8bbe",
+        "log_row_periph_b":            "OpenRazer \u5b88\u62a4\u8fdb\u7a0b + \u5185\u6838\u9a71\u52a8 (DKMS) + Razer \u786c\u4ef6 Python \u5e93\u3002Polychromatic \u7528\u4e8e\u6bcf\u952e RGB \u548c\u6548\u679c\u3002Piper \u7528\u4e8e\u591a\u54c1\u724c\u9f20\u6807/\u952e\u76d8\u914d\u7f6e\u3002Solaar \u7528\u4e8e Logitech Unifying/Bolt\u3002jmtpfs \u548c gphotofs \u7528\u4e8e\u6302\u8f7d Android \u624b\u673a\u548c\u76f8\u673a \u2014 \u5747\u4e3a AUR\u3002",
+        "log_row_office_t":            "\u529e\u516c",
+        "log_row_office_b":            "LibreOffice Fresh \u52a0\u4e0a 12 \u4e2a\u8bed\u8a00\u5305\u4e2d\u7684\u4efb\u610f\u9009\u62e9\uff08\u82f1\u8bed UK\u3001\u7f57\u9a6c\u5c3c\u4e9a\u8bed\u3001\u6cd5\u8bed\u3001\u5fb7\u8bed\u3001\u897f\u73ed\u7259\u8bed\u3001\u610f\u5927\u5229\u8bed\u3001\u8461\u8404\u7259\u8bed\u3001\u4fc4\u8bed\u3001\u65e5\u8bed\u3001\u4e2d\u6587\u3001\u97e9\u8bed\u3001\u963f\u62c9\u4f2f\u8bed\uff09\u3002",
+        "log_row_media_t":             "\u5a92\u4f53",
+        "log_row_media_b":             "Mirage \u56fe\u7247\u67e5\u770b\u5668\u3001GIMP\u3001Inkscape\u3001Kdenlive \u89c6\u9891\u7f16\u8f91\u5668\u3001HandBrake \u8f6c\u6362\u5668\u3001OBS Studio Liberty\uff08\u81ea\u7531\u7248\u672c\uff09\u3002",
+        "log_row_ft_t":                "\u6587\u4ef6\u4f20\u8f93",
+        "log_row_ft_b":                "\u901a\u8fc7 jmtpfs \u548c go-mtpfs \u5b9e\u73b0 Android MTP\u3002\u901a\u8fc7 gphotofs \u548c gphoto2 \u5b9e\u73b0\u76f8\u673a PTP\u3002\u65e0\u7ebf: Warpinator\u3001LocalSend\uff08\u8de8\u5e73\u53f0 AirDrop\uff09\u3001Croc\uff08\u52a0\u5bc6 P2P\uff09\u3002USB: Android Tools\uff08ADB/fastboot\uff09\u548c Scrcpy \u5c4f\u5e55\u955c\u50cf\u3002",
+        "log_row_comms_t":             "\u901a\u8baf",
+        "log_row_comms_b":             "Vesktop\uff08Discord + Vencord\uff09\u3001Telegram\u3001Element\uff08Matrix\uff09\u3001Thunderbird + \u53ef\u9009\u8bed\u8a00\u5305\u3001Obsidian \u7b14\u8bb0\u3002",
+        "log_row_how_t":               "\u5de5\u4f5c\u539f\u7406",
+        "log_row_how_b":               "\u4ed3\u5e93\u8f6f\u4ef6\u5305\u901a\u8fc7\u4e00\u4e2a pacman \u6279\u5904\u7406\u5b89\u88c5\u3002\u6bcf\u4e2a AUR \u8f6f\u4ef6\u5305\uff08paru\uff09\u5355\u72ec\u7f16\u8bd1\u5b89\u88c5 \u2014 \u53ef\u5b9e\u65f6\u67e5\u770b\u5b8c\u6574\u7f16\u8bd1\u8f93\u51fa\u3002\u5b89\u88c5\u5b8c\u6210\u540e\u5f00\u673a\u81ea\u542f\u5c06\u81ea\u52a8\u7981\u7528\u3002\u60a8\u53ef\u4ee5\u968f\u65f6\u5728\u5e95\u90e8\u91cd\u65b0\u5f00\u542f\u3002",
+        "log_header":                  "Faded Dream \u2014 \u5b89\u88c5\u6240\u9009\u8f6f\u4ef6\u5305",
+        "log_repo_line":               "  repo \u5305  ({n}): {pkgs}",
+        "log_aur_line":                "  AUR \u5305   ({n}): {pkgs}",
+        "log_browser_patch":           "  \u6d4f\u89c8\u5668\u8865\u4e01: $Browser = {exec}",
+        "log_done":                    "\u2713  \u5b8c\u6210\uff01",
+        "log_done_bar":                "\u2713 \u5b8c\u6210\uff01",
+        "log_error":                   "[\u9519\u8bef] {exc}",
+        "prog_repo":                   "\u6b63\u5728\u5b89\u88c5 {n} \u4e2a repo \u5305...",
+        "prog_pkg":                    "\u6b63\u5728\u5b89\u88c5 {pkg}...",
+        "prog_patch":                  "\u6b63\u5728\u66f4\u65b0 hyprland.conf \u2192 {exec}...",
+            "log_banner_pacman": "\u2500\u2500 pacman  ({n} \u4e2a\u8f6f\u4ef6\u5305) \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500",
+        "log_banner_paru": "\u2500\u2500 paru  {pkg} \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500",
+        "log_banner_hypr": "\u2500\u2500 hyprland.conf \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500",
+        "log_browser_set": "  $Browser = {exec}",
+        "badge_aur": "AUR",
+        "badge_extra": "extra",
+        "badge_galaxy": "galaxy",
+        "badge_world": "world",
+        "badge_lib32": "lib32",
+        "badge_multilib": "multilib",
+        "nothing_selected": "\u672a\u9009\u62e9\u4efb\u4f55\u5185\u5bb9 \u2014 \u6b63\u5728\u5173\u95ed\u3002",
+        "lang_label": "\u8bed\u8a00",
+        "welcome_title": "Faded Dream",
+},
+    "ko": {
+        "app_title":                   "Faded Dream \uc124\uc815 \u2014 \uccab \uc2e4\ud589",
+        "sidebar_title":               "Faded Dream",
+        "nav_welcome":                 "\ud658\uc601\ud569\ub2c8\ub2e4",
+        "nav_browser":                 "\ube0c\ub77c\uc6b0\uc800",
+        "nav_gaming":                  "\uac8c\uc784",
+        "nav_peripherals":             "\uc8fc\ubcc0\uae30\uae30",
+        "nav_file_transfer":           "\ud30c\uc77c \uc804\uc1a1",
+        "nav_office":                  "\uc624\ud53c\uc2a4",
+        "nav_media":                   "\ubbf8\ub514\uc5b4",
+        "nav_comms":                   "\ud1b5\uc2e0",
+        "nav_log":                     "\ub85c\uadf8",
+        "packages_selected":           "\ud328\ud0a4\uc9c0 {n}\uac1c \uc120\ud0dd\ub428",
+        "startup_hint":                "\uc124\uce58 \ud6c4 \uc790\ub3d9 \uc2dc\uc791\uc744 \ube44\ud65c\uc131\ud654\ud558\uc138\uc694",
+        "run_at_startup":              "\uc790\ub3d9 \uc2dc\uc791",
+        "skip_all":                    "\ubaa8\ub450 \uac74\ub108\ub6f0\uae30",
+        "install_selected":            "\uc120\ud0dd \ud56d\ubaa9 \uc124\uce58",
+        "welcome_sub":                 "dotfiles\uac00 \uc124\uce58\ub418\uc5c8\uc2b5\ub2c8\ub2e4.\n\ud0ed\uc5d0\uc11c \uc120\ud0dd\uc801 \ud328\ud0a4\uc9c0\ub97c \uace0\ub974\uace0 <b>\uc124\uce58</b>\ub97c \ud074\ub9ad\ud558\uc138\uc694.\n\uc124\uce58 \ud6c4 <i>\uc790\ub3d9 \uc2dc\uc791</i>\uc744 \ubcf4\ub85c \ub044\uc138\uc694.",
+        "card_browser_sub":            "\uae30\ubcf8 \ube0c\ub77c\uc6b0\uc800 \uc120\ud0dd",
+        "card_gaming_sub":             "Steam, Heroic, Wine, MangoHud",
+        "card_peripherals_sub":        "OpenRazer, Polychromatic, Piper",
+        "card_filetransfer_sub":       "Android, \uce74\uba54\ub77c, LAN \uacf5\uc720",
+        "card_office_sub":             "LibreOffice + \uc5b8\uc5b4 \ud329",
+        "card_media_sub":              "GIMP, Kdenlive, OBS Liberty",
+        "card_comms_sub":              "Vesktop, Telegram, Thunderbird",
+        "browser_section":             "\uae30\ubcf8 \ube0c\ub77c\uc6b0\uc800 \uc120\ud0dd",
+        "recommended":                 "\u2b50 \ucd94\ucc9c",
+        "lo_lang_section":             "LibreOffice \uc5b8\uc5b4 \ud329",
+        "log_what_title":              "\uc774 \uc124\uce58\uad00\ub9ac\uc790\uac00 \ud558\ub294 \uc77c",
+        "log_row_browser_t":           "\ube0c\ub77c\uc6b0\uc800",
+        "log_row_browser_b":           "\ube0c\ub77c\uc6b0\uc800\ub97c \uc120\ud0dd\ud558\uc138\uc694 \u2014 LibreWolf, Zen, Firefox, Vivaldi, Chrome \ub610\ub294 Edge. \uc120\ud0dd\ud55c \ube0c\ub77c\uc6b0\uc800\uac00 \uc124\uce58\ub418\uace0 hyprland.conf\uc758 $Browser\uac00 \uc790\ub3d9 \uc5c5\ub370\uc774\ud2b8\ub418\uc5b4 Super+B\ub85c \uc5f4 \uc218 \uc788\uc2b5\ub2c8\ub2e4.",
+        "log_row_gaming_t":            "\uac8c\uc784",
+        "log_row_gaming_b":            "Steam (lib32), Heroic Games Launcher, Wine + Winetricks/Mono/Gecko, ProtonPlus, GameMode + 32bit, MangoHud + 32bit, MangoJuice. Wine\uc744 \uc120\ud0dd\ud558\uba74 \uc138 \uac1c\uc758 \uc11c\ube0c\ud328\ud0a4\uc9c0\uac00 \uc790\ub3d9 \uc120\ud0dd\ub429\ub2c8\ub2e4.",
+        "log_row_periph_t":            "\uc8fc\ubcc0\uae30\uae30",
+        "log_row_periph_b":            "OpenRazer \ub370\ubaa8\ub144 + \ucee4\ub110 \ub4dc\ub77c\uc774\ubc84 (DKMS) + Razer \ud558\ub4dc\uc6e8\uc5b4\uc6a9 Python \ub77c\uc774\ube0c\ub7ec\ub9ac. Polychromatic\uc73c\ub85c \ud0a4\ubcc4 RGB \ubc0f \ud6a8\uacfc \uc124\uc815. Piper\ub85c \ub2e4\uc911 \ube0c\ub79c\ub4dc \ub9c8\uc6b0\uc2a4/\ud0a4\ubcf4\ub4dc \uc124\uc815. Solaar\ub85c Logitech Unifying/Bolt. jmtpfs\uc640 gphotofs\ub85c Android \ubc0f \uce74\uba54\ub77c \ub9c8\uc6b4\ud2b8 \u2014 \ubaa8\ub450 AUR.",
+        "log_row_office_t":            "\uc624\ud53c\uc2a4",
+        "log_row_office_b":            "LibreOffice Fresh\uc640 12\uac1c \uc5b8\uc5b4 \ud329 \uc911 \uc6d0\ud558\ub294 \uac83 (\uc601\uc5b4 UK, \ub8e8\ub9c8\ub2c8\uc544\uc5b4, \ud504\ub791\uc2a4\uc5b4, \ub3c5\uc77c\uc5b4, \uc2a4\ud398\uc778\uc5b4, \uc774\ud0c8\ub9ac\uc544\uc5b4, \ud3ec\ub974\ud22c\uac08\uc5b4, \ub7ec\uc2dc\uc544\uc5b4, \uc77c\ubcf8\uc5b4, \uc911\uad6d\uc5b4, \ud55c\uad6d\uc5b4, \uc544\ub78d\uc5b4).",
+        "log_row_media_t":             "\ubbf8\ub514\uc5b4",
+        "log_row_media_b":             "Mirage \uc774\ubbf8\uc9c0 \ubdf0\uc5b4, GIMP, Inkscape, Kdenlive \ube44\ub514\uc624 \ud3b8\uc9d1\uae30, HandBrake \ubcc0\ud658\uae30, OBS Studio Liberty (\uc790\uc720 \ube4c\ub4dc).",
+        "log_row_ft_t":                "\ud30c\uc77c \uc804\uc1a1",
+        "log_row_ft_b":                "jmtpfs\uc640 go-mtpfs\ub85c Android MTP. gphotofs\uc640 gphoto2\ub85c \uce74\uba54\ub77c PTP. \ubb34\uc120: Warpinator, LocalSend (\ud06c\ub85c\uc2a4 \ud50c\ub7ab\ud3fc AirDrop), Croc (\uc554\ud638\ud654 P2P). USB: Android Tools (ADB/fastboot)\uc640 Scrcpy \ud654\uba74 \ubbf8\ub7ec\ub9c1.",
+        "log_row_comms_t":             "\ud1b5\uc2e0",
+        "log_row_comms_b":             "Vesktop (Discord + Vencord), Telegram, Element (Matrix), Thunderbird + \uc120\ud0dd\uc801 \uc5b8\uc5b4 \ud329, Obsidian \ub178\ud2b8.",
+        "log_row_how_t":               "\uc791\ub3d9 \ubc29\uc2dd",
+        "log_row_how_b":               "\ub808\ud3ec\uc9c0\ud1a0\ub9ac \ud328\ud0a4\uc9c0\ub294 \ud558\ub098\uc758 pacman \ubc30\uce58\ub85c \uc124\uce58\ub429\ub2c8\ub2e4. \uac01 AUR \ud328\ud0a4\uc9c0(paru)\ub294 \uac1c\ubcc4\uc801\uc73c\ub85c \ube4c\ub4dc \ubc0f \uc124\uce58 \u2014 \uc2e4\uc2dc\uac04\uc73c\ub85c \uc804\uccb4 \ucef4\ud30c\uc77c \ucd9c\ub825\uc744 \ubcfc \uc218 \uc788\uc2b5\ub2c8\ub2e4. \uc124\uce58 \ud6c4 \uc790\ub3d9 \uc2dc\uc791\uc774 \uc790\ub3d9\uc73c\ub85c \ube44\ud65c\uc131\ud654\ub429\ub2c8\ub2e4. \ud478\ud130\uc5d0\uc11c \uc5b8\uc81c\ub4e0\uc9c0 \uc7ac\ud65c\uc131\ud654\ud560 \uc218 \uc788\uc2b5\ub2c8\ub2e4.",
+        "log_header":                  "Faded Dream \u2014 \uc120\ud0dd\ud55c \ud328\ud0a4\uc9c0 \uc124\uce58 \uc911",
+        "log_repo_line":               "  repo \ud328\ud0a4\uc9c0  ({n}): {pkgs}",
+        "log_aur_line":                "  AUR \ud328\ud0a4\uc9c0   ({n}): {pkgs}",
+        "log_browser_patch":           "  \ube0c\ub77c\uc6b0\uc800 \ud328\uce58: $Browser = {exec}",
+        "log_done":                    "\u2713  \uc644\ub8cc!",
+        "log_done_bar":                "\u2713 \uc644\ub8cc!",
+        "log_error":                   "[\uc624\ub958] {exc}",
+        "prog_repo":                   "repo \ud328\ud0a4\uc9c0 {n}\uac1c \uc124\uce58 \uc911...",
+        "prog_pkg":                    "{pkg} \uc124\uce58 \uc911...",
+        "prog_patch":                  "hyprland.conf \uc5c5\ub370\uc774\ud2b8 \uc911 \u2192 {exec}...",
+            "log_banner_pacman": "\u2500\u2500 pacman  ({n} \ud328\ud0a4\uc9c0) \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500",
+        "log_banner_paru": "\u2500\u2500 paru  {pkg} \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500",
+        "log_banner_hypr": "\u2500\u2500 hyprland.conf \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500",
+        "log_browser_set": "  $Browser = {exec}",
+        "badge_aur": "AUR",
+        "badge_extra": "extra",
+        "badge_galaxy": "galaxy",
+        "badge_world": "world",
+        "badge_lib32": "lib32",
+        "badge_multilib": "multilib",
+        "nothing_selected": "\uc120\ud0dd \uc5c6\uc74c \u2014 \uc885\ub8cc \uc911\u3002",
+        "lang_label": "\uc5b8\uc5b4",
+        "welcome_title": "Faded Dream",
+},
+    "ar": {
+        "app_title":                   "Faded Dream \u2014 \u0627\u0644\u0625\u0639\u062f\u0627\u062f \u0627\u0644\u0623\u0648\u0644",
+        "sidebar_title":               "Faded Dream",
+        "nav_welcome":                 "\u0645\u0631\u062d\u0628\u0627\u064b",
+        "nav_browser":                 "\u0627\u0644\u0645\u062a\u0635\u0641\u062d",
+        "nav_gaming":                  "\u0627\u0644\u0623\u0644\u0639\u0627\u0628",
+        "nav_peripherals":             "\u0627\u0644\u0645\u0644\u062d\u0642\u0627\u062a",
+        "nav_file_transfer":           "\u0646\u0642\u0644 \u0627\u0644\u0645\u0644\u0641\u0627\u062a",
+        "nav_office":                  "\u0627\u0644\u0645\u0643\u062a\u0628",
+        "nav_media":                   "\u0627\u0644\u0648\u0633\u0627\u0626\u0637",
+        "nav_comms":                   "\u0627\u0644\u062a\u0648\u0627\u0635\u0644",
+        "nav_log":                     "\u0627\u0644\u0633\u062c\u0644",
+        "packages_selected":           "\u062a\u0645 \u062a\u062d\u062f\u064a\u062f {n} \u062d\u0632\u0645\u0629",
+        "startup_hint":                "\u0639\u0637\u0651\u0644 \u0627\u0644\u062a\u0634\u063a\u064a\u0644 \u0639\u0646\u062f \u0627\u0644\u0628\u062f\u0621 \u0628\u0639\u062f \u0627\u0644\u062a\u062b\u0628\u064a\u062a",
+        "run_at_startup":              "\u0634\u063a\u0651\u0644 \u0639\u0646\u062f \u0627\u0644\u0628\u062f\u0621",
+        "skip_all":                    "\u062a\u062e\u0637\u064a \u0627\u0644\u0643\u0644",
+        "install_selected":            "\u062a\u062b\u0628\u064a\u062a \u0627\u0644\u0645\u062d\u062f\u062f",
+        "welcome_sub":                 "\u062a\u0645 \u062a\u062b\u0628\u064a\u062a dotfiles \u0627\u0644\u062e\u0627\u0635\u0629 \u0628\u0643.\n\u0627\u062e\u062a\u0631 \u0627\u0644\u062d\u0632\u0645 \u0627\u0644\u0627\u062e\u062a\u064a\u0627\u0631\u064a\u0629 \u0645\u0646 \u0627\u0644\u062a\u0628\u0648\u064a\u0628\u0627\u062a \u062b\u0645 \u0627\u0636\u063a\u0637 <b>\u062a\u062b\u0628\u064a\u062a</b>.\n\u0639\u0637\u0651\u0644 <i>\u0627\u0644\u062a\u0634\u063a\u064a\u0644 \u0639\u0646\u062f \u0627\u0644\u0628\u062f\u0621</i> \u0628\u0639\u062f \u0627\u0644\u062a\u062b\u0628\u064a\u062a.",
+        "card_browser_sub":            "\u0627\u062e\u062a\u0631 \u0645\u062a\u0635\u0641\u062d\u0643 \u0627\u0644\u0627\u0641\u062a\u0631\u0627\u0636\u064a",
+        "card_gaming_sub":             "Steam, Heroic, Wine, MangoHud",
+        "card_peripherals_sub":        "OpenRazer, Polychromatic, Piper",
+        "card_filetransfer_sub":       "\u0623\u0646\u062f\u0631\u0648\u064a\u062f\u060c \u0643\u0627\u0645\u064a\u0631\u0627\u062a\u060c \u0645\u0634\u0627\u0631\u0643\u0629 \u0634\u0628\u0643\u064a\u0629",
+        "card_office_sub":             "LibreOffice + \u062d\u0632\u0645 \u0627\u0644\u0644\u063a\u0629",
+        "card_media_sub":              "GIMP, Kdenlive, OBS Liberty",
+        "card_comms_sub":              "Vesktop, Telegram, Thunderbird",
+        "browser_section":             "\u0627\u062e\u062a\u0631 \u0627\u0644\u0645\u062a\u0635\u0641\u062d \u0627\u0644\u0627\u0641\u062a\u0631\u0627\u0636\u064a",
+        "recommended":                 "\u2b50 \u0645\u0648\u0635\u0649 \u0628\u0647",
+        "lo_lang_section":             "\u062d\u0632\u0645 \u0627\u0644\u0644\u063a\u0629 LibreOffice",
+        "log_what_title":              "\u0645\u0627 \u064a\u0641\u0639\u0644\u0647 \u0647\u0630\u0627 \u0627\u0644\u0645\u062b\u0628\u062a",
+        "log_row_browser_t":           "\u0627\u0644\u0645\u062a\u0635\u0641\u062d",
+        "log_row_browser_b":           "\u0627\u062e\u062a\u0631 \u0645\u062a\u0635\u0641\u062d\u0627\u064b \u2014 LibreWolf\u200f \u0623\u0648 Zen \u0623\u0648 Firefox \u0623\u0648 Vivaldi \u0623\u0648 Chrome \u0623\u0648 Edge. \u064a\u064f\u062b\u0628\u062a \u0627\u062e\u062a\u064a\u0627\u0631\u0643 \u062a\u0644\u0642\u0627\u0626\u064a\u0627\u064b \u0648\u064a\u064f\u062d\u062f\u0651\u062b \u0645\u062a\u063a\u064a\u0631 $Browser \u0641\u064a hyprland.conf \u0644\u064a\u0641\u062a\u062d \u0628\u0627\u0644\u0636\u063a\u0637 \u0639\u0644\u0649 Super+B.",
+        "log_row_gaming_t":            "\u0627\u0644\u0623\u0644\u0639\u0627\u0628",
+        "log_row_gaming_b":            "Steam (lib32)\u200f\u060c Heroic Games Launcher\u200f\u060c Wine + Winetricks/Mono/Gecko\u200f\u060c ProtonPlus\u200f\u060c GameMode + 32bit\u200f\u060c MangoHud + 32bit\u200f\u060c MangoJuice. \u0627\u062e\u062a\u064a\u0627\u0631 Wine \u064a\u062e\u062a\u0627\u0631 \u062a\u0644\u0642\u0627\u0626\u064a\u0627\u064b \u0627\u0644\u062d\u0632\u0645 \u0627\u0644\u0641\u0631\u0639\u064a\u0629 \u0627\u0644\u062b\u0644\u0627\u062b.",
+        "log_row_periph_t":            "\u0627\u0644\u0645\u0644\u062d\u0642\u0627\u062a",
+        "log_row_periph_b":            "\u062e\u062f\u0645\u0629 OpenRazer + \u062a\u0639\u0631\u064a\u0641 \u0627\u0644\u0646\u0648\u0627\u0629 (DKMS) + \u0645\u0643\u062a\u0628\u0629 Python \u0644\u0623\u062c\u0647\u0632\u0629 Razer. Polychromatic \u0644\u0625\u0636\u0627\u0621\u0629 RGB \u0644\u0643\u0644 \u0645\u0641\u062a\u0627\u062d. Piper \u0644\u0625\u0639\u062f\u0627\u062f \u0627\u0644\u0641\u0623\u0631\u0629/\u0644\u0648\u062d\u0629 \u0627\u0644\u0645\u0641\u0627\u062a\u064a\u062d. Solaar \u0644\u0645\u0633\u062a\u0642\u0628\u0644\u0627\u062a Logitech. jmtpfs \u0648 gphotofs \u0644\u062a\u062d\u0645\u064a\u0644 \u0627\u0644\u0623\u062c\u0647\u0632\u0629 \u0648\u0627\u0644\u0643\u0627\u0645\u064a\u0631\u0627\u062a \u2014 \u062c\u0645\u064a\u0639\u0647\u0627 AUR.",
+        "log_row_office_t":            "\u0627\u0644\u0645\u0643\u062a\u0628",
+        "log_row_office_b":            "LibreOffice Fresh \u0645\u0639 \u0623\u064a \u0645\u0646 \u062d\u0632\u0645 \u0627\u0644\u0644\u063a\u0629 \u0627\u0644\u0627\u062b\u0646\u062a\u064a \u0639\u0634\u0631\u0629 (\u0627\u0644\u0625\u0646\u062c\u0644\u064a\u0632\u064a\u0629 UK\u060c \u0627\u0644\u0631\u0648\u0645\u0627\u0646\u064a\u0629\u060c \u0627\u0644\u0641\u0631\u0646\u0633\u064a\u0629\u060c \u0627\u0644\u0623\u0644\u0645\u0627\u0646\u064a\u0629\u060c \u0627\u0644\u0625\u0633\u0628\u0627\u0646\u064a\u0629\u060c \u0627\u0644\u0625\u064a\u0637\u0627\u0644\u064a\u0629\u060c \u0627\u0644\u0628\u0631\u062a\u063a\u0627\u0644\u064a\u0629\u060c \u0627\u0644\u0631\u0648\u0633\u064a\u0629\u060c \u0627\u0644\u064a\u0627\u0628\u0627\u0646\u064a\u0629\u060c \u0627\u0644\u0635\u064a\u0646\u064a\u0629\u060c \u0627\u0644\u0643\u0648\u0631\u064a\u0629\u060c \u0627\u0644\u0639\u0631\u0628\u064a\u0629).",
+        "log_row_media_t":             "\u0627\u0644\u0648\u0633\u0627\u0626\u0637",
+        "log_row_media_b":             "\u0639\u0627\u0631\u0636 \u0627\u0644\u0635\u0648\u0631 Mirage\u060c GIMP\u060c Inkscape\u060c \u0645\u062d\u0631\u0631 \u0627\u0644\u0641\u064a\u062f\u064a\u0648 Kdenlive\u060c \u0645\u062d\u0648\u0644 HandBrake\u060c OBS Studio Liberty (\u0628\u0646\u0627\u0621 \u062d\u0631).",
+        "log_row_ft_t":                "\u0646\u0642\u0644 \u0627\u0644\u0645\u0644\u0641\u0627\u062a",
+        "log_row_ft_b":                "Android MTP \u0628\u0627\u0633\u062a\u062e\u062f\u0627\u0645 jmtpfs \u0648 go-mtpfs. \u0643\u0627\u0645\u064a\u0631\u0627 PTP \u0639\u0628\u0631 gphotofs \u0648 gphoto2. \u0644\u0627\u0633\u0644\u0643\u064a: Warpinator\u060c LocalSend (\u0645\u062a\u0639\u062f\u062f \u0627\u0644\u0645\u0646\u0635\u0627\u062a)\u060c Croc (P2P \u0645\u0634\u0641\u0631). USB: \u0623\u062f\u0648\u0627\u062a Android (ADB/fastboot) \u0648 Scrcpy \u0644\u0645\u0631\u0622\u0629 \u0627\u0644\u0634\u0627\u0634\u0629.",
+        "log_row_comms_t":             "\u0627\u0644\u062a\u0648\u0627\u0635\u0644",
+        "log_row_comms_b":             "Vesktop (Discord + Vencord)\u060c Telegram\u060c Element (Matrix)\u060c Thunderbird + \u062d\u0632\u0645 \u0644\u063a\u0629 \u0627\u062e\u062a\u064a\u0627\u0631\u064a\u0629\u060c \u0645\u0644\u0627\u062d\u0638\u0627\u062a Obsidian.",
+        "log_row_how_t":               "\u0637\u0631\u064a\u0642\u0629 \u0627\u0644\u0639\u0645\u0644",
+        "log_row_how_b":               "\u062a\u064f\u062b\u0628\u062a \u062d\u0632\u0645 \u0627\u0644\u0645\u0633\u062a\u0648\u062f\u0639 \u0641\u064a \u062f\u0641\u0639\u0629 pacman \u0648\u0627\u062d\u062f\u0629. \u062a\u064f\u0628\u0646\u0649 \u0648\u062a\u064f\u062b\u0628\u062a \u0643\u0644 \u062d\u0632\u0645\u0629 AUR (paru) \u0628\u0634\u0643\u0644 \u0645\u0646\u0641\u0635\u0644 \u2014 \u064a\u0645\u0643\u0646\u0643 \u0645\u0634\u0627\u0647\u062f\u0629 \u0645\u062e\u0631\u062c\u0627\u062a \u0627\u0644\u062a\u062c\u0645\u064a\u0639 \u0641\u064a \u0627\u0644\u0648\u0642\u062a \u0627\u0644\u0641\u0639\u0644\u064a. \u0628\u0639\u062f \u0627\u0644\u062a\u062b\u0628\u064a\u062a \u064a\u064f\u0639\u0637\u0651\u0644 \u0627\u0644\u062a\u0634\u063a\u064a\u0644 \u0639\u0646\u062f \u0627\u0644\u0628\u062f\u0621 \u062a\u0644\u0642\u0627\u0626\u064a\u0627\u064b. \u064a\u0645\u0643\u0646\u0643 \u0625\u0639\u0627\u062f\u0629 \u062a\u0641\u0639\u064a\u0644\u0647 \u0641\u064a \u0623\u064a \u0648\u0642\u062a.",
+        "log_header":                  "Faded Dream \u2014 \u062a\u062b\u0628\u064a\u062a \u0627\u0644\u062d\u0632\u0645 \u0627\u0644\u0645\u062d\u062f\u062f\u0629",
+        "log_repo_line":               "  \u062d\u0632\u0645 repo  ({n}): {pkgs}",
+        "log_aur_line":                "  \u062d\u0632\u0645 AUR   ({n}): {pkgs}",
+        "log_browser_patch":           "  \u062a\u0631\u0642\u064a\u0639 \u0627\u0644\u0645\u062a\u0635\u0641\u062d: $Browser = {exec}",
+        "log_done":                    "\u2713  \u0627\u0643\u062a\u0645\u0644!",
+        "log_done_bar":                "\u2713 \u0627\u0643\u062a\u0645\u0644!",
+        "log_error":                   "[\u062e\u0637\u0623] {exc}",
+        "prog_repo":                   "\u062c\u0627\u0631\u064a \u062a\u062b\u0628\u064a\u062a {n} \u062d\u0632\u0645\u0629 repo...",
+        "prog_pkg":                    "\u062c\u0627\u0631\u064a \u062a\u062b\u0628\u064a\u062a {pkg}...",
+        "prog_patch":                  "\u062c\u0627\u0631\u064a \u062a\u062d\u062f\u064a\u062b hyprland.conf \u2192 {exec}...",
+            "log_banner_pacman": "\u2500\u2500 pacman  ({n} \u062d\u0632\u0645\u0629) \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500",
+        "log_banner_paru": "\u2500\u2500 paru  {pkg} \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500",
+        "log_banner_hypr": "\u2500\u2500 hyprland.conf \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500",
+        "log_browser_set": "  $Browser = {exec}",
+        "badge_aur": "AUR",
+        "badge_extra": "extra",
+        "badge_galaxy": "galaxy",
+        "badge_world": "world",
+        "badge_lib32": "lib32",
+        "badge_multilib": "multilib",
+        "nothing_selected": "\u0644\u0645 \u064a\u062a\u0645 \u0627\u0644\u062a\u062d\u062f\u064a\u062f \u2014 \u062c\u0627\u0631\u064d \u0627\u0644\u0625\u063a\u0644\u0627\u0642\u3002",
+        "lang_label": "\u0627\u0644\u0644\u063a\u0629",
+        "welcome_title": "Faded Dream",
+},
+}
+
+def _detect_lang():
+    """Detect system language, fall back to English."""
+    try:
+        import locale as _lc
+        lang = _lc.getlocale()[0] or ""
+        code = lang.split("_")[0].lower()
+        # handle zh_CN / zh_TW → zh
+        if code.startswith("zh"):
+            code = "zh"
+        return code if code in TRANSLATIONS else "en"
+    except Exception:
+        return "en"
+
+_LANG = _detect_lang()
+# Load user's saved language preference if present
+try:
+    _saved = open(os.path.expanduser('~/.config/faded-dream-lang')).read().strip()
+    if _saved in TRANSLATIONS:
+        _LANG = _saved
+except Exception:
+    pass
+
+def T(key, **kw):
+    """Return translated string for key, with optional .format() kwargs."""
+    s = (TRANSLATIONS.get(_LANG) or {}).get(key) or TRANSLATIONS["en"].get(key, key)
+    return s.format(**kw) if kw else s
+
+def set_lang(code):
+    """Change the active UI language at runtime."""
+    global _LANG
+    if code in TRANSLATIONS:
+        _LANG = code
+
+
+
+
+SUB_PKG_NAMES = {
+    "winetricks": {
+        "en": "Winetricks",
+        "ro": "Winetricks",
+        "fr": "Winetricks",
+        "de": "Winetricks",
+        "es": "Winetricks",
+        "it": "Winetricks",
+        "pt": "Winetricks",
+        "ru": "Winetricks",
+        "ja": "Winetricks",
+        "zh": "Winetricks",
+        "ko": "Winetricks",
+        "ar": "Winetricks"
+    },
+    "wine-mono": {
+        "en": "Wine Mono",
+        "ro": "Wine Mono",
+        "fr": "Wine Mono",
+        "de": "Wine Mono",
+        "es": "Wine Mono",
+        "it": "Wine Mono",
+        "pt": "Wine Mono",
+        "ru": "Wine Mono",
+        "ja": "Wine Mono",
+        "zh": "Wine Mono",
+        "ko": "Wine Mono",
+        "ar": "Wine Mono"
+    },
+    "wine-gecko": {
+        "en": "Wine Gecko",
+        "ro": "Wine Gecko",
+        "fr": "Wine Gecko",
+        "de": "Wine Gecko",
+        "es": "Wine Gecko",
+        "it": "Wine Gecko",
+        "pt": "Wine Gecko",
+        "ru": "Wine Gecko",
+        "ja": "Wine Gecko",
+        "zh": "Wine Gecko",
+        "ko": "Wine Gecko",
+        "ar": "Wine Gecko"
+    },
+    "lib32-gamemode": {
+        "en": "GameMode (32-bit)",
+        "ro": "GameMode (32-biți)",
+        "fr": "GameMode (32 bits)",
+        "de": "GameMode (32-Bit)",
+        "es": "GameMode (32 bits)",
+        "it": "GameMode (32 bit)",
+        "pt": "GameMode (32 bits)",
+        "ru": "GameMode (32-бит)",
+        "ja": "GameMode (32ビット)",
+        "zh": "GameMode (32位)",
+        "ko": "GameMode (32비트)",
+        "ar": "GameMode (32 بت)"
+    },
+    "lib32-mangohud": {
+        "en": "MangoHud (32-bit)",
+        "ro": "MangoHud (32-biți)",
+        "fr": "MangoHud (32 bits)",
+        "de": "MangoHud (32-Bit)",
+        "es": "MangoHud (32 bits)",
+        "it": "MangoHud (32 bit)",
+        "pt": "MangoHud (32 bits)",
+        "ru": "MangoHud (32-бит)",
+        "ja": "MangoHud (32ビット)",
+        "zh": "MangoHud (32位)",
+        "ko": "MangoHud (32비트)",
+        "ar": "MangoHud (32 بت)"
+    },
+    "openrazer-driver-dkms": {
+        "en": "OpenRazer Driver",
+        "ro": "Driver OpenRazer",
+        "fr": "Pilote OpenRazer",
+        "de": "OpenRazer-Treiber",
+        "es": "Controlador OpenRazer",
+        "it": "Driver OpenRazer",
+        "pt": "Driver OpenRazer",
+        "ru": "Драйвер OpenRazer",
+        "ja": "OpenRazerドライバー",
+        "zh": "OpenRazer驱动",
+        "ko": "OpenRazer 드라이버",
+        "ar": "تعريف OpenRazer"
+    },
+    "python-openrazer": {
+        "en": "Python OpenRazer",
+        "ro": "Python OpenRazer",
+        "fr": "Python OpenRazer",
+        "de": "Python OpenRazer",
+        "es": "Python OpenRazer",
+        "it": "Python OpenRazer",
+        "pt": "Python OpenRazer",
+        "ru": "Python OpenRazer",
+        "ja": "Python OpenRazer",
+        "zh": "Python OpenRazer",
+        "ko": "Python OpenRazer",
+        "ar": "Python OpenRazer"
+    }
+}
+
+def TN(pkg_key):
+    """Return translated sub-package name, falling back to key."""
+    d = SUB_PKG_NAMES.get(pkg_key, {})
+    return d.get(_LANG) or d.get("en", "")
+
+# ── Per-package translated descriptions ───────────────────────────────────────
+# Key = pkg identifier, value = dict of lang→translated desc
+PKG_DESCS = {
+    # Browsers
+    "librewolf":                 {"en":"Privacy-focused Firefox fork — no telemetry, hardened","ro":"Fork Firefox axat pe confidențialitate — fără telemetrie, securizat","fr":"Fork Firefox axé sur la vie privée — sans télémétrie, renforcé","de":"Datenschutz-Firefox-Fork — keine Telemetrie, gehärtet","es":"Fork de Firefox enfocado en privacidad — sin telemetría, reforzado","it":"Fork Firefox orientato alla privacy — nessuna telemetria, hardened","pt":"Fork do Firefox focado em privacidade — sem telemetria, reforçado","ru":"Firefox-форк для приватности — без телеметрии, защищённый","ja":"プライバシー重視Firefoxフォーク — テレメトリなし","zh":"注重隐私的Firefox分支 — 无遥测，已加固","ko":"개인정보 중심 Firefox 포크 — 텔레메트리 없음","ar":"فرع Firefox مركّز على الخصوصية — بلا تتبع"},
+    "zen-browser-bin":           {"en":"Beautiful Firefox-based browser with a modern UI","ro":"Browser bazat pe Firefox cu interfață modernă","fr":"Navigateur basé sur Firefox avec une interface moderne","de":"Schöner Firefox-basierter Browser mit moderner UI","es":"Navegador basado en Firefox con interfaz moderna","it":"Browser basato su Firefox con UI moderna","pt":"Navegador baseado no Firefox com UI moderna","ru":"Красивый браузер на Firefox с современным интерфейсом","ja":"モダンUIの美しいFirefoxベースブラウザ","zh":"基于Firefox的现代UI浏览器","ko":"현대적 UI의 Firefox 기반 브라우저","ar":"متصفح Firefox جميل بواجهة حديثة"},
+    "firefox":                   {"en":"Mozilla's open source browser","ro":"Browserul open source de la Mozilla","fr":"Le navigateur open source de Mozilla","de":"Mozillas Open-Source-Browser","es":"El navegador open source de Mozilla","it":"Il browser open source di Mozilla","pt":"O navegador open source da Mozilla","ru":"Браузер с открытым кодом от Mozilla","ja":"Mozillaのオープンソースブラウザ","zh":"Mozilla的开源浏览器","ko":"Mozilla의 오픈소스 브라우저","ar":"متصفح Mozilla مفتوح المصدر"},
+    "vivaldi":                   {"en":"Feature-rich Chromium browser","ro":"Browser Chromium bogat în funcții","fr":"Navigateur Chromium riche en fonctionnalités","de":"Funktionsreicher Chromium-Browser","es":"Navegador Chromium repleto de funciones","it":"Browser Chromium ricco di funzionalità","pt":"Navegador Chromium repleto de recursos","ru":"Функциональный браузер на Chromium","ja":"高機能Chromiumブラウザ","zh":"功能丰富的Chromium浏览器","ko":"기능이 풍부한 Chromium 브라우저","ar":"متصفح Chromium غني بالميزات"},
+    "google-chrome":             {"en":"Google's browser","ro":"Browserul Google","fr":"Le navigateur de Google","de":"Googles Browser","es":"El navegador de Google","it":"Il browser di Google","pt":"O navegador do Google","ru":"Браузер Google","ja":"Googleのブラウザ","zh":"Google的浏览器","ko":"Google 브라우저","ar":"متصفح Google"},
+    "microsoft-edge-stable-bin": {"en":"Microsoft's Chromium browser","ro":"Browserul Chromium de la Microsoft","fr":"Le navigateur Chromium de Microsoft","de":"Microsofts Chromium-Browser","es":"El navegador Chromium de Microsoft","it":"Il browser Chromium di Microsoft","pt":"O navegador Chromium da Microsoft","ru":"Chromium-браузер от Microsoft","ja":"MicrosoftのChromiumブラウザ","zh":"微软的Chromium浏览器","ko":"Microsoft의 Chromium 브라우저","ar":"متصفح Chromium من Microsoft"},
+    # Gaming
+    "steam":                     {"en":"Valve game platform","ro":"Platforma de jocuri Valve","fr":"Plateforme de jeux Valve","de":"Valve-Spieleplattform","es":"Plataforma de juegos Valve","it":"Piattaforma giochi Valve","pt":"Plataforma de jogos Valve","ru":"Игровая платформа Valve","ja":"Valveゲームプラットフォーム","zh":"Valve游戏平台","ko":"Valve 게임 플랫폼","ar":"منصة ألعاب Valve"},
+    "heroic-games-launcher-bin": {"en":"Epic &amp; GOG launcher","ro":"Lansator Epic &amp; GOG","fr":"Lanceur Epic &amp; GOG","de":"Epic &amp; GOG-Starter","es":"Lanzador Epic &amp; GOG","it":"Lanciatore Epic &amp; GOG","pt":"Lançador Epic &amp; GOG","ru":"Лаунчер Epic &amp; GOG","ja":"Epic &amp; GOGランチャー","zh":"Epic &amp; GOG启动器","ko":"Epic &amp; GOG 런처","ar":"مشغّل Epic &amp; GOG"},
+    "wine":                      {"en":"Windows compatibility layer","ro":"Strat de compatibilitate Windows","fr":"Couche de compatibilité Windows","de":"Windows-Kompatibilitätsschicht","es":"Capa de compatibilidad con Windows","it":"Livello di compatibilità Windows","pt":"Camada de compatibilidade com Windows","ru":"Слой совместимости с Windows","ja":"Windows互換レイヤー","zh":"Windows兼容层","ko":"Windows 호환성 레이어","ar":"طبقة توافق Windows"},
+    "protonplus":                {"en":"Proton version manager GUI","ro":"Manager GUI pentru versiuni Proton","fr":"Interface de gestion des versions Proton","de":"Proton-Versionsmanager GUI","es":"Gestor de versiones Proton con GUI","it":"GUI per gestione versioni Proton","pt":"GUI de gestão de versões Proton","ru":"Графический менеджер версий Proton","ja":"ProtonバージョンマネージャGUI","zh":"Proton版本管理器图形界面","ko":"Proton 버전 관리자 GUI","ar":"واجهة رسومية لإدارة إصدارات Proton"},
+    "gamemode":                  {"en":"CPU/GPU performance optimizer","ro":"Optimizator de performanță CPU/GPU","fr":"Optimiseur de performances CPU/GPU","de":"CPU/GPU-Leistungsoptimierer","es":"Optimizador de rendimiento CPU/GPU","it":"Ottimizzatore prestazioni CPU/GPU","pt":"Otimizador de desempenho CPU/GPU","ru":"Оптимизатор производительности CPU/GPU","ja":"CPU/GPUパフォーマンス最適化ツール","zh":"CPU/GPU性能优化器","ko":"CPU/GPU 성능 최적화기","ar":"محسّن أداء المعالج والرسومات"},
+    "mangohud":                  {"en":"In-game FPS/stats overlay","ro":"Overlay în joc cu FPS/statistici","fr":"Overlay FPS/statistiques en jeu","de":"In-Game-Overlay für FPS/Statistiken","es":"Overlay de FPS/estadísticas en juego","it":"Overlay FPS/statistiche in gioco","pt":"Overlay de FPS/estatísticas em jogo","ru":"Игровой оверлей FPS/статистики","ja":"ゲーム内FPS/統計オーバーレイ","zh":"游戏内FPS/统计叠加层","ko":"게임 내 FPS/통계 오버레이","ar":"طبقة عرض FPS داخل اللعبة"},
+    "mangojuice":                {"en":"GUI configurator for MangoHud","ro":"Configurator GUI pentru MangoHud","fr":"Configurateur graphique pour MangoHud","de":"GUI-Konfigurator für MangoHud","es":"Configurador gráfico para MangoHud","it":"Configuratore GUI per MangoHud","pt":"Configurador GUI para MangoHud","ru":"Графический конфигуратор MangoHud","ja":"MangoHudのGUI設定ツール","zh":"MangoHud图形配置器","ko":"MangoHud GUI 설정기","ar":"أداة ضبط رسومية لـ MangoHud"},
+    # Peripherals
+    "openrazer-daemon":          {"en":"Background service for Razer hardware","ro":"Serviciu de fundal pentru hardware Razer","fr":"Service en arrière-plan pour matériel Razer","de":"Hintergrunddienst für Razer-Hardware","es":"Servicio en segundo plano para hardware Razer","it":"Servizio in background per hardware Razer","pt":"Serviço em segundo plano para hardware Razer","ru":"Фоновая служба для оборудования Razer","ja":"Razerhardware用バックグラウンドサービス","zh":"Razer硬件后台服务","ko":"Razer 하드웨어 백그라운드 서비스","ar":"خدمة خلفية لأجهزة Razer"},
+    "polychromatic":             {"en":"OpenRazer GUI — per-key RGB, effects and DPI profiles","ro":"GUI OpenRazer — RGB per-tastă, efecte și profiluri DPI","fr":"GUI OpenRazer — RGB par touche, effets et profils DPI","de":"OpenRazer GUI — Einzel-Tasten-RGB, Effekte und DPI-Profile","es":"GUI OpenRazer — RGB por tecla, efectos y perfiles DPI","it":"GUI OpenRazer — RGB per tasto, effetti e profili DPI","pt":"GUI OpenRazer — RGB por tecla, efeitos e perfis DPI","ru":"GUI OpenRazer — RGB на клавишу, эффекты и DPI-профили","ja":"OpenRazer GUI — キー別RGB・エフェクト・DPIプロファイル","zh":"OpenRazer图形界面 — 按键RGB、特效与DPI配置","ko":"OpenRazer GUI — 키별 RGB, 효과 및 DPI 프로필","ar":"واجهة OpenRazer — RGB لكل مفتاح وتأثيرات"},
+    "piper":                     {"en":"Mouse &amp; keyboard configurator — DPI, buttons, polling rate. Multi-brand","ro":"Configurator mouse și tastatură — DPI, butoane, rată sondare. Multi-brand","fr":"Configurateur souris &amp; clavier — DPI, boutons, taux de sondage. Multi-marque","de":"Maus- &amp; Tastatur-Konfigurator — DPI, Tasten, Abtastrate. Multi-Marke","es":"Configurador de ratón y teclado — DPI, botones, tasa de sondeo. Multimarca","it":"Configuratore mouse e tastiera — DPI, pulsanti, polling. Multi-brand","pt":"Configurador de rato e teclado — DPI, botões, taxa de sondagem. Multimarca","ru":"Конфигуратор мыши и клавиатуры — DPI, кнопки, опрос. Мультибренд","ja":"マウス・キーボード設定 — DPI・ボタン・ポーリングレート。マルチブランド","zh":"鼠标键盘配置器 — DPI、按键、轮询率，多品牌","ko":"마우스 &amp; 키보드 설정기 — DPI, 버튼, 폴링레이트. 멀티브랜드","ar":"ضابط الفأرة والكيبورد — DPI وأزرار ومعدل الاستطلاع"},
+    "solaar":                    {"en":"Logitech device manager — Unifying/Bolt receiver pairing","ro":"Manager dispozitive Logitech — asociere receptor Unifying/Bolt","fr":"Gestionnaire Logitech — association récepteur Unifying/Bolt","de":"Logitech-Geräteverwaltung — Unifying/Bolt-Empfänger-Kopplung","es":"Gestor de dispositivos Logitech — emparejamiento receptor Unifying/Bolt","it":"Gestore dispositivi Logitech — associazione ricevitore Unifying/Bolt","pt":"Gestor de dispositivos Logitech — emparelhamento receptor Unifying/Bolt","ru":"Менеджер устройств Logitech — сопряжение Unifying/Bolt","ja":"Logitechデバイスマネージャー — Unifying/Bolt受信機ペアリング","zh":"Logitech设备管理器 — Unifying/Bolt配对","ko":"Logitech 장치 관리자 — Unifying/Bolt 수신기 페어링","ar":"مدير أجهزة Logitech — إقران مستقبل Unifying/Bolt"},
+    # File Transfer
+    "jmtpfs":                    {"en":"Mount Android phones via MTP — Android 4–14","ro":"Montare telefoane Android via MTP — Android 4–14","fr":"Monter téléphones Android via MTP — Android 4–14","de":"Android-Geräte via MTP einbinden — Android 4–14","es":"Montar teléfonos Android vía MTP — Android 4–14","it":"Monta telefoni Android via MTP — Android 4–14","pt":"Montar telemóveis Android via MTP — Android 4–14","ru":"Монтировать Android по MTP — Android 4–14","ja":"MTP経由でAndroidを接続 — Android 4–14","zh":"通过MTP挂载Android手机 — Android 4–14","ko":"MTP로 Android 폰 마운트 — Android 4–14","ar":"تركيب هواتف Android عبر MTP — الإصدارات 4–14"},
+    "go-mtpfs-git":              {"en":"Go-based MTP filesystem — faster for large transfers","ro":"Sistem MTP bazat pe Go — mai rapid pentru fișiere mari","fr":"Système MTP en Go — plus rapide pour les gros transferts","de":"Go-basierter MTP-Treiber — schneller für große Dateien","es":"Sistema MTP en Go — más rápido para transferencias grandes","it":"Filesystem MTP in Go — più veloce per grandi trasferimenti","pt":"Sistema MTP em Go — mais rápido para transferências grandes","ru":"MTP-файловая система на Go — быстрее для больших файлов","ja":"Go製MTPファイルシステム — 大容量転送が高速","zh":"基于Go的MTP文件系统 — 大文件传输更快","ko":"Go 기반 MTP 파일시스템 — 대용량 전송에 빠름","ar":"نظام ملفات MTP بـGo — أسرع للملفات الكبيرة"},
+    "gphotofs":                  {"en":"PTP mount via FUSE — good for older cameras","ro":"Montare PTP via FUSE — bun pentru camere mai vechi","fr":"Montage PTP via FUSE — adapté aux appareils anciens","de":"PTP-Einbindung via FUSE — gut für ältere Kameras","es":"Montaje PTP via FUSE — bueno para cámaras antiguas","it":"Mount PTP via FUSE — adatto per fotocamere datate","pt":"Mount PTP via FUSE — bom para câmeras mais antigas","ru":"PTP-монтирование через FUSE — для старых камер","ja":"FUSE経由のPTPマウント — 古いカメラに対応","zh":"通过FUSE的PTP挂载 — 适合旧款相机","ko":"FUSE 통한 PTP 마운트 — 구형 카메라에 적합","ar":"تركيب PTP عبر FUSE — مناسب للكاميرات القديمة"},
+    "gphoto2":                   {"en":"Command-line camera control and image download","ro":"Control cameră foto și descărcare imagini din linie de comandă","fr":"Contrôle appareil photo et téléchargement en ligne de commande","de":"Kamera-Steuerung und Bild-Download per Kommandozeile","es":"Control de cámara y descarga de imágenes por línea de comandos","it":"Controllo fotocamera e download immagini da terminale","pt":"Controlo de câmera e download de imagens por linha de comando","ru":"Командная строка для управления камерой и скачивания фото","ja":"コマンドラインでカメラ制御と画像ダウンロード","zh":"命令行相机控制与图片下载","ko":"커맨드라인 카메라 제어 및 이미지 다운로드","ar":"التحكم في الكاميرا وتنزيل الصور عبر سطر الأوامر"},
+    "warpinator":                {"en":"LAN file sharing — send and receive on local network","ro":"Partajare fișiere LAN — trimite și primește pe rețeaua locală","fr":"Partage de fichiers LAN — envoyer et recevoir sur le réseau local","de":"LAN-Dateifreigabe — Dateien im lokalen Netz senden und empfangen","es":"Compartir archivos LAN — enviar y recibir en red local","it":"Condivisione file LAN — invia e ricevi sulla rete locale","pt":"Partilha de ficheiros LAN — enviar e receber na rede local","ru":"Общий доступ по LAN — отправка и получение в локальной сети","ja":"LANファイル共有 — ローカルネットワークで送受信","zh":"局域网文件共享 — 在本地网络收发文件","ko":"LAN 파일 공유 — 로컬 네트워크에서 송수신","ar":"مشاركة ملفات LAN — الإرسال والاستقبال على الشبكة المحلية"},
+    "localsend-bin":             {"en":"Cross-platform AirDrop — works with iOS, Android, Windows","ro":"AirDrop cross-platform — funcționează cu iOS, Android, Windows","fr":"AirDrop multiplateforme — fonctionne avec iOS, Android, Windows","de":"Plattformübergreifendes AirDrop — iOS, Android, Windows","es":"AirDrop multiplataforma — funciona con iOS, Android, Windows","it":"AirDrop multipiattaforma — funziona con iOS, Android, Windows","pt":"AirDrop multiplataforma — funciona com iOS, Android, Windows","ru":"Кроссплатформенный AirDrop — iOS, Android, Windows","ja":"クロスプラットフォームAirDrop — iOS/Android/Windows対応","zh":"跨平台AirDrop — 支持iOS、Android、Windows","ko":"크로스 플랫폼 AirDrop — iOS, Android, Windows 지원","ar":"AirDrop متعدد المنصات — يدعم iOS وAndroid وWindows"},
+    "croc":                      {"en":"Securely send files between any two computers — P2P encrypted","ro":"Trimite fișiere securizat între orice două calculatoare — P2P criptat","fr":"Envoyer des fichiers en toute sécurité entre deux ordinateurs — P2P chiffré","de":"Dateien sicher zwischen zwei Computern senden — P2P verschlüsselt","es":"Enviar archivos de forma segura entre dos ordenadores — P2P cifrado","it":"Invia file in modo sicuro tra due computer — P2P cifrato","pt":"Enviar ficheiros com segurança entre dois computadores — P2P cifrado","ru":"Безопасная отправка файлов между компьютерами — P2P с шифрованием","ja":"2台のPC間でファイルを安全に送受信 — P2P暗号化","zh":"在任意两台电脑间安全传输文件 — P2P加密","ko":"두 컴퓨터 간 안전한 파일 전송 — P2P 암호화","ar":"إرسال ملفات بأمان بين جهازين — P2P مشفّر"},
+    "android-tools":             {"en":"ADB and fastboot — sideloading, debugging, USB file transfer","ro":"ADB și fastboot — sideloading, depanare, transfer fișiere USB","fr":"ADB et fastboot — chargement latéral, débogage, transfert USB","de":"ADB und fastboot — Sideloading, Debugging, USB-Dateiübertragung","es":"ADB y fastboot — carga lateral, depuración, transferencia USB","it":"ADB e fastboot — sideloading, debug, trasferimento USB","pt":"ADB e fastboot — sideloading, depuração, transferência USB","ru":"ADB и fastboot — сайдлоадинг, отладка, передача файлов по USB","ja":"ADB・fastboot — サイドロード・デバッグ・USB転送","zh":"ADB和fastboot — 旁加载、调试、USB传文件","ko":"ADB 및 fastboot — 사이드로딩, 디버깅, USB 파일 전송","ar":"ADB و fastboot — التثبيت الجانبي والتصحيح ونقل الملفات"},
+    "scrcpy":                    {"en":"Display and control Android over USB or Wi-Fi — no root needed","ro":"Afișează și controlează Android via USB sau Wi-Fi — fără root","fr":"Afficher et contrôler Android via USB ou Wi-Fi — sans root","de":"Android-Anzeige und -Steuerung per USB oder WLAN — kein Root","es":"Muestra y controla Android vía USB o Wi-Fi — sin root","it":"Visualizza e controlla Android via USB o Wi-Fi — no root","pt":"Visualizar e controlar Android via USB ou Wi-Fi — sem root","ru":"Управление Android по USB или Wi-Fi — без root","ja":"USB/Wi-Fi経由でAndroidを表示・操作 — root不要","zh":"通过USB或Wi-Fi显示和控制Android — 无需root","ko":"USB 또는 Wi-Fi로 Android 표시 &amp; 제어 — 루트 불필요","ar":"عرض والتحكم في Android عبر USB أو واي فاي — بدون روت"},
+    # Media
+    "mirage":                    {"en":"Feature-rich image viewer","ro":"Vizualizator de imagini bogat în funcții","fr":"Visionneuse d'images riche en fonctionnalités","de":"Funktionsreicher Bildbetrachter","es":"Visor de imágenes repleto de funciones","it":"Visualizzatore immagini ricco di funzionalità","pt":"Visualizador de imagens repleto de recursos","ru":"Многофункциональный просмотрщик изображений","ja":"高機能画像ビューア","zh":"功能丰富的图像查看器","ko":"기능이 풍부한 이미지 뷰어","ar":"عارض صور غني بالميزات"},
+    "gimp":                      {"en":"Image editor","ro":"Editor de imagini","fr":"Éditeur d'images","de":"Bildbearbeitungsprogramm","es":"Editor de imágenes","it":"Editor di immagini","pt":"Editor de imagens","ru":"Редактор изображений","ja":"画像エディタ","zh":"图像编辑器","ko":"이미지 편집기","ar":"محرر الصور"},
+    "inkscape":                  {"en":"Vector graphics editor","ro":"Editor grafică vectorială","fr":"Éditeur de graphiques vectoriels","de":"Vektorgrafik-Editor","es":"Editor de gráficos vectoriales","it":"Editor di grafica vettoriale","pt":"Editor de gráficos vetoriais","ru":"Редактор векторной графики","ja":"ベクター画像エディタ","zh":"矢量图形编辑器","ko":"벡터 그래픽 편집기","ar":"محرر الرسومات المتجهية"},
+    "kdenlive":                  {"en":"Video editor","ro":"Editor video","fr":"Éditeur vidéo","de":"Videobearbeitungsprogramm","es":"Editor de vídeo","it":"Editor video","pt":"Editor de vídeo","ru":"Видеоредактор","ja":"ビデオエディタ","zh":"视频编辑器","ko":"비디오 편집기","ar":"محرر الفيديو"},
+    "handbrake":                 {"en":"Video converter/compressor","ro":"Convertor/compresor video","fr":"Convertisseur/compresseur vidéo","de":"Video-Konverter/-Kompressor","es":"Conversor/compresor de vídeo","it":"Convertitore/compressore video","pt":"Conversor/compressor de vídeo","ru":"Конвертер/компрессор видео","ja":"動画変換・圧縮ツール","zh":"视频转换/压缩器","ko":"비디오 변환기/압축기","ar":"محوّل ومضغوط الفيديو"},
+    "obs-studio-liberty":        {"en":"Streaming &amp; recording","ro":"Streaming și înregistrare","fr":"Streaming et enregistrement","de":"Streaming &amp; Aufnahme","es":"Streaming y grabación","it":"Streaming e registrazione","pt":"Streaming e gravação","ru":"Стриминг и запись","ja":"配信・録画","zh":"直播与录制","ko":"스트리밍 &amp; 녹화","ar":"البث والتسجيل"},
+    # Comms
+    "vesktop":                   {"en":"Discord client with Vencord mods","ro":"Client Discord cu moduri Vencord","fr":"Client Discord avec mods Vencord","de":"Discord-Client mit Vencord-Mods","es":"Cliente Discord con mods Vencord","it":"Client Discord con mod Vencord","pt":"Cliente Discord com mods Vencord","ru":"Discord-клиент с модами Vencord","ja":"Vencordモッド入りDiscordクライアント","zh":"带Vencord插件的Discord客户端","ko":"Vencord 모드 Discord 클라이언트","ar":"عميل Discord مع إضافات Vencord"},
+    "telegram-desktop":          {"en":"Messaging platform","ro":"Platformă de mesagerie","fr":"Plateforme de messagerie","de":"Messaging-Plattform","es":"Plataforma de mensajería","it":"Piattaforma di messaggistica","pt":"Plataforma de mensagens","ru":"Мессенджер","ja":"メッセージングプラットフォーム","zh":"即时通讯平台","ko":"메시징 플랫폼","ar":"منصة مراسلة"},
+    "element-desktop":           {"en":"Matrix decentralized chat","ro":"Chat Matrix descentralizat","fr":"Chat décentralisé Matrix","de":"Matrix dezentraler Chat","es":"Chat descentralizado Matrix","it":"Chat decentralizzata Matrix","pt":"Chat descentralizado Matrix","ru":"Децентрализованный чат Matrix","ja":"Matrix分散チャット","zh":"Matrix去中心化聊天","ko":"Matrix 탈중앙화 채팅","ar":"دردشة Matrix لامركزية"},
+    "thunderbird":               {"en":"Email client with language packs","ro":"Client de email cu pachete de limbă","fr":"Client email avec packs de langue","de":"E-Mail-Client mit Sprachpaketen","es":"Cliente de correo con paquetes de idioma","it":"Client email con pacchetti lingua","pt":"Cliente de email com pacotes de idioma","ru":"Почтовый клиент с языковыми пакетами","ja":"言語パック対応メールクライアント","zh":"含语言包的邮件客户端","ko":"언어 팩 지원 이메일 클라이언트","ar":"عميل بريد مع حزم اللغة"},
+    "obsidian":                  {"en":"Markdown note taking","ro":"Notițe în format Markdown","fr":"Prise de notes Markdown","de":"Markdown-Notizen","es":"Toma de notas Markdown","it":"Note in Markdown","pt":"Notas em Markdown","ru":"Заметки на Markdown","ja":"Markdownノートアプリ","zh":"Markdown笔记应用","ko":"Markdown 노트 앱","ar":"تدوين ملاحظات بصيغة Markdown"},
+    # Office
+    "libreoffice-fresh":         {"en":"Latest stable — Writer, Calc, Impress, Draw","ro":"Ultima versiune stabilă — Writer, Calc, Impress, Draw","fr":"Dernière version stable — Writer, Calc, Impress, Draw","de":"Neueste stabile Version — Writer, Calc, Impress, Draw","es":"Última versión estable — Writer, Calc, Impress, Draw","it":"Ultima versione stabile — Writer, Calc, Impress, Draw","pt":"Última versão estável — Writer, Calc, Impress, Draw","ru":"Последняя стабильная — Writer, Calc, Impress, Draw","ja":"最新安定版 — Writer, Calc, Impress, Draw","zh":"最新稳定版 — Writer、Calc、Impress、Draw","ko":"최신 안정 버전 — Writer, Calc, Impress, Draw","ar":"أحدث إصدار مستقر — Writer و Calc و Impress و Draw"},
+}
+
+def TD(pkg_key):
+    """Return translated description for a package, falling back to English."""
+    d = PKG_DESCS.get(pkg_key, {})
+    return d.get(_LANG) or d.get("en", "")
+
 # ── Package data ──────────────────────────────────────────────────────────────
 BROWSERS = [
     {"pkg":"librewolf",                 "exec":"librewolf",             "name":"LibreWolf",
@@ -175,6 +1214,30 @@ FILE_TRANSFER = [
     ]},
 ]
 
+
+# ── Section label translations ────────────────────────────────────────────────
+_SEC_LABELS = {
+    "Launchers":         {"en":"Launchers","ro":"Lansatoare","fr":"Lanceurs","de":"Starter","es":"Lanzadores","it":"Lanciatori","pt":"Lançadores","ru":"Лаунчеры","ja":"ランチャー","zh":"启动器","ko":"런처","ar":"المشغّلات"},
+    "Compatibility":     {"en":"Compatibility","ro":"Compatibilitate","fr":"Compatibilité","de":"Kompatibilität","es":"Compatibilidad","it":"Compatibilità","pt":"Compatibilidade","ru":"Совместимость","ja":"互換性","zh":"兼容性","ko":"호환성","ar":"التوافق"},
+    "Performance":       {"en":"Performance","ro":"Performanță","fr":"Performance","de":"Leistung","es":"Rendimiento","it":"Prestazioni","pt":"Desempenho","ru":"Производительность","ja":"パフォーマンス","zh":"性能","ko":"성능","ar":"الأداء"},
+    "Messaging":         {"en":"Messaging","ro":"Mesagerie","fr":"Messagerie","de":"Messaging","es":"Mensajería","it":"Messaggistica","pt":"Mensagens","ru":"Мессенджеры","ja":"メッセージ","zh":"即时通讯","ko":"메시징","ar":"المراسلة"},
+    "Email":             {"en":"Email","ro":"Email","fr":"Courriel","de":"E-Mail","es":"Correo","it":"Email","pt":"Email","ru":"Почта","ja":"メール","zh":"邮件","ko":"이메일","ar":"البريد"},
+    "Notes":             {"en":"Notes","ro":"Notițe","fr":"Notes","de":"Notizen","es":"Notas","it":"Note","pt":"Notas","ru":"Заметки","ja":"メモ","zh":"笔记","ko":"노트","ar":"الملاحظات"},
+    "RGB / Razer":       {"en":"RGB / Razer","ro":"RGB / Razer","fr":"RGB / Razer","de":"RGB / Razer","es":"RGB / Razer","it":"RGB / Razer","pt":"RGB / Razer","ru":"RGB / Razer","ja":"RGB / Razer","zh":"RGB / Razer","ko":"RGB / Razer","ar":"RGB / Razer"},
+    "Peripherals":       {"en":"Peripherals","ro":"Periferice","fr":"Périphériques","de":"Peripherie","es":"Periféricos","it":"Periferiche","pt":"Periféricos","ru":"Периферия","ja":"周辺機器","zh":"外设","ko":"주변기기","ar":"الملحقات"},
+    "Android / MTP":     {"en":"Android / MTP","ro":"Android / MTP","fr":"Android / MTP","de":"Android / MTP","es":"Android / MTP","it":"Android / MTP","pt":"Android / MTP","ru":"Android / MTP","ja":"Android / MTP","zh":"Android / MTP","ko":"Android / MTP","ar":"Android / MTP"},
+    "Camera / PTP":      {"en":"Camera / PTP","ro":"Cameră / PTP","fr":"Appareil photo / PTP","de":"Kamera / PTP","es":"Cámara / PTP","it":"Fotocamera / PTP","pt":"Câmera / PTP","ru":"Камера / PTP","ja":"カメラ / PTP","zh":"相机 / PTP","ko":"카메라 / PTP","ar":"الكاميرا / PTP"},
+    "Network / Wireless":{"en":"Network / Wireless","ro":"Rețea / Wireless","fr":"Réseau / Sans fil","de":"Netzwerk / WLAN","es":"Red / Inalámbrico","it":"Rete / Wireless","pt":"Rede / Sem fios","ru":"Сеть / Беспроводная","ja":"ネットワーク / ワイヤレス","zh":"网络 / 无线","ko":"네트워크 / 무선","ar":"الشبكة / اللاسلكي"},
+    "USB / Serial":      {"en":"USB / Serial","ro":"USB / Serial","fr":"USB / Série","de":"USB / Seriell","es":"USB / Serie","it":"USB / Seriale","pt":"USB / Serial","ru":"USB / Последовательный","ja":"USB / シリアル","zh":"USB / 串口","ko":"USB / 시리얼","ar":"USB / تسلسلي"},
+    "Base":              {"en":"Base","ro":"De bază","fr":"Base","de":"Basis","es":"Base","it":"Base","pt":"Base","ru":"Основное","ja":"基本","zh":"基础","ko":"기본","ar":"الأساسي"},
+    "Creative Tools":    {"en":"Creative Tools","ro":"Instrumente Creative","fr":"Outils Créatifs","de":"Kreativwerkzeuge","es":"Herramientas Creativas","it":"Strumenti Creativi","pt":"Ferramentas Criativas","ru":"Творческие инструменты","ja":"クリエイティブツール","zh":"创意工具","ko":"크리에이티브 도구","ar":"الأدوات الإبداعية"},
+}
+
+def TS(section_name):
+    """Return translated section label."""
+    d = _SEC_LABELS.get(section_name, {})
+    return d.get(_LANG) or d.get("en", section_name)
+
 # ── Repo badge style map ──────────────────────────────────────────────────────
 REPO_STYLE = {
     "AUR":     ("#4fd9c4","#0e2e2e","#1a4040"),
@@ -185,6 +1248,14 @@ REPO_STYLE = {
     "multilib":("#b46af7","#1e0e2e","#381848"),
 }
 
+_BADGE_KEY = {
+    "AUR":      "badge_aur",
+    "extra":    "badge_extra",
+    "galaxy":   "badge_galaxy",
+    "world":    "badge_world",
+    "lib32":    "badge_lib32",
+    "multilib": "badge_multilib",
+}
 ACCENT_COLOR  = (0.486, 0.416, 0.969)   # #7c6af7
 ACCENT2_COLOR = (0.310, 0.851, 0.769)   # #4fd9c4
 
@@ -256,6 +1327,7 @@ paned > separator { background-color: #1e1c30; min-width: 1px; }
     color: #7a7690; font-size: 12px; font-weight: bold;
     letter-spacing: 0.3px; transition: color 200ms ease;
 }
+.nav-icon { font-size: 18px; }
 .navigation-sidebar row:nth-child(1) { animation-delay:  30ms; }
 .navigation-sidebar row:nth-child(2) { animation-delay:  70ms; }
 .navigation-sidebar row:nth-child(3) { animation-delay: 110ms; }
@@ -578,7 +1650,7 @@ def _inject_css(display):
 
 # ── Helpers ───────────────────────────────────────────────────────────────────
 def _repo_badge(repo):
-    lbl = Gtk.Label(label=repo)
+    lbl = Gtk.Label(label=T(_BADGE_KEY.get(repo, 'badge_extra')))
     lbl.set_css_classes(["repo-badge", f"repo-{repo.lower()}"])
     lbl.set_valign(Gtk.Align.CENTER)
     return lbl
@@ -928,10 +2000,10 @@ class MoonHero(Gtk.DrawingArea):
 
     # ── Mouse handlers ────────────────────────────────────────────────────────
     def _on_motion(self, ctrl, x, y):
-        alloc = self.get_allocation()
-        if alloc.width > 0 and alloc.height > 0:
-            self._mx = x / alloc.width
-            self._my = y / alloc.height
+        w = self.get_width(); h = self.get_height()
+        if w > 0 and h > 0:
+            self._mx = x / w
+            self._my = y / h
 
     def _on_enter(self, ctrl, x, y):
         self._hover = True
@@ -1268,7 +2340,7 @@ class SetupApp(Adw.Application):
 class SetupWindow(Adw.ApplicationWindow):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
-        self.set_title("Faded Dream Setup — First Run")
+        self.set_title(T("app_title"))
         self.set_default_size(1080, 780)
         self.set_size_request(800, 600)
 
@@ -1309,7 +2381,7 @@ class SetupWindow(Adw.ApplicationWindow):
         sidebar = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
         s_header = Adw.HeaderBar()
         s_header.set_show_end_title_buttons(False)
-        s_title = Gtk.Label(label="Faded Dream")
+        s_title = Gtk.Label(label=T("sidebar_title"))
         s_title.add_css_class("heading")
         s_header.set_title_widget(s_title)
         sidebar.append(s_header)
@@ -1324,57 +2396,58 @@ class SetupWindow(Adw.ApplicationWindow):
         nav_sw.set_vexpand(True)
         nav_sw.set_child(self._nav_list)
         sidebar.append(nav_sw)
+        sidebar.append(self._build_lang_selector())
 
         pages = [
-            ("🌙", "Welcome",     self._page_welcome()),
-            ("🌐", "Browser",     self._page_browser()),
-            ("🎮", "Gaming",      self._page_sections(GAMING)),
-            ("💡", "Peripherals", self._page_sections(PERIPHERALS)),
-            ("📁", "File Transfer", self._page_sections(FILE_TRANSFER)),
-            ("📄", "Office",      self._page_office()),
-            ("🎬", "Media",       self._page_flat(MEDIA)),
-            ("💬", "Comms",       self._page_sections(COMMS, comms=True)),
-            ("📋", "Log",         self._page_log()),
+            ("🌙", T("nav_welcome"),      self._page_welcome(),                      "Welcome"),
+            ("🌐", T("nav_browser"),      self._page_browser(),                      "Browser"),
+            ("🎮", T("nav_gaming"),       self._page_sections(GAMING),               "Gaming"),
+            ("💡", T("nav_peripherals"),  self._page_sections(PERIPHERALS),          "Peripherals"),
+            ("📁", T("nav_file_transfer"),self._page_sections(FILE_TRANSFER),        "File Transfer"),
+            ("📄", T("nav_office"),       self._page_office(),                       "Office"),
+            ("🎬", T("nav_media"),        self._page_flat(MEDIA),                    "Media"),
+            ("💬", T("nav_comms"),        self._page_sections(COMMS, comms=True),    "Comms"),
+            ("📋", T("nav_log"),          self._page_log(),                          "Log"),
         ]
         self._log_page_name = "Log"
 
         _no_badge = {"Welcome", "Log"}
         self._nav_badges = {}   # page_name -> badge Gtk.Label
 
-        for icon, label, page in pages:
-            self._stack.add_named(page, label)
+        for _pt in pages:
+            icon, label, page = _pt[0], _pt[1], _pt[2]
+            eng = _pt[3] if len(_pt) > 3 else label
+            self._stack.add_named(page, eng)
             row = Gtk.ListBoxRow()
             box = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=10)
             box.set_margin_start(8); box.set_margin_end(8)
             box.set_margin_top(8);   box.set_margin_bottom(8)
             il = Gtk.Label(label=icon)
             il.set_valign(Gtk.Align.CENTER)
-            # Pango font size — the only reliable way to scale emoji in GTK
-            attrs = Pango.AttrList()
-            attrs.insert(Pango.attr_size_new_absolute(Pango.units_from_double(20)))
-            il.set_attributes(attrs)
+            il.add_css_class("nav-icon")
             il.set_size_request(28, -1)
             tl = Gtk.Label(label=label)
             tl.set_halign(Gtk.Align.START)
             tl.set_valign(Gtk.Align.CENTER)
             tl.set_hexpand(True)
             box.append(il); box.append(tl)
-            if label not in _no_badge:
+            if eng not in _no_badge:
                 badge = Gtk.Label(label="")
                 badge.set_css_classes(["nav-count-badge"])
                 badge.set_valign(Gtk.Align.CENTER)
                 badge.set_visible(False)   # hidden until count > 0
                 box.append(badge)
-                self._nav_badges[label] = badge
+                self._nav_badges[eng] = badge
             row.set_child(box)
-            row._page_name = label
+            row._page_name = eng
+            row._display_label = label  # translated
             self._nav_list.append(row)
 
         # content side
         content = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
         c_header = Adw.HeaderBar()
         c_header.set_show_start_title_buttons(False)
-        self._content_title = Adw.WindowTitle(title="Welcome", subtitle="")
+        self._content_title = Adw.WindowTitle(title=T("nav_welcome"), subtitle="")
         c_header.set_title_widget(self._content_title)
         content.append(c_header)
         content.append(self._stack)
@@ -1393,7 +2466,7 @@ class SetupWindow(Adw.ApplicationWindow):
     def _on_nav_select(self, lb, row):
         if row is None: return
         self._stack.set_visible_child_name(row._page_name)
-        self._content_title.set_title(row._page_name)
+        self._content_title.set_title(getattr(row, "_display_label", row._page_name))
 
     def _switch_to_log(self):
         self._navigate_to(self._log_page_name)
@@ -1405,6 +2478,62 @@ class SetupWindow(Adw.ApplicationWindow):
                 self._nav_list.select_row(r)
                 break
 
+
+    def _build_lang_selector(self):
+        """Compact language selector row for the sidebar footer."""
+        # Map of locale code → display label
+        _LANG_OPTIONS = [
+            ("en", "🇬🇧  English"),
+            ("ro", "🇷🇴  Română"),
+            ("fr", "🇫🇷  Français"),
+            ("de", "🇩🇪  Deutsch"),
+            ("es", "🇪🇸  Español"),
+            ("it", "🇮🇹  Italiano"),
+            ("pt", "🇵🇹  Português"),
+            ("ru", "🇷🇺  Русский"),
+            ("ja", "🇯🇵  日本語"),
+            ("zh", "🇨🇳  中文"),
+            ("ko", "🇰🇷  한국어"),
+            ("ar", "🇸🇦  العربية"),
+        ]
+        box = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=6)
+        box.set_margin_start(10); box.set_margin_end(10)
+        box.set_margin_top(6);    box.set_margin_bottom(6)
+
+        lbl = Gtk.Label(label="🌐")
+        lbl.set_valign(Gtk.Align.CENTER)
+        box.append(lbl)
+
+        combo = Gtk.DropDown()
+        strings = Gtk.StringList()
+        active_idx = 0
+        for i, (code, label) in enumerate(_LANG_OPTIONS):
+            strings.append(label)
+            if code == _LANG:
+                active_idx = i
+        combo.set_model(strings)
+        combo.set_selected(active_idx)
+        combo.set_hexpand(True)
+        combo.add_css_class("flat")
+
+        def _on_lang_change(dd, _param):
+            idx = dd.get_selected()
+            code = _LANG_OPTIONS[idx][0]
+            if code == _LANG:
+                return
+            # Save preference
+            try:
+                cfg = os.path.expanduser("~/.config/faded-dream-lang")
+                open(cfg, "w").write(code)
+            except Exception:
+                pass
+            # Restart to apply
+            os.execv(sys.executable, [sys.executable] + sys.argv)
+
+        combo.connect("notify::selected", _on_lang_change)
+        box.append(combo)
+        return box
+
     # ── Footer ────────────────────────────────────────────────────────────────
     def _build_footer(self):
         bar = Gtk.ActionBar()
@@ -1414,14 +2543,14 @@ class SetupWindow(Adw.ApplicationWindow):
         self._count_lbl.add_css_class("caption")
         self._count_lbl.set_halign(Gtk.Align.START)
         self._update_count()
-        fsub = Gtk.Label(label="toggle startup off after install to stop autolaunch")
+        fsub = Gtk.Label(label=T("startup_hint"))
         fsub.add_css_class("caption"); fsub.add_css_class("dim-label")
         fsub.set_halign(Gtk.Align.START)
         left.append(self._count_lbl); left.append(fsub)
         bar.pack_start(left)
 
         tog_box = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=6)
-        tog_lbl = Gtk.Label(label="Run at startup")
+        tog_lbl = Gtk.Label(label=T("run_at_startup"))
         tog_lbl.add_css_class("caption")
         self._startup_sw = Gtk.Switch()
         self._startup_sw.set_active(self._startup_enabled())
@@ -1430,12 +2559,12 @@ class SetupWindow(Adw.ApplicationWindow):
         tog_box.append(tog_lbl); tog_box.append(self._startup_sw)
         bar.pack_start(tog_box)
 
-        skip_btn = Gtk.Button(label="Skip All")
+        skip_btn = Gtk.Button(label=T("skip_all"))
         skip_btn.add_css_class("flat")
         skip_btn.connect("clicked", lambda _: self.close())
         bar.pack_end(skip_btn)
 
-        self._install_btn = Gtk.Button(label="Install Selected")
+        self._install_btn = Gtk.Button(label=T("install_selected"))
         self._install_btn.add_css_class("suggested-action")
         self._install_btn.connect("clicked", self._on_install)
         bar.pack_end(self._install_btn)
@@ -1447,7 +2576,7 @@ class SetupWindow(Adw.ApplicationWindow):
         total = len(self.selected) + (1 if self.browser else 0)
         self._count_lbl.set_markup(
             f'<span foreground="#4fd9c4" weight="bold">{total}</span>'
-            f'<span foreground="#666677"> packages selected</span>')
+            f'<span foreground="#666677"> {T("packages_selected", n=total).split(str(total), 1)[-1].strip()}</span>')
         self._count_lbl.remove_css_class("count-bump")
         def _bump():
             self._count_lbl.add_css_class("count-bump")
@@ -1480,13 +2609,14 @@ class SetupWindow(Adw.ApplicationWindow):
                             n += 1
             counts[page_name] = n
 
-        # Office: lo_langs + office base pkg
+        # Office: lo_langs + office base pkg only
         n = 0
         for p in OFFICE_BASE:
             if p["pkg"] in self.selected: n += 1
         n += len(getattr(self, 'lo_langs', set()))
-        n += len(getattr(self, 'tb_langs', set()))
         counts["Office"] = n
+        # Thunderbird language packs → Comms badge
+        counts["Comms"] = counts.get("Comms", 0) + len(getattr(self, 'tb_langs', set()))
 
         # Media: flat list
         counts["Media"] = sum(1 for p in MEDIA if p["pkg"] in self.selected)
@@ -1538,14 +2668,12 @@ class SetupWindow(Adw.ApplicationWindow):
         title_box.set_halign(Gtk.Align.CENTER)
         title_box.set_margin_bottom(6)
 
-        title = Gtk.Label(label="Faded Dream")
+        title = Gtk.Label(label=T("welcome_title"))
         title.add_css_class("welcome-title")
         title_box.append(title)
 
         sub = Gtk.Label()
-        sub.set_markup("Your dotfiles are installed.\n"
-                       "Select optional packages across the tabs, then hit <b>Install</b>.\n"
-                       "Toggle <i>Run at startup</i> off after install.")
+        sub.set_markup(T("welcome_sub"))
         sub.add_css_class("welcome-sub")
         sub.set_justify(Gtk.Justification.CENTER)
         sub.set_wrap(True)
@@ -1554,13 +2682,13 @@ class SetupWindow(Adw.ApplicationWindow):
 
         # ── cards ────────────────────────────────────────────────────────────
         cards_data = [
-            ("🌐","Browser",      "Pick your default browser"),
-            ("🎮","Gaming",       "Steam, Heroic, Wine, MangoHud"),
-            ("💡","Peripherals",  "OpenRazer, Polychromatic, Piper"),
-            ("📁","File Transfer","Android, cameras, LAN sharing"),
-            ("📄","Office",       "LibreOffice + language packs"),
-            ("🎬","Media",        "GIMP, Kdenlive, OBS Liberty"),
-            ("💬","Comms",        "Vesktop, Telegram, Thunderbird"),
+            ("🌐", T("nav_browser"),       T("card_browser_sub"),      "Browser"),
+            ("🎮", T("nav_gaming"),        T("card_gaming_sub"),        "Gaming"),
+            ("💡", T("nav_peripherals"),   T("card_peripherals_sub"),   "Peripherals"),
+            ("📁", T("nav_file_transfer"), T("card_filetransfer_sub"),  "File Transfer"),
+            ("📄", T("nav_office"),        T("card_office_sub"),        "Office"),
+            ("🎬", T("nav_media"),         T("card_media_sub"),         "Media"),
+            ("💬", T("nav_comms"),         T("card_comms_sub"),         "Comms"),
         ]
 
         flow = Gtk.FlowBox()
@@ -1573,7 +2701,9 @@ class SetupWindow(Adw.ApplicationWindow):
         flow.set_margin_start(32); flow.set_margin_end(32)
         flow.set_margin_bottom(32)
 
-        for _ci, (icon, t, d) in enumerate(cards_data):
+        for _ci, _cd in enumerate(cards_data):
+            icon, t, d = _cd[0], _cd[1], _cd[2]
+            _ceng = _cd[3] if len(_cd) > 3 else t
             card = Adw.ActionRow()
             card.set_title(t); card.set_subtitle(d)
             card.set_size_request(144, 80)
@@ -1591,7 +2721,7 @@ class SetupWindow(Adw.ApplicationWindow):
             arrow.add_css_class("welcome-card-arrow")
             card.add_suffix(arrow)
 
-            def _nav(gesture, n, x, y, page=t):
+            def _nav(gesture, n, x, y, page=_ceng):
                 self._navigate_to(page)
             gc = Gtk.GestureClick()
             gc.connect("released", _nav)
@@ -1612,7 +2742,7 @@ class SetupWindow(Adw.ApplicationWindow):
         box.set_margin_top(12); box.set_margin_bottom(12)
         box.set_margin_start(12); box.set_margin_end(12)
 
-        box.append(_section_label("Select Your Default Browser"))
+        box.append(_section_label(T("browser_section")))
         box.append(_sep())
 
         group = _boxed_list()
@@ -1621,7 +2751,7 @@ class SetupWindow(Adw.ApplicationWindow):
         for br in BROWSERS:
             arow = AnimatedRow(accent=ACCENT2_COLOR, is_pill=True)
             arow.row.set_title(br["name"])
-            arow.row.set_subtitle(br["desc"])
+            arow.row.set_subtitle(TD(br["pkg"]) or br["desc"])
 
             pfx = Gtk.Label(label=br["icon"])
             pfx.add_css_class("title-2"); pfx.add_css_class("row-icon")
@@ -1629,7 +2759,7 @@ class SetupWindow(Adw.ApplicationWindow):
             arow.row.add_prefix(pfx)
 
             if br.get("recommended"):
-                rec = Gtk.Label(label="⭐ Recommended")
+                rec = Gtk.Label(label=T("recommended"))
                 rec.add_css_class("caption"); rec.add_css_class("success")
                 rec.set_valign(Gtk.Align.CENTER)
                 arow.row.add_suffix(rec)
@@ -1671,7 +2801,7 @@ class SetupWindow(Adw.ApplicationWindow):
         box.set_margin_start(12); box.set_margin_end(12)
 
         for sec in sections:
-            box.append(_section_label(sec["section"]))
+            box.append(_section_label(TS(sec["section"])))
             box.append(_sep())
             group = _boxed_list()
 
@@ -1731,7 +2861,7 @@ class SetupWindow(Adw.ApplicationWindow):
         box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=0)
         box.set_margin_top(12); box.set_margin_bottom(12)
         box.set_margin_start(12); box.set_margin_end(12)
-        box.append(_section_label("Creative Tools"))
+        box.append(_section_label(TS("Creative Tools")))
         box.append(_sep())
         group = _boxed_list()
         for pkg in packages:
@@ -1756,7 +2886,7 @@ class SetupWindow(Adw.ApplicationWindow):
         box.set_margin_top(12); box.set_margin_bottom(12)
         box.set_margin_start(12); box.set_margin_end(12)
 
-        box.append(_section_label("Base"))
+        box.append(_section_label(TS("Base")))
         box.append(_sep())
         group = _boxed_list()
         for pkg in OFFICE_BASE:
@@ -1774,7 +2904,7 @@ class SetupWindow(Adw.ApplicationWindow):
             group.append(arow)
         box.append(group)
 
-        box.append(_section_label("LibreOffice Language Packs"))
+        box.append(_section_label(T("lo_lang_section")))
         box.append(_sep())
         box.append(self._lang_grid("lo"))
         return _scrolled(box)
@@ -1844,7 +2974,7 @@ class SetupWindow(Adw.ApplicationWindow):
     def _make_pkg_row(self, pkg):
         arow = AnimatedRow()
         arow.row.set_title(pkg["name"])
-        arow.row.set_subtitle(pkg.get("desc", ""))
+        arow.row.set_subtitle(TD(pkg["pkg"]) or pkg.get("desc", ""))
         arow.row.set_title_lines(1)
         arow.row.set_subtitle_lines(2)
 
@@ -1863,7 +2993,7 @@ class SetupWindow(Adw.ApplicationWindow):
 
     def _make_sub_row(self, sub):
         arow = AnimatedRow()
-        arow.row.set_title(sub["name"])
+        arow.row.set_title(TN(sub["pkg"]) or sub["name"])
         arow.row.set_margin_start(24)
 
         # accent bar prefix
@@ -1889,44 +3019,18 @@ class SetupWindow(Adw.ApplicationWindow):
         self._log_desc = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=0)
         self._log_desc.set_margin_top(12); self._log_desc.set_margin_bottom(12)
         self._log_desc.set_margin_start(12); self._log_desc.set_margin_end(12)
-        self._log_desc.append(_section_label("What This Installer Does"))
+        self._log_desc.append(_section_label(T("log_what_title")))
         self._log_desc.append(_sep())
 
         desc_lines = [
-            ("🌐","Browser",
-             "Pick one browser — LibreWolf, Zen, Firefox, Vivaldi, Chrome or Edge. "
-             "Your choice is installed and $Browser in hyprland.conf is patched "
-             "automatically so Super+B opens it."),
-            ("🎮","Gaming",
-             "Steam (lib32), Heroic Games Launcher, Wine + Winetricks/Mono/Gecko, "
-             "ProtonPlus, GameMode + 32-bit, MangoHud + 32-bit, MangoJuice. "
-             "Selecting Wine auto-selects its three sub-packages."),
-            ("💡","Peripherals",
-             "OpenRazer daemon + kernel driver (DKMS) + Python library for Razer hardware. "
-             "Polychromatic for per-key RGB and effects. "
-             "Piper for multi-brand mouse/keyboard config (Logitech, SteelSeries, Roccat…). "
-             "Solaar for Logitech Unifying/Bolt receivers. "
-             "jmtpfs and gphotofs for mounting Android phones and cameras — all AUR."),
-            ("📄","Office",
-             "LibreOffice Fresh plus any of 12 language packs you select "
-             "(English UK, Romanian, French, German, Spanish, Italian, Portuguese, "
-             "Russian, Japanese, Chinese, Korean, Arabic)."),
-            ("🎬","Media",
-             "Mirage image viewer, GIMP, Inkscape, Kdenlive video editor, "
-             "HandBrake converter, OBS Studio Liberty (libre build)."),
-            ("📁","File Transfer",
-             "Android MTP with jmtpfs and go-mtpfs. Camera PTP via gphotofs and gphoto2. "
-             "Wireless: Warpinator, LocalSend (cross-platform AirDrop), Croc (encrypted P2P). "
-             "USB: Android Tools (ADB/fastboot) and Scrcpy for screen mirroring."),
-            ("💬","Comms",
-             "Vesktop (Discord + Vencord), Telegram, Element (Matrix), "
-             "Thunderbird + optional language packs, Obsidian notes."),
-            ("🔧","How It Works",
-             "Repo packages are installed in one pacman batch. "
-             "Each AUR package (paru) is built and installed individually — "
-             "you will see full compile output here in real time. "
-             "After install the startup toggle is disabled automatically so it won't launch again. "
-             "You can re-enable it anytime from the footer."),
+            ("🌐", T("log_row_browser_t"), T("log_row_browser_b")),
+            ("🎮", T("log_row_gaming_t"),  T("log_row_gaming_b")),
+            ("💡", T("log_row_periph_t"),  T("log_row_periph_b")),
+            ("📄", T("log_row_office_t"),  T("log_row_office_b")),
+            ("🎬", T("log_row_media_t"),   T("log_row_media_b")),
+            ("📁", T("log_row_ft_t"),      T("log_row_ft_b")),
+            ("💬", T("log_row_comms_t"),   T("log_row_comms_b")),
+            ("🔧", T("log_row_how_t"),      T("log_row_how_b")),
         ]
 
         group = _boxed_list()
@@ -2001,15 +3105,15 @@ class SetupWindow(Adw.ApplicationWindow):
         aur_pkgs  = [p for p in all_pkgs if     AUR_MAP.get(p, False)]
 
         self._log_append("╔══════════════════════════════════════════════╗", "header")
-        self._log_append("  Faded Dream — Installing selected packages",   "header")
+        self._log_append("  " + T("log_header"), "header")
         self._log_append("╚══════════════════════════════════════════════╝", "header")
         self._log_append("", "raw")
         if repo_pkgs:
-            self._log_append(f"  repo packages  ({len(repo_pkgs)}): {', '.join(repo_pkgs)}", "repo")
+            self._log_append(T('log_repo_line', n=len(repo_pkgs), pkgs=', '.join(repo_pkgs)), 'repo')
         if aur_pkgs:
-            self._log_append(f"  AUR packages   ({len(aur_pkgs)}): {', '.join(aur_pkgs)}", "aur")
+            self._log_append(T('log_aur_line', n=len(aur_pkgs), pkgs=', '.join(aur_pkgs)), 'aur')
         if self.browser:
-            self._log_append(f"  browser patch: $Browser = {self.browser['exec']}", "patch")
+            self._log_append(T('log_browser_patch', exec=self.browser['exec']), 'patch')
         self._log_append("", "raw")
 
         threading.Thread(target=self._install_thread, args=(repo_pkgs, aur_pkgs), daemon=True).start()
@@ -2032,33 +3136,33 @@ class SetupWindow(Adw.ApplicationWindow):
                     if s: self._log_append(s, kind)
                 proc.wait()
             except Exception as exc:
-                self._log_append(f"[error] {exc}", "raw")
+                self._log_append(T("log_error", exc=exc), "raw")
 
         if repo_pkgs:
-            self._log_append(f"── pacman  ({len(repo_pkgs)} packages) " + "─"*30, "header")
-            ui(f"Installing {len(repo_pkgs)} repo packages...")
+            self._log_append(T('log_banner_pacman', n=len(repo_pkgs)), 'header')
+            ui(T('prog_repo', n=len(repo_pkgs)))
             stream(["sudo","pacman","-S","--noconfirm","--needed","--color=never"] + repo_pkgs, "repo")
             done[0] += len(repo_pkgs)
 
         for pkg in aur_pkgs:
-            self._log_append(f"── paru  {pkg} " + "─"*40, "header")
-            ui(f"Installing {pkg}...")
+            self._log_append(T('log_banner_paru', pkg=pkg), 'header')
+            ui(T('prog_pkg', pkg=pkg))
             stream(["paru","-S","--noconfirm","--needed","--color=never", pkg], "aur")
             done[0] += 1
 
         if self.browser:
-            self._log_append("── hyprland.conf " + "─"*35, "header")
-            ui(f"Patching hyprland.conf → {self.browser['exec']}...")
+            self._log_append(T('log_banner_hypr'), 'header')
+            ui(T('prog_patch', exec=self.browser['exec']))
             if os.path.exists(HYPRLAND_CONF):
                 subprocess.run(["sed","-i",
                     f"s|^\\$Browser = .*|\\$Browser = {self.browser['exec']}|",
                     HYPRLAND_CONF])
-            self._log_append(f"  $Browser = {self.browser['exec']}", "patch")
+            self._log_append(T('log_browser_set', exec=self.browser['exec']), 'patch')
             done[0] += 1
 
         self._log_append("", "raw")
-        self._log_append("✓  All done!", "done")
-        ui("✓ All done!", 1.0)
+        self._log_append(T("log_done"), "done")
+        ui(T("log_done_bar"), 1.0)
         GLib.idle_add(self._on_install_done)
 
     def _on_install_done(self):
