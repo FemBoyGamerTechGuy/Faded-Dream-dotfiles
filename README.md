@@ -76,6 +76,7 @@
 | `Super + B` | Open browser (set at first login) |
 | `Super + V` | Toggle floating |
 | `Super + C` | Open clipboard manager (clipse) |
+| `Super + I` | Emoji picker (rofimoji) |
 | `Super + W` | Restart Waybar |
 | `Super + M` | Exit Hyprland |
 | `Alt + Space` | Open Rofi launcher |
