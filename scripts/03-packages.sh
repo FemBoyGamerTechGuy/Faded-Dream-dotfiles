@@ -17,7 +17,7 @@ PACKAGES=(
   pipewire-jack
   pavucontrol
   # File manager / Polkit
-  nemo
+  yazi
   polkit-gnome
   # Fonts
   noto-fonts

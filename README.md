@@ -36,9 +36,9 @@
 - **[First-run setup GUI](faded-dream-setup.py)** — PyQt6 app that launches on first login to choose your browser and optional packages (gaming, peripherals, office, media, comms). Installs your selection and self-destructs.
 - **[Rofi](https://github.com/davatorium/rofi)** — application launcher
 - **[rofimoji](https://github.com/fdw/rofimoji)** — emoji picker with recent history
-- **[mpvpaper](https://github.com/GhostNaN/mpvpaper)** — video wallpaper support
+- **[mpvpaper](https://github.com/GhostNaN/mpvpaper)** — wallpaper support (video and static)
 - **[swaync](https://github.com/ErikReider/SwayNotificationCenter)** — notifications
-- **[Nemo](https://github.com/linuxmint/nemo)** — file manager *(migration to [Yazi](https://github.com/sxyazi/yazi) under consideration)*
+- **[Yazi](https://github.com/sxyazi/yazi)** — terminal file manager
 - **[Catppuccin Macchiato](https://github.com/catppuccin/catppuccin)** — theme across terminal and GTK apps
 - **[Oh My Posh](https://ohmyposh.dev/)** — shell prompt with custom `if_tea` theme
 - **Designed for daily use** — no fluff, just a setup that works
@@ -50,7 +50,7 @@
 | Component | Tool |
 |-----------|------|
 | Compositor | [Hyprland](https://github.com/hyprwm/Hyprland) |
-| Distribution | [Artix Linux](https://artixlinux.org/) |
+| Distribution | [Artix Linux](https://artixlinux.org/) *(multi-distro support planned)* |
 | Init System | runit |
 | Shell | [zsh](https://www.zsh.org/) |
 | Prompt | [Oh My Posh](https://ohmyposh.dev/) |
@@ -59,7 +59,7 @@
 | Launcher | [Rofi](https://github.com/davatorium/rofi) |
 | Notifications | [swaync](https://github.com/ErikReider/SwayNotificationCenter) |
 | Wallpaper | [mpvpaper](https://github.com/GhostNaN/mpvpaper) / [waypaper](https://github.com/anufrievroman/waypaper) |
-| File Manager | [Nemo](https://github.com/linuxmint/nemo) |
+| File Manager | [Yazi](https://github.com/sxyazi/yazi) |
 | Browser | chosen at first login via setup GUI |
 | Emoji Picker | [rofimoji](https://github.com/fdw/rofimoji) |
 | Theme | [Catppuccin Macchiato](https://github.com/catppuccin/catppuccin) |
@@ -72,7 +72,7 @@
 |---------|--------|
 | `Super + Enter` | Open terminal (Kitty) |
 | `Super + Q` | Close active window |
-| `Super + E` | Open file manager (Nemo) |
+| `Super + E` | Open file manager (Yazi) |
 | `Super + B` | Open browser (set at first login) |
 | `Super + V` | Toggle floating |
 | `Super + C` | Open clipboard manager (clipse) |

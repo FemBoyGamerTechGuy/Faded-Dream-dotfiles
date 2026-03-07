@@ -74,16 +74,6 @@ AUTOEOF
 chmod +x "${HOME}/.config/autostart/pipewire.sh"
 success "PipeWire autostart configured."
 
-# Nemo terminal autostart
-cat >"${HOME}/.config/autostart/set-nemo-terminal.sh" <<'AUTOEOF'
-#!/bin/bash
-gsettings set org.cinnamon.desktop.default-applications.terminal exec kitty
-gsettings set org.gnome.desktop.default-applications.terminal exec kitty
-rm -- "$0"
-AUTOEOF
-chmod +x "${HOME}/.config/autostart/set-nemo-terminal.sh"
-success "Nemo terminal autostart configured."
-
 # GTK theme autostart
 cat >"${HOME}/.config/autostart/set-gtk-theme.sh" <<'AUTOEOF'
 #!/bin/bash
