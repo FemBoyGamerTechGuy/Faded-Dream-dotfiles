@@ -1,0 +1,176 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 200" width="600" height="200">
+  <defs>
+    <!-- Background gradient -->
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#1a1b26"/>
+      <stop offset="100%" style="stop-color:#16161e"/>
+    </linearGradient>
+
+    <!-- Moon glow -->
+    <radialGradient id="moonGlow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" style="stop-color:#7aa2f7;stop-opacity:0.25"/>
+      <stop offset="100%" style="stop-color:#7aa2f7;stop-opacity:0"/>
+    </radialGradient>
+
+    <!-- Moon face gradient -->
+    <radialGradient id="moonFace" cx="35%" cy="35%" r="65%">
+      <stop offset="0%" style="stop-color:#c0caf5"/>
+      <stop offset="100%" style="stop-color:#7aa2f7"/>
+    </radialGradient>
+
+    <!-- Text gradient -->
+    <linearGradient id="textGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#7aa2f7"/>
+      <stop offset="50%" style="stop-color:#bb9af7"/>
+      <stop offset="100%" style="stop-color:#7dcfff"/>
+    </linearGradient>
+
+    <!-- Subtitle gradient -->
+    <linearGradient id="subGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#565f89"/>
+      <stop offset="100%" style="stop-color:#414868"/>
+    </linearGradient>
+
+    <!-- Glow filter for moon -->
+    <filter id="moonBlur" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="12" result="blur"/>
+      <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+
+    <!-- Soft glow for stars -->
+    <filter id="starGlow" x="-100%" y="-100%" width="300%" height="300%">
+      <feGaussianBlur stdDeviation="2.5" result="blur"/>
+      <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+
+    <!-- Text glow -->
+    <filter id="textGlow" x="-10%" y="-30%" width="120%" height="160%">
+      <feGaussianBlur stdDeviation="4" result="blur"/>
+      <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+
+  </defs>
+
+  <!-- Background -->
+  <rect width="600" height="200" rx="20" fill="url(#bg)"/>
+
+  <!-- Subtle noise texture overlay -->
+  <rect width="600" height="200" rx="20" fill="#7aa2f7" opacity="0.015"/>
+
+  <!-- ── Stars ── -->
+  <!-- Twinkling large stars -->
+  <g filter="url(#starGlow)">
+    <!-- Star 1 -->
+    <circle cx="320" cy="28" r="2.2" fill="#c0caf5">
+      <animate attributeName="opacity" values="1;0.2;1" dur="2.8s" repeatCount="indefinite"/>
+    </circle>
+    <!-- Star 2 -->
+    <circle cx="370" cy="55" r="1.6" fill="#7dcfff">
+      <animate attributeName="opacity" values="0.6;1;0.6" dur="2.1s" repeatCount="indefinite"/>
+    </circle>
+    <!-- Star 3 -->
+    <circle cx="430" cy="22" r="2.5" fill="#bb9af7">
+      <animate attributeName="opacity" values="1;0.3;1" dur="3.4s" repeatCount="indefinite"/>
+    </circle>
+    <!-- Star 4 -->
+    <circle cx="490" cy="45" r="1.4" fill="#c0caf5">
+      <animate attributeName="opacity" values="0.4;1;0.4" dur="1.9s" repeatCount="indefinite"/>
+    </circle>
+    <!-- Star 5 -->
+    <circle cx="540" cy="30" r="1.8" fill="#7aa2f7">
+      <animate attributeName="opacity" values="1;0.2;1" dur="2.5s" repeatCount="indefinite"/>
+    </circle>
+    <!-- Star 6 -->
+    <circle cx="565" cy="75" r="1.2" fill="#c0caf5">
+      <animate attributeName="opacity" values="0.5;1;0.5" dur="3.1s" repeatCount="indefinite"/>
+    </circle>
+    <!-- Star 7 -->
+    <circle cx="410" cy="80" r="1.0" fill="#7dcfff">
+      <animate attributeName="opacity" values="1;0.1;1" dur="2.3s" repeatCount="indefinite"/>
+    </circle>
+    <!-- Star 8 -->
+    <circle cx="340" cy="65" r="1.3" fill="#bb9af7">
+      <animate attributeName="opacity" values="0.3;1;0.3" dur="4.0s" repeatCount="indefinite"/>
+    </circle>
+    <!-- Star 9 - top left area -->
+    <circle cx="52" cy="22" r="1.5" fill="#c0caf5">
+      <animate attributeName="opacity" values="1;0.2;1" dur="2.6s" repeatCount="indefinite"/>
+    </circle>
+    <!-- Star 10 -->
+    <circle cx="38" cy="58" r="1.1" fill="#7aa2f7">
+      <animate attributeName="opacity" values="0.4;1;0.4" dur="3.3s" repeatCount="indefinite"/>
+    </circle>
+    <!-- Star 11 -->
+    <circle cx="460" cy="165" r="1.3" fill="#7dcfff">
+      <animate attributeName="opacity" values="1;0.3;1" dur="2.0s" repeatCount="indefinite"/>
+    </circle>
+    <!-- Star 12 -->
+    <circle cx="530" cy="150" r="1.6" fill="#bb9af7">
+      <animate attributeName="opacity" values="0.5;1;0.5" dur="3.7s" repeatCount="indefinite"/>
+    </circle>
+
+    <!-- 4-pointed sparkle star -->
+    <g transform="translate(505, 20)">
+      <path d="M0,-5 L1,-1 L5,0 L1,1 L0,5 L-1,1 L-5,0 L-1,-1 Z" fill="#c0caf5">
+        <animate attributeName="opacity" values="1;0.1;1" dur="2.2s" repeatCount="indefinite"/>
+        <animateTransform attributeName="transform" type="rotate" values="0;45;0" dur="2.2s" repeatCount="indefinite"/>
+      </path>
+    </g>
+    <!-- Another sparkle -->
+    <g transform="translate(355, 42)">
+      <path d="M0,-4 L0.8,-0.8 L4,0 L0.8,0.8 L0,4 L-0.8,0.8 L-4,0 L-0.8,-0.8 Z" fill="#7aa2f7">
+        <animate attributeName="opacity" values="0.3;1;0.3" dur="3.0s" repeatCount="indefinite"/>
+        <animateTransform attributeName="transform" type="rotate" values="0;-45;0" dur="3.0s" repeatCount="indefinite"/>
+      </path>
+    </g>
+  </g>
+
+  <!-- ── Moon ── -->
+  <!-- Outer glow halo -->
+  <circle cx="100" cy="100" r="72" fill="url(#moonGlow)"/>
+
+  <!-- Moon full circle -->
+  <circle cx="100" cy="100" r="52" fill="url(#moonFace)" filter="url(#moonBlur)"/>
+
+  <!-- Shadow circle to carve crescent -->
+  <circle cx="122" cy="88" r="46" fill="#16161e"/>
+
+  <!-- Subtle crater details on visible crescent -->
+  <circle cx="72" cy="82" r="4" fill="#7aa2f7" opacity="0.12"/>
+  <circle cx="65" cy="110" r="2.5" fill="#7aa2f7" opacity="0.10"/>
+  <circle cx="80" cy="125" r="3" fill="#c0caf5" opacity="0.08"/>
+
+  <!-- Moon rim highlight -->
+  <circle cx="100" cy="100" r="52" fill="none" stroke="#c0caf5" stroke-width="0.8" opacity="0.15"/>
+
+  <!-- ── Text ── -->
+  <!-- "Faded Dream" main title -->
+  <text x="175" y="105"
+        font-family="Georgia, 'Times New Roman', serif"
+        font-size="52"
+        font-weight="bold"
+        font-style="italic"
+        fill="url(#textGrad)"
+        filter="url(#textGlow)"
+        letter-spacing="1">Faded Dream</text>
+
+  <!-- Divider line -->
+  <line x1="175" y1="118" x2="568" y2="118" stroke="#414868" stroke-width="0.8" opacity="0.6"/>
+
+  <!-- "dotfiles" subtitle -->
+  <text x="177" y="142"
+        font-family="'Courier New', Courier, monospace"
+        font-size="17"
+        fill="#565f89"
+        letter-spacing="6">dotfiles</text>
+
+  <!-- Small version tag -->
+  <rect x="480" y="128" width="76" height="20" rx="6" fill="#1f2335" opacity="0.9"/>
+  <text x="518" y="142"
+        font-family="'Courier New', Courier, monospace"
+        font-size="11"
+        fill="#414868"
+        text-anchor="middle"
+        letter-spacing="1">by FD</text>
+
+</svg>

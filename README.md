@@ -1,5 +1,7 @@
 <div align="center">
 
+<img src="https://github.com/FemBoyGamerTechGuy/Faded-Dream-dotfiles/raw/main/faded-dream-logo.svg" alt="Faded Dream Logo" width="600"/>
+
 # Faded Dream Dotfiles
 
 > A straightforward [Hyprland](https://github.com/hyprwm/Hyprland) configuration focused on simplicity, compatibility, and daily usability.  
