@@ -8,22 +8,24 @@ PACKAGES=(
   xorg-xwayland
   waybar
   swaync
-  rofi
   nwg-look
+
   # Audio
   pipewire
   pipewire-pulse
   pipewire-alsa
   pipewire-jack
   pavucontrol
-  # File manager / Polkit
-  yazi
+
+  # Polkit
   polkit-gnome
+
   # Fonts
   noto-fonts
   noto-fonts-cjk
   noto-fonts-emoji
   ttf-firacode-nerd
+
   # Terminal / Shell / Utilities
   kitty
   zsh
@@ -35,10 +37,13 @@ PACKAGES=(
   neovim
   wget
   git
+
   # Media
   mpv
   yt-dlp
   imagemagick
+  ffmpeg
+
   # Languages & runtimes
   rust
   go
@@ -49,13 +54,19 @@ PACKAGES=(
   npm
   luarocks
   tectonic
-  # ── Faded Dream Setup (faded-dream-setup-gtk.py) ──────────────────────────
-  # GTK4 + libadwaita UI toolkit
+
+  # Faded Dream (GTK4 app)
   gtk4
   libadwaita
-  # Python GTK4 bindings
-  python-gobject          # gi.repository (Gtk, Adw, GLib, Pango)
-  python-cairo            # cairo drawing for animations
+  python-gobject
+  python-cairo
+
+  # VoidDream (TUI file manager)
+  chafa
+  unrar
+  unzip
+  p7zip
+  zstd
 )
 
 sudo pacman -S --noconfirm --needed "${PACKAGES[@]}" ||

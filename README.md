@@ -9,6 +9,9 @@
 
 </div>
 
+> [!WARNING]
+> **🔨 Massive rework in progress.** The current version is stable and fully usable, but the project is being significantly redesigned under the hood. Things may change without notice. If you want something rock-solid right now, use the latest release tag.
+
 ---
 
 ## Previews
@@ -35,12 +38,12 @@
 - **Single central config** — one `hyprland.conf` to rule them all *(may split in the future)*
 - **XWayland compatibility** — Xorg apps run smoothly under Wayland
 - **Lightweight** — works on most hardware including integrated GPUs
-- **[First-run setup GUI](faded-dream-setup.py)** — PyQt6 app that launches on first login to choose your browser and optional packages (gaming, peripherals, office, media, comms). Installs your selection and self-destructs.
+- **[First-run setup GUI](Faded%20Dream%20welcome%20app/faded-dream-setup.py)** — launches on first login to let you choose your browser, file manager, and optional packages (gaming, peripherals, office, media, comms). Can be re-opened at any time via the startup toggle.
 - **[Rofi](https://github.com/davatorium/rofi)** — application launcher
 - **[rofimoji](https://github.com/fdw/rofimoji)** — emoji picker with recent history
 - **[mpvpaper](https://github.com/GhostNaN/mpvpaper)** — wallpaper support (video and static)
 - **[swaync](https://github.com/ErikReider/SwayNotificationCenter)** — notifications
-- **[Yazi](https://github.com/sxyazi/yazi)** — terminal file manager
+- **Your choice of file manager** — selected at first login via the setup GUI
 - **[Catppuccin Macchiato](https://github.com/catppuccin/catppuccin)** — theme across terminal and GTK apps
 - **[Oh My Posh](https://ohmyposh.dev/)** — shell prompt with custom `if_tea` theme
 - **Designed for daily use** — no fluff, just a setup that works
@@ -61,7 +64,7 @@
 | Launcher | [Rofi](https://github.com/davatorium/rofi) |
 | Notifications | [swaync](https://github.com/ErikReider/SwayNotificationCenter) |
 | Wallpaper | [mpvpaper](https://github.com/GhostNaN/mpvpaper) / [waypaper](https://github.com/anufrievroman/waypaper) |
-| File Manager | [Yazi](https://github.com/sxyazi/yazi) |
+| File Manager | chosen at first login via setup GUI |
 | Browser | chosen at first login via setup GUI |
 | Emoji Picker | [rofimoji](https://github.com/fdw/rofimoji) |
 | Theme | [Catppuccin Macchiato](https://github.com/catppuccin/catppuccin) |
@@ -74,8 +77,8 @@
 |---------|--------|
 | `Super + Enter` | Open terminal (Kitty) |
 | `Super + Q` | Close active window |
-| `Super + E` | Open file manager (Yazi) |
-| `Super + B` | Open browser (set at first login) |
+| `Super + E` | Open file manager (chosen at first login) |
+| `Super + B` | Open browser (chosen at first login) |
 | `Super + V` | Toggle floating |
 | `Super + C` | Open clipboard manager (clipse) |
 | `Super + I` | Emoji picker (rofimoji) |
@@ -179,8 +182,9 @@ grandpa-style             pixelrobots
 
 ## Notes
 
-- On first login after install, the **Faded Dream Setup** GUI launches automatically — pick your browser and any optional packages, then hit Install. It self-destructs after running.
-- To re-run the setup manually: `python3 ~/faded-dream-setup.py` *(only works if it hasn't deleted itself yet)*
+- On first login after install, the **Faded Dream Setup** GUI launches automatically — pick your browser, file manager, and any optional packages, then hit Install.
+- To re-open the setup at any time: `python3 ~/Faded-Dream-dotfiles/Faded\ Dream\ welcome\ app/faded-dream-setup.py`
+- Use the startup toggle inside the app to control whether it launches on login
 - On first boot after install, PipeWire may take a few seconds to start — this is normal
 - `bat` must be installed for the `cat` alias to work — handled automatically by `install.sh`
 - The `if_tea` Oh My Posh theme requires the FiraCode Nerd Font to render correctly
@@ -199,7 +203,7 @@ chmod +x install.sh
 ./install.sh
 ```
 
-The install script handles packages, AUR helper, GPU drivers, dotfile deployment, and shell setup. A reboot is triggered automatically at the end. On first Hyprland login the setup GUI launches to let you choose your browser and optional packages.
+The install script handles packages, AUR helper, GPU drivers, dotfile deployment, and shell setup. A reboot is triggered automatically at the end. On first Hyprland login the setup GUI launches to let you choose your browser, file manager, and optional packages. You can re-open it at any time.
 
 ---
 
@@ -209,6 +213,11 @@ The install script handles packages, AUR helper, GPU drivers, dotfile deployment
 Faded-Dream-dotfiles/
 ├── Previews/
 │   └── ... (screenshots)
+├── Faded Dream welcome app/
+│   ├── faded-dream-setup.py
+│   ├── packages.py
+│   ├── i18n.py
+│   └── widgets.py
 ├── hypr/
 │   └── hyprland.conf
 ├── kitty/
@@ -245,7 +254,6 @@ Faded-Dream-dotfiles/
 │   └── default/
 ├── config.ini for waypaper
 ├── pacman.conf
-├── faded-dream-setup.py
 └── install.sh
 ```
 

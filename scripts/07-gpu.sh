@@ -15,13 +15,10 @@ echo -e "${BOLD}${CYAN}  Which GPU do you have?${RESET}"
 echo -e "  1) AMD (discrete + iGPU / Ryzen APU)"
 echo -e "  2) Nvidia RTX 50 series - GTX 16 series"
 echo -e "  3) Nvidia GTX 1080 Ti - GTX 1010"
-echo -e "  4) Nvidia GTX 700 - GTX 600 series"
-echo -e "  5) Nvidia GTX 500 - GTX 400 series"
-echo -e "  6) Nvidia GeForce 8/9/100/200/300 series"
-echo -e "  7) Intel (discrete + iGPU)"
-echo -e "  8) Skip (no drivers needed)"
+echo -e "  4) Intel (discrete + iGPU)"
+echo -e "  5) Skip (no drivers needed)"
 echo ""
-read -rp "  Enter choice [1-8]: " GPU_CHOICE
+read -rp "  Enter choice [1-5]: " GPU_CHOICE
 
 case "$GPU_CHOICE" in
 1)
@@ -52,36 +49,6 @@ case "$GPU_CHOICE" in
   success "Nvidia 580xx drivers installed."
   ;;
 4)
-  info "Nvidia GTX 700 - GTX 600 series selected — installing drivers."
-  sudo pacman -S --noconfirm --needed dkms "$HEADERS" ||
-    die "Failed to install dkms and headers."
-  paru -S --noconfirm --needed \
-    nvidia-470xx-dkms nvidia-470xx-utils nvidia-470xx-settings \
-    opencl-nvidia-470xx lib32-nvidia-470xx-utils lib32-opencl-nvidia-470xx ||
-    die "Failed to install Nvidia 470xx drivers."
-  success "Nvidia 470xx drivers installed."
-  ;;
-5)
-  info "Nvidia GTX 500 - GTX 400 series selected — installing drivers."
-  sudo pacman -S --noconfirm --needed dkms "$HEADERS" ||
-    die "Failed to install dkms and headers."
-  paru -S --noconfirm --needed \
-    nvidia-390xx-dkms nvidia-390xx-utils nvidia-390xx-settings \
-    opencl-nvidia-390xx lib32-nvidia-390xx-utils lib32-opencl-nvidia-390xx ||
-    die "Failed to install Nvidia 390xx drivers."
-  success "Nvidia 390xx drivers installed."
-  ;;
-6)
-  info "Nvidia GeForce 8/9/100/200/300 series selected — installing drivers."
-  sudo pacman -S --noconfirm --needed dkms "$HEADERS" ||
-    die "Failed to install dkms and headers."
-  paru -S --noconfirm --needed \
-    nvidia-340xx-dkms nvidia-340xx-utils nvidia-340xx-settings \
-    opencl-nvidia-340xx lib32-nvidia-340xx-utils lib32-opencl-nvidia-340xx ||
-    die "Failed to install Nvidia 340xx drivers."
-  success "Nvidia 340xx drivers installed."
-  ;;
-7)
   info "Intel selected — installing Intel drivers."
   sudo pacman -S --noconfirm --needed \
     mesa vulkan-intel libva-intel-driver xf86-video-intel \
@@ -89,7 +56,7 @@ case "$GPU_CHOICE" in
     die "Failed to install Intel drivers."
   success "Intel drivers installed."
   ;;
-8)
+5)
   warn "Skipping GPU driver installation."
   ;;
 *)
