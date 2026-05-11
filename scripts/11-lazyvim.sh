@@ -1,5 +1,5 @@
 #!/bin/bash
-# [10/11] LazyVim
+# [11/13] LazyVim
 
 if [[ -d "${HOME}/.config/nvim" ]]; then
   warn "~/.config/nvim already exists, skipping LazyVim clone."

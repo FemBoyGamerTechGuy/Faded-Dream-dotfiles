@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # packages.py — Package lists, repo metadata, AUR map, Hyprland paths
 import os
-from i18n import _LANG
+from i18n import _LANG, TS
 
 # ── Browsers ──────────────────────────────────────────────────────────────────
 BROWSERS = [
@@ -34,6 +34,8 @@ GAMING = [
         {"pkg":"heroic-games-launcher-bin", "name":"Heroic",
          "desc":"Epic &amp; GOG launcher",
          "icon":"🦸", "repo":"AUR",   "aur":True,  "sub":[]},
+        {"pkg":"sober", "name":"Sober",
+         "desc":"", "icon":"🎲", "repo":"flatpak", "aur":False, "sub":[], "risk_warning":"sober"},
     ]},
     {"section":"Compatibility", "packages":[
         {"pkg":"wine", "name":"Wine", "desc":"Windows compatibility layer",
@@ -58,6 +60,14 @@ GAMING = [
          "icon":"🥭", "repo":"AUR", "aur":True, "sub":[]},
     ]},
 ]
+
+OTHER = [
+    {"section":"Other", "packages":[
+        {"pkg":"ytdn", "name":"YT Downloader",
+         "desc":"", "icon":"⬇️", "repo":"flatpak", "aur":False, "sub":[], "risk_warning":"ytdn"},
+    ]},
+]
+
 
 # ── Language codes ────────────────────────────────────────────────────────────
 LANG_LIST = [
@@ -305,6 +315,7 @@ REPO_STYLE = {
     "lib32":    ("#f76a6a", "#2e0e0e", "#4a1818"),
     "multilib": ("#b46af7", "#1e0e2e", "#381848"),
     "github":   ("#f0f6fc", "#0d1117", "#1a2233"),
+    "flatpak":  ("#4a90d9", "#0a1929", "#0d2137"),
 }
 
 _BADGE_KEY = {
@@ -315,6 +326,7 @@ _BADGE_KEY = {
     "lib32":    "badge_lib32",
     "multilib": "badge_multilib",
     "github":   "badge_github",
+    "flatpak":  "badge_flatpak",
 }
 
 ACCENT_COLOR  = (0.486, 0.416, 0.969)   # #7c6af7
@@ -325,34 +337,29 @@ HYPRLAND_CONF = os.path.expanduser("~/.config/hypr/hyprland.conf")
 EXEC_LINE = ("exec-once = bash -c "
              "'[ -f \"$HOME/Faded-Dream-dotfiles/Faded Dream welcome app/faded-dream-setup.py\" ] "
              "&& python3 \"$HOME/Faded-Dream-dotfiles/Faded Dream welcome app/faded-dream-setup.py\"'")
-FM_CONF_PATTERN = "$fileManager ="   # sed target for file manager patching
 
 # ── Init system detection ─────────────────────────────────────────────────────
+_INIT_SYSTEM: str | None = None
 def detect_init() -> str:
-    """Return 'runit', 'openrc', 'systemd', or 'unknown'."""
+    """Cached: runit/openrc/dinit/s6/unknown."""
+    global _INIT_SYSTEM
+    if _INIT_SYSTEM is not None: return _INIT_SYSTEM
     import subprocess
-    # runit: /run/runit exists and is a directory
-    if os.path.isdir("/run/runit"):
-        return "runit"
-    # openrc: rc-service binary present
-    try:
-        subprocess.run(["rc-service", "--version"],
-                       stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL,
-                       timeout=2)
-        return "openrc"
-    except (FileNotFoundError, subprocess.TimeoutExpired):
-        pass
-    # systemd
-    if os.path.isdir("/run/systemd"):
-        return "systemd"
-    return "unknown"
+    if os.path.isdir("/run/runit"): _INIT_SYSTEM = "runit"; return _INIT_SYSTEM
+    for cmd, name in [(["rc-service","--version"],"openrc"),(["dinitctl","--version"],"dinit"),(["s6-rc","--version"],"s6")]:
+        try:
+            subprocess.run(cmd, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, timeout=2)
+            _INIT_SYSTEM = name; return _INIT_SYSTEM
+        except (FileNotFoundError, subprocess.TimeoutExpired): pass
+    _INIT_SYSTEM = "unknown"; return _INIT_SYSTEM
 
 def cups_pkg() -> str:
-    """Return the correct cups package name for the current init system."""
     init = detect_init()
-    if init == "runit":   return "cups-runit"
-    if init == "openrc":  return "cups-openrc"
-    return "cups"   # systemd / unknown — plain cups
+    if init == "runit":  return "cups-runit"
+    if init == "openrc": return "cups-openrc"
+    if init == "dinit":  return "cups-dinit"
+    if init == "s6":     return "cups-s6"
+    return "cups"
 
 # ── Brother printer drivers (shown in dedicated dialog) ───────────────────────
 BROTHER_DRIVERS = [
@@ -383,7 +390,7 @@ BROTHER_DRIVERS = [
 # ── Printing ──────────────────────────────────────────────────────────────────
 PRINTING = [
     {"section": "Printing", "packages": [
-        {"pkg": cups_pkg(), "name": "CUPS",
+        {"pkg": "__cups__", "name": "CUPS",
          "desc": "Common Unix Printing System — the core print server. Automatically selects the right package for your init system",
          "icon": "🖨️", "repo": "world", "aur": False, "sub": [
             {"pkg": "cups-pdf",              "name": "CUPS PDF",           "repo": "world", "aur": False},
@@ -420,6 +427,11 @@ PRINTING = [
 ]
 
 # ── AUR map ───────────────────────────────────────────────────────────────────
+FLATPAK_MAP = {
+    "sober": ["flatpak","install","--noninteractive","flathub","org.vinegarhq.Sober"],
+    "ytdn":  ["flatpak","install","--noninteractive","flathub","io.github.aandrew_me.ytdn"],
+}
+
 def _build_aur_map():
     m = {}
     def idx(items):
@@ -427,6 +439,7 @@ def _build_aur_map():
             m[it["pkg"]] = it.get("aur", False)
             for s in it.get("sub", []): m[s["pkg"]] = s.get("aur", False)
     for sec in GAMING:        idx(sec["packages"])
+    for sec in OTHER:         idx(sec["packages"])
     for sec in PERIPHERALS:   idx(sec["packages"])
     for sec in COMMS:         idx(sec["packages"])
     for sec in FILE_TRANSFER: idx(sec["packages"])
@@ -436,6 +449,8 @@ def _build_aur_map():
     idx(MEDIA)
     idx(OFFICE_BASE)
     for br in BROWSERS: m[br["pkg"]] = br.get("aur", False)
+    m["__cups__"] = False  # sentinel resolved at install time
+    for fp in FLATPAK_MAP: m[fp] = False
     return m
 
 AUR_MAP = _build_aur_map()

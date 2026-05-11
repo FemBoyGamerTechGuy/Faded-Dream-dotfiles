@@ -30,6 +30,10 @@ def _filter_stderr():
                 b"pango_font_map_reload_font",
                 b"g_object_ref: assertion",
                 b"g_object_unref: assertion",
+                b"Cannot get portal",
+                b"freedesktop.portal",
+                b"GDBus.Error:org.freedesktop.DBus.Error.InvalidArgs",
+                b"return Gio.Application.run",
             ]
             for line in inp:
                 if not any(s in line for s in SUPPRESS):
@@ -44,19 +48,41 @@ _filter_stderr()
 import gi
 gi.require_version("Gtk", "4.0")
 gi.require_version("Adw", "1")
-from gi.repository import Gtk, Adw, GLib, Gio, Pango, Gdk, GObject
+from gi.repository import Gtk, Adw, GLib, Gio, Pango, Gdk
 
 from i18n    import T, TD, TN, TS, set_lang, _LANG
 
-from packages import (BROWSERS, GAMING, FILE_MANAGERS, GITHUB_MAP, LANG_LIST, LO_CODES, TB_CODES,
+from packages import (BROWSERS, GAMING, FILE_MANAGERS, GITHUB_MAP, FLATPAK_MAP, OTHER, LANG_LIST, LO_CODES, TB_CODES,
                       OFFICE_BASE, MEDIA, COMMS, PERIPHERALS, FILE_TRANSFER,
-                      PRINTING, BROTHER_DRIVERS, detect_init,
+                      PRINTING, BROTHER_DRIVERS, detect_init, cups_pkg,
                       REPO_STYLE, AUR_MAP, HYPRLAND_CONF, EXEC_LINE,
                       ACCENT_COLOR, ACCENT2_COLOR)
 from widgets  import (APP_CSS, _inject_css, _repo_badge, _faded_dream_badge, _section_label,
                       _sep, _scrolled, _boxed_list,
                       CheckMarkWidget, ShimmerWidget, GlowOverlay,
                       AnimatedRow, MoonHero)
+
+# ── File manager exec map ────────────────────────────────────────────────────
+_FM_EXEC = {
+    "nautilus":      "nautilus",
+    "nemo":          "nemo",
+    "thunar":        "thunar",
+    "dolphin":       "dolphin",
+    "pcmanfm":       "pcmanfm",
+    "caja":          "caja",
+    "krusader":      "krusader",
+    "doublecmd-qt6": "doublecmd",
+    "sunflower":     "sunflower",
+    "voiddream":     "kitty --hold VoidDream",
+    "yazi":          "kitty --hold yazi",
+    "lf":            "kitty --hold lf",
+    "ranger":        "kitty --hold ranger",
+    "nnn":           "kitty --hold nnn",
+    "mc":            "kitty --hold mc",
+    "broot":         "kitty --hold broot",
+    "vifm":          "kitty --hold vifm",
+    "superfile":     "kitty --hold superfile",
+}
 
 class SetupApp(Adw.Application):
     def __init__(self):
@@ -144,6 +170,7 @@ class SetupWindow(Adw.ApplicationWindow):
             ("📄", T("nav_office"),       self._page_office(),                       "Office"),
             ("🎬", T("nav_media"),        self._page_flat(MEDIA),                    "Media"),
             ("💬", T("nav_comms"),        self._page_sections(COMMS, comms=True),    "Comms"),
+            ("📦", T("nav_other"),         self._page_sections(OTHER),                "Other"),
             ("📋", T("nav_log"),          self._page_log(),                          "Log"),
         ]
         self._log_page_name = "Log"
@@ -205,11 +232,8 @@ class SetupWindow(Adw.ApplicationWindow):
         self._stack.set_visible_child_name(row._page_name)
         self._content_title.set_title(getattr(row, "_display_label", row._page_name))
 
-    def _switch_to_log(self):
-        self._navigate_to(self._log_page_name)
-
     def _navigate_to(self, page_name):
-        for i in range(11):
+        for i in range(12):
             r = self._nav_list.get_row_at_index(i)
             if r and r._page_name == page_name:
                 self._nav_list.select_row(r)
@@ -299,10 +323,10 @@ class SetupWindow(Adw.ApplicationWindow):
         tog_box.append(tog_lbl); tog_box.append(self._startup_sw)
         bar.pack_start(tog_box)
 
-        skip_btn = Gtk.Button(label=T("skip_all"))
-        skip_btn.add_css_class("flat")
-        skip_btn.connect("clicked", lambda _: self.close())
-        bar.pack_end(skip_btn)
+        self._skip_btn = Gtk.Button(label=T("skip_all"))
+        self._skip_btn.add_css_class("flat")
+        self._skip_btn.connect("clicked", lambda _: self.close())
+        bar.pack_end(self._skip_btn)
 
         self._install_btn = Gtk.Button(label=T("install_selected"))
         self._install_btn.add_css_class("suggested-action")
@@ -339,6 +363,7 @@ class SetupWindow(Adw.ApplicationWindow):
             ("File Transfer", FILE_TRANSFER),
             ("Printing", PRINTING),
             ("Comms",         COMMS),
+            ("Other",         OTHER),
         ]:
             n = 0
             for sec in data:
@@ -439,9 +464,11 @@ class SetupWindow(Adw.ApplicationWindow):
             ("💡", T("nav_peripherals"),   T("card_peripherals_sub"),   "Peripherals"),
             ("📁", T("nav_file_transfer"), T("card_filetransfer_sub"),  "File Transfer"),
             ("🗂️", T("nav_file_manager"),  T("card_filemanager_sub"),   "File Manager"),
+            ("🖨️", T("nav_printing"),      T("card_printing_sub"),      "Printing"),
             ("📄", T("nav_office"),        T("card_office_sub"),        "Office"),
             ("🎬", T("nav_media"),         T("card_media_sub"),         "Media"),
             ("💬", T("nav_comms"),         T("card_comms_sub"),         "Comms"),
+            ("📦", T("nav_other"),         T("card_other_sub"),         "Other"),
         ]
 
         flow = Gtk.FlowBox()
@@ -579,27 +606,31 @@ class SetupWindow(Adw.ApplicationWindow):
                     sub_rows.append((sarow, scm, sub["pkg"]))
                     group.append(sarow)
 
-                # wire up parent→children selection
-                def _bind(a, c, p, subs):
-                    def _clicked(gesture, n, x, y):
-                        sel = p not in self.selected
+                # wire up selection with risk-dialog intercept
+                def _bind(a, c, p, subs, risk_key=None):
+                    def _do_select(sel):
                         if sel:
-                            self.selected.add(p)
-                            a.set_selected(True); c.set_checked(True)
+                            self.selected.add(p); a.set_selected(True); c.set_checked(True)
                             for sa, sc, sp in subs:
-                                self.selected.add(sp)
-                                sa.set_selected(True); sc.set_checked(True)
+                                self.selected.add(sp); sa.set_selected(True); sc.set_checked(True)
                         else:
-                            self.selected.discard(p)
-                            a.set_selected(False); c.set_checked(False)
+                            self.selected.discard(p); a.set_selected(False); c.set_checked(False)
                             for sa, sc, sp in subs:
-                                self.selected.discard(sp)
-                                sa.set_selected(False); sc.set_checked(False)
+                                self.selected.discard(sp); sa.set_selected(False); sc.set_checked(False)
                         self._update_count()
+                    def _clicked(gesture, n, x, y):
+                        if p in self.selected:
+                            _do_select(False); return
+                        if risk_key and risk_key in self._RISK_WARNINGS:
+                            self._show_risk_dialog(risk_key,
+                                on_accept=lambda: _do_select(True),
+                                on_uncheck=lambda: _do_select(False))
+                        else:
+                            _do_select(True)
                     gc = Gtk.GestureClick()
                     gc.connect("released", _clicked)
                     a.add_controller(gc)
-                _bind(arow, cm, pkg["pkg"], sub_rows)
+                _bind(arow, cm, pkg["pkg"], sub_rows, risk_key=pkg.get("risk_warning"))
 
                 for sarow, scm, sp in sub_rows:
                     def _sub_bind(a, c, p):
@@ -735,6 +766,66 @@ class SetupWindow(Adw.ApplicationWindow):
         return lbr
 
     # ── Package row builder ───────────────────────────────────────────────────
+
+    # ── Risk warning dialog ───────────────────────────────────────────────────
+    _RISK_WARNINGS = {
+        "sober": ("risk_sober_title", "risk_sober_body"),
+        "ytdn":  ("risk_ytdn_title",  "risk_ytdn_body"),
+    }
+    _COUNTDOWN_SECS = 60
+
+    def _show_risk_dialog(self, pkg_key, on_accept, on_uncheck):
+        """60-second timed risk dialog for flagged Flatpak packages."""
+        title_key, body_key = self._RISK_WARNINGS[pkg_key]
+        dialog = Adw.Dialog()
+        dialog.set_title(T(title_key))
+        dialog.set_content_width(560)
+        dialog.set_content_height(500)
+        tb = Adw.ToolbarView()
+        hdr = Adw.HeaderBar()
+        hdr.set_show_end_title_buttons(False)
+        hdr.set_title_widget(Adw.WindowTitle(title=T(title_key), subtitle=""))
+        tb.add_top_bar(hdr)
+        outer = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=12)
+        outer.set_margin_top(16); outer.set_margin_bottom(16)
+        outer.set_margin_start(20); outer.set_margin_end(20)
+        icon = Gtk.Label(label="⚠️")
+        icon.add_css_class("title-1"); icon.set_halign(Gtk.Align.CENTER)
+        outer.append(icon)
+        body = Gtk.Label()
+        body.set_markup(T(body_key).replace("\\n", "\n"))
+        body.set_wrap(True); body.set_xalign(0)
+        body.set_justify(Gtk.Justification.LEFT); body.add_css_class("body")
+        outer.append(body)
+        btn_box = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=8)
+        btn_box.set_halign(Gtk.Align.END); btn_box.set_margin_top(8)
+        decline_btn = Gtk.Button(label=T("risk_decline"))
+        decline_btn.add_css_class("destructive-action")
+        accept_btn = Gtk.Button(label=T("risk_accept_countdown", secs=self._COUNTDOWN_SECS))
+        accept_btn.add_css_class("suggested-action"); accept_btn.set_sensitive(False)
+        btn_box.append(decline_btn); btn_box.append(accept_btn)
+        outer.append(btn_box)
+        tb.set_content(_scrolled(outer)); dialog.set_child(tb)
+        remaining = [self._COUNTDOWN_SECS]
+        timer_active = [True]
+        def _tick():
+            remaining[0] -= 1
+            if remaining[0] > 0:
+                accept_btn.set_label(T("risk_accept_countdown", secs=remaining[0])); return True
+            accept_btn.set_label(T("risk_accept_ready"))
+            accept_btn.set_sensitive(True)
+            timer_active[0] = False; return False
+        timer_id = GLib.timeout_add(1000, _tick)
+        def _cancel():
+            if timer_active[0]:
+                timer_active[0] = False
+                GLib.source_remove(timer_id)
+        def _on_accept(_b): _cancel(); dialog.close(); on_accept()
+        def _on_decline(_b): _cancel(); dialog.close(); on_uncheck()
+        accept_btn.connect("clicked", _on_accept)
+        decline_btn.connect("clicked", _on_decline)
+        dialog.present(self)
+
     def _open_brother_dialog(self, *_):
         """Open the Brother printer driver picker dialog with search."""
         dialog = Adw.Dialog()
@@ -853,7 +944,9 @@ class SetupWindow(Adw.ApplicationWindow):
             ("🎬", T("log_row_media_t"),   T("log_row_media_b")),
             ("📁", T("log_row_ft_t"),      T("log_row_ft_b")),
             ("🗂️", T("log_row_fm_t"),      T("log_row_fm_b")),
+            ("🖨️", T("log_row_printing_t"), T("log_row_printing_b")),
             ("💬", T("log_row_comms_t"),   T("log_row_comms_b")),
+            ("📦", T("log_row_other_t"),   T("log_row_other_b")),
             ("🔧", T("log_row_how_t"),      T("log_row_how_b")),
         ]
 
@@ -867,7 +960,8 @@ class SetupWindow(Adw.ApplicationWindow):
             row.add_prefix(pfx)
             group.append(row)
         self._log_desc.append(group)
-        self._log_outer.append(_scrolled(self._log_desc))
+        self._log_desc_sw = _scrolled(self._log_desc)
+        self._log_outer.append(self._log_desc_sw)
 
         # terminal
         self._log_tv = Gtk.TextView()
@@ -919,15 +1013,21 @@ class SetupWindow(Adw.ApplicationWindow):
         self._installing = True
         self._install_btn.set_sensitive(False)
 
-        self._switch_to_log()
-        self._log_desc.get_parent().set_visible(False)
+        self._navigate_to(self._log_page_name)
+        self._log_desc_sw.set_visible(False)
         self._log_sw.set_visible(True)
         self._prog_bar.set_visible(True)
 
-        all_pkgs    = ([self.browser["pkg"]] if self.browser else []) + [p for p in self.selected if not p.startswith("__")]
-        repo_pkgs   = [p for p in all_pkgs if not AUR_MAP.get(p, False) and p not in GITHUB_MAP]
-        aur_pkgs    = [p for p in all_pkgs if     AUR_MAP.get(p, False)]
-        github_pkgs = [p for p in all_pkgs if p in GITHUB_MAP]
+        _cups_real   = cups_pkg()
+        all_pkgs     = ([self.browser["pkg"]] if self.browser else []) + [
+            _cups_real if p == "__cups__" else p
+            for p in self.selected
+            if not p.startswith("__") or p == "__cups__"
+        ]
+        flatpak_pkgs = [p for p in all_pkgs if p in FLATPAK_MAP]
+        repo_pkgs    = [p for p in all_pkgs if not AUR_MAP.get(p, False) and p not in GITHUB_MAP and p not in FLATPAK_MAP]
+        aur_pkgs     = [p for p in all_pkgs if     AUR_MAP.get(p, False)]
+        github_pkgs  = [p for p in all_pkgs if p in GITHUB_MAP]
 
         self._log_append("╔══════════════════════════════════════════════╗", "header")
         self._log_append("  " + T("log_header"), "header")
@@ -941,11 +1041,12 @@ class SetupWindow(Adw.ApplicationWindow):
             self._log_append(T('log_browser_patch', exec=self.browser['exec']), 'patch')
         self._log_append("", "raw")
 
-        threading.Thread(target=self._install_thread, args=(repo_pkgs, aur_pkgs, github_pkgs), daemon=True).start()
+        threading.Thread(target=self._install_thread, args=(repo_pkgs, aur_pkgs, github_pkgs, flatpak_pkgs), daemon=True).start()
 
     def _install_thread(self, repo_pkgs, aur_pkgs, github_pkgs=None):
         github_pkgs = github_pkgs or []
-        total = max(len(repo_pkgs) + len(aur_pkgs) + len(github_pkgs) + (1 if self.browser else 0), 1)
+        all_pkgs    = repo_pkgs + aur_pkgs + github_pkgs
+        total = max(len(repo_pkgs) + len(aur_pkgs) + len(github_pkgs) + len(flatpak_pkgs) + (1 if self.browser else 0), 1)
         done  = [0]
 
         def ui(msg, frac=None):
@@ -979,16 +1080,30 @@ class SetupWindow(Adw.ApplicationWindow):
 
         for pkg in github_pkgs:
             info = GITHUB_MAP[pkg]
-            self._log_append(f"── GitHub: {pkg} ──", "header")
+            self._log_append(T("log_github_clone", pkg=pkg), "header")
             ui(f"Cloning {pkg}...")
             clone_dst = info.get("post_cwd", f"/tmp/{pkg}-install").rsplit("/", 1)[0]
             if os.path.exists(clone_dst):
                 shutil.rmtree(clone_dst)
             stream(info["install_cmd"], "repo")
-            self._log_append(f"Running makepkg for {pkg}...", "header")
+            self._log_append(T("log_github_build", pkg=pkg), "header")
             ui(f"Building {pkg}...")
             stream(info["post_cmd"] + ["--noconfirm"], "aur",
                    cwd=info.get("post_cwd"))
+            done[0] += 1
+
+        if flatpak_pkgs:
+            if not shutil.which("flatpak"):
+                self._log_append(T("log_flatpak_install"), "patch")
+                stream(["sudo","pacman","-S","--noconfirm","--needed","flatpak"], "repo")
+            else:
+                self._log_append(T("log_flatpak_ready"), "patch")
+            stream(["flatpak","remote-add","--if-not-exists","flathub",
+                    "https://dl.flathub.org/repo/flathub.flatpakrepo"], "repo")
+        for pkg in flatpak_pkgs:
+            self._log_append(f"── Flatpak: {pkg} ────────────────────────────────────────", "header")
+            ui(f"Installing {pkg} via Flatpak...")
+            stream(FLATPAK_MAP[pkg], "repo")
             done[0] += 1
 
         if self.browser:
@@ -1002,55 +1117,40 @@ class SetupWindow(Adw.ApplicationWindow):
             done[0] += 1
 
         # Patch $fileManager in hyprland.conf if a file manager was selected
-        _FM_EXEC = {
-            "nautilus":      "nautilus",
-            "nemo":          "nemo",
-            "thunar":        "thunar",
-            "dolphin":       "dolphin",
-            "pcmanfm":       "pcmanfm",
-            "caja":          "caja",
-            "krusader":      "krusader",
-            "doublecmd-qt6": "doublecmd",
-            "sunflower":     "sunflower",
-            "voiddream":     "kitty --hold VoidDream",
-            "yazi":          "kitty --hold yazi",
-            "lf":            "kitty --hold lf",
-            "ranger":        "kitty --hold ranger",
-            "nnn":           "kitty --hold nnn",
-            "mc":            "kitty --hold mc",
-            "broot":         "kitty --hold broot",
-            "vifm":          "kitty --hold vifm",
-            "superfile":     "kitty --hold superfile",
-        }
         selected_fm = next(
-            (pkg for pkg in all_pkgs if pkg in _FM_EXEC),
+            (p for p in all_pkgs if p in _FM_EXEC),
             None
         )
         if selected_fm and os.path.exists(HYPRLAND_CONF):
             fm_exec = _FM_EXEC[selected_fm]
             subprocess.run(["sed", "-i",
-                f"s|^[$]fileManager = .*|[$]fileManager = {fm_exec}|",
+                f"s|^\\$fileManager = .*|\\$fileManager = {fm_exec}|",
                 HYPRLAND_CONF])
-            self._log_append(f"── Patched $fileManager = {fm_exec}", "patch")
+            self._log_append(T("log_fm_patched", exec=fm_exec), "patch")
 
         # ── Start CUPS service if installed ──────────────────────────────────
         cups_installed = any(p.startswith("cups") for p in (repo_pkgs + aur_pkgs))
         if cups_installed:
             init = detect_init()
-            self._log_append("── Starting CUPS service ──", "header")
+            self._log_append(T("log_cups_start"), "header")
             if init == "runit":
                 subprocess.run(["sudo", "ln", "-sf", "/etc/runit/sv/cupsd", "/run/runit/service/"], check=False)
                 subprocess.run(["sudo", "sv", "up", "cupsd"], check=False)
-                self._log_append("CUPS enabled via runit (sv up cupsd)", "patch")
+                self._log_append(T("log_cups_runit"), "patch")
             elif init == "openrc":
                 subprocess.run(["sudo", "rc-update", "add", "cupsd", "default"], check=False)
                 subprocess.run(["sudo", "rc-service", "cupsd", "start"], check=False)
-                self._log_append("CUPS enabled via OpenRC", "patch")
-            elif init == "systemd":
-                subprocess.run(["sudo", "systemctl", "enable", "--now", "cups"], check=False)
-                self._log_append("CUPS enabled via systemd", "patch")
+                self._log_append(T("log_cups_openrc"), "patch")
+            elif init == "dinit":
+                subprocess.run(["sudo", "dinitctl", "enable", "cupsd"], check=False)
+                subprocess.run(["sudo", "dinitctl", "start", "cupsd"], check=False)
+                self._log_append(T("log_cups_dinit"), "patch")
+            elif init == "s6":
+                subprocess.run(["sudo", "s6-rc-bundle-update", "add", "default", "cupsd"], check=False)
+                subprocess.run(["sudo", "s6-rc", "change", "-u", "cupsd"], check=False)
+                self._log_append(T("log_cups_s6"), "patch")
             else:
-                self._log_append("Unknown init — start CUPS manually", "patch")
+                self._log_append(T("log_cups_unknown"), "patch")
 
         self._log_append("", "raw")
         self._log_append(T("log_done"), "done")
@@ -1058,6 +1158,9 @@ class SetupWindow(Adw.ApplicationWindow):
         GLib.idle_add(self._on_install_done)
 
     def _on_install_done(self):
+        self._installing = False
+        self._install_btn.set_sensitive(True)
+        self._skip_btn.set_label(T("done"))
         return False
 
 

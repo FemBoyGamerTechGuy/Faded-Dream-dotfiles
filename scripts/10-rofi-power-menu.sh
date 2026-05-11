@@ -1,5 +1,5 @@
 #!/bin/bash
-# [9/11] Rofi Power Menu
+# [10/13] Rofi Power Menu
 
 POWER_MENU_TMP=$(mktemp -d)
 

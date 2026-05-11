@@ -1,5 +1,5 @@
 #!/bin/bash
-# [7/11] GPU Drivers
+# [8/13] GPU Drivers
 
 KERNEL=$(uname -r)
 case "$KERNEL" in

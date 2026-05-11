@@ -32,7 +32,7 @@ DOTFILES_DIR="${HOME}/Faded-Dream-dotfiles"
 export DOTFILES_DIR
 
 SCRIPTS_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/scripts" && pwd)"
-TOTAL_STEPS=12
+TOTAL_STEPS=13
 
 # --- Preflight Checks --------------------------------------------------------
 [[ "$(id -u)" -eq 0 ]] && die "Do not run this script as root."
@@ -52,14 +52,15 @@ steps=(
   "02-dirs.sh"
   "03-packages.sh"
   "04-device.sh"
-  "05-shell.sh"
-  "06-aur.sh"
-  "07-gpu.sh"
-  "08-aur-packages.sh"
-  "09-rofi-power-menu.sh"
-  "10-lazyvim.sh"
-  "11-waybar.sh"
-  "12-dotfiles.sh"
+  "05-permissions.sh"
+  "06-shell.sh"
+  "07-aur.sh"
+  "08-gpu.sh"
+  "09-aur-packages.sh"
+  "10-rofi-power-menu.sh"
+  "11-lazyvim.sh"
+  "12-waybar.sh"
+  "13-dotfiles.sh"
 )
 
 for i in "${!steps[@]}"; do

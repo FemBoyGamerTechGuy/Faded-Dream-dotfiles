@@ -1,5 +1,5 @@
 #!/bin/bash
-# [5/11] Set zsh as default shell
+# [6/13] Set zsh as default shell
 
 ZSH_PATH="$(command -v zsh)"
 [[ -z "$ZSH_PATH" ]] && die "zsh not found after installation, something went wrong."

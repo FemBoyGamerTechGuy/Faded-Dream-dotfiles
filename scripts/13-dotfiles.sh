@@ -1,5 +1,5 @@
 #!/bin/bash
-# [12/12] Dotfile Deployment + Autostart
+# [13/13] Dotfile Deployment + Autostart
 
 deploy() {
   local src="$1" dst="$2"

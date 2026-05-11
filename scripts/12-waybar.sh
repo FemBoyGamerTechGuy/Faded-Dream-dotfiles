@@ -1,5 +1,5 @@
 #!/bin/bash
-# [11/12] Waybar Config Selection
+# [12/13] Waybar Config Selection
 
 echo ""
 echo -e "${BOLD}${CYAN}  Which Waybar layout would you like to use for your device?${RESET}"

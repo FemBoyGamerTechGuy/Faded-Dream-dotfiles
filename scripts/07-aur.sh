@@ -1,5 +1,5 @@
 #!/bin/bash
-# [6/11] AUR Helper (paru)
+# [7/13] AUR Helper (paru)
 
 if command -v paru &>/dev/null; then
   warn "paru already installed, skipping build."
