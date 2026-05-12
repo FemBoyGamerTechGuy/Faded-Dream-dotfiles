@@ -333,7 +333,7 @@ ACCENT_COLOR  = (0.486, 0.416, 0.969)   # #7c6af7
 ACCENT2_COLOR = (0.310, 0.851, 0.769)   # #4fd9c4
 
 # ── Hyprland config ───────────────────────────────────────────────────────────
-HYPRLAND_CONF = os.path.expanduser("~/.config/hypr/hyprland.conf")
+HYPRLAND_CONF = os.path.expanduser("~/.config/hypr/hyprland.lua")
 EXEC_LINE = ("exec-once = bash -c "
              "'[ -f \"$HOME/Faded-Dream-dotfiles/Faded Dream welcome app/faded-dream-setup.py\" ] "
              "&& python3 \"$HOME/Faded-Dream-dotfiles/Faded Dream welcome app/faded-dream-setup.py\"'")

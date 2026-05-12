@@ -1043,9 +1043,10 @@ class SetupWindow(Adw.ApplicationWindow):
 
         threading.Thread(target=self._install_thread, args=(repo_pkgs, aur_pkgs, github_pkgs, flatpak_pkgs), daemon=True).start()
 
-    def _install_thread(self, repo_pkgs, aur_pkgs, github_pkgs=None):
-        github_pkgs = github_pkgs or []
-        all_pkgs    = repo_pkgs + aur_pkgs + github_pkgs
+    def _install_thread(self, repo_pkgs, aur_pkgs, github_pkgs=None, flatpak_pkgs=None):
+        github_pkgs  = github_pkgs  or []
+        flatpak_pkgs = flatpak_pkgs or []
+        all_pkgs     = repo_pkgs + aur_pkgs + github_pkgs
         total = max(len(repo_pkgs) + len(aur_pkgs) + len(github_pkgs) + len(flatpak_pkgs) + (1 if self.browser else 0), 1)
         done  = [0]
 
@@ -1111,7 +1112,7 @@ class SetupWindow(Adw.ApplicationWindow):
             ui(T('prog_patch', exec=self.browser['exec']))
             if os.path.exists(HYPRLAND_CONF):
                 subprocess.run(["sed","-i",
-                    f"s|^\\$Browser = .*|\\$Browser = {self.browser['exec']}|",
+                    f's|^local browser = ".*"|local browser = "{self.browser["exec"]}"|',
                     HYPRLAND_CONF])
             self._log_append(T('log_browser_set', exec=self.browser['exec']), 'patch')
             done[0] += 1
@@ -1124,7 +1125,7 @@ class SetupWindow(Adw.ApplicationWindow):
         if selected_fm and os.path.exists(HYPRLAND_CONF):
             fm_exec = _FM_EXEC[selected_fm]
             subprocess.run(["sed", "-i",
-                f"s|^\\$fileManager = .*|\\$fileManager = {fm_exec}|",
+                f's|^local fileManager[[:space:]]*=[[:space:]]*"[^"]*"|local fileManager   = "{fm_exec}"|',
                 HYPRLAND_CONF])
             self._log_append(T("log_fm_patched", exec=fm_exec), "patch")
 
