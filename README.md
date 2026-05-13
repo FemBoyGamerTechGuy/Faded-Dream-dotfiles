@@ -4,13 +4,13 @@
 
 # Faded Dream Dotfiles
 
-> A straightforward [Hyprland](https://github.com/hyprwm/Hyprland) configuration focused on simplicity, compatibility, and daily usability.  
-> Built and tested on [Artix Linux](https://artixlinux.org/) (runit) with reliable XWayland support.
+> A polished, modular [Hyprland](https://github.com/hyprwm/Hyprland) configuration that looks great out of the box and is built to be easy to tweak, extend, or strip down to your taste.
+> Built and tested on [Artix Linux](https://artixlinux.org/) with support for **runit, openrc, dinit, and s6**.
 
 </div>
 
 > [!WARNING]
-> **🔨 Massive rework in progress.** The current version is stable and fully usable, but the project is being significantly redesigned under the hood. Things may change without notice. If you want something rock-solid right now, use the latest release tag.
+> **🔨 Massive rework in progress.** No release tag yet, but the current `main` branch is stable enough for daily use — install it, run it, it works. Things may still shift under the hood as the rework continues.
 
 ---
 
@@ -28,25 +28,21 @@
 
 ## Video Demonstration
 
-<!-- Replace with actual video link when ready -->
 > Video coming soon.
 
 ---
 
 ## Features
 
-- **Single central config** — one `hyprland.conf` to rule them all *(may split in the future)*
-- **XWayland compatibility** — Xorg apps run smoothly under Wayland
-- **Lightweight** — works on most hardware including integrated GPUs
-- **[First-run setup GUI](Faded%20Dream%20welcome%20app/faded-dream-setup.py)** — launches on first login to let you choose your browser, file manager, and optional packages (gaming, peripherals, office, media, comms). Can be re-opened at any time via the startup toggle.
-- **[Rofi](https://github.com/davatorium/rofi)** — application launcher
-- **[rofimoji](https://github.com/fdw/rofimoji)** — emoji picker with recent history
-- **[mpvpaper](https://github.com/GhostNaN/mpvpaper)** — wallpaper support (video and static)
-- **[swaync](https://github.com/ErikReider/SwayNotificationCenter)** — notifications
-- **Your choice of file manager** — selected at first login via the setup GUI
-- **[Catppuccin Macchiato](https://github.com/catppuccin/catppuccin)** — theme across terminal and GTK apps
-- **[Oh My Posh](https://ohmyposh.dev/)** — shell prompt with custom `if_tea` theme
-- **Designed for daily use** — no fluff, just a setup that works
+- **Looks good, stays clean** — polished out of the box with smooth animations, rounded corners, blur, and a cohesive Nord-inspired color palette. Every piece feels intentional, not thrown together.
+- **Modular by design** — each part of the config is its own thing. Don't want the emoji picker? Remove one line. Want a different file manager? Change one variable. Nothing is hardwired.
+- **Performs great on any hardware** — lightweight and snappy whether you're running it on a low-end laptop with integrated graphics or a full desktop with a dedicated GPU. Broad iGPU and dGPU support built in, including Intel, AMD, and NVIDIA.
+- **Multi-init support** — works with **runit, openrc, dinit, and s6**. The install script asks you which one you're using and handles service setup accordingly — no silent defaults, no guessing.
+- **Works on PCs and laptops** — laptop-specific packages (TLP, acpid, brightness control, bluetooth) are installed automatically when you select laptop during setup.
+- **[First-run setup GUI](Faded%20Dream%20welcome%20app/faded-dream-setup.py)** — launches on first login to let you choose your browser, file manager, and optional packages (gaming, peripherals, office, media, comms). Can be re-opened at any time.
+- **Lua-based Hyprland config** — uses the modern `hyprland.lua` format with clean structure and comments throughout. Easy to read, easy to edit.
+- **Themes cloned at install time** — Nordic v40, Sweet Dark, Papirus icons, and ArcDusk cursors are pulled fresh from their official repos during install. Nothing is bundled in the repo itself.
+- **XWayland compatibility** — Xorg apps run smoothly alongside native Wayland apps.
 
 ---
 
@@ -56,7 +52,7 @@
 |-----------|------|
 | Compositor | [Hyprland](https://github.com/hyprwm/Hyprland) |
 | Distribution | [Artix Linux](https://artixlinux.org/) *(multi-distro support planned)* |
-| Init System | runit |
+| Init System | runit / openrc / dinit / s6 |
 | Shell | [zsh](https://www.zsh.org/) |
 | Prompt | [Oh My Posh](https://ohmyposh.dev/) |
 | Terminal | [Kitty](https://github.com/kovidgoyal/kitty) |
@@ -67,7 +63,9 @@
 | File Manager | chosen at first login via setup GUI |
 | Browser | chosen at first login via setup GUI |
 | Emoji Picker | [rofimoji](https://github.com/fdw/rofimoji) |
-| Theme | [Catppuccin Macchiato](https://github.com/catppuccin/catppuccin) |
+| GTK Theme | [Nordic v40](https://github.com/EliverLara/Nordic) / [Sweet Dark v40](https://github.com/EliverLara/Sweet) |
+| Icon Theme | [Papirus](https://github.com/PapirusDevelopmentTeam/papirus-icon-theme) |
+| Cursor Theme | [ArcDusk Cursors](https://github.com/yeyushengfan258/ArcDusk-Cursors) |
 
 ---
 
@@ -82,6 +80,7 @@
 | `Super + V` | Toggle floating |
 | `Super + C` | Open clipboard manager (clipse) |
 | `Super + I` | Emoji picker (rofimoji) |
+| `Super + F` | Toggle fullscreen |
 | `Super + W` | Restart Waybar |
 | `Super + M` | Exit Hyprland |
 | `Alt + Space` | Open Rofi launcher |
@@ -89,6 +88,8 @@
 | `Super + Arrow keys` | Move focus |
 | `Super + [1-0]` | Switch workspace |
 | `Super + Shift + [1-0]` | Move window to workspace |
+| `Super + S` | Toggle scratchpad |
+| `Super + Shift + S` | Move window to scratchpad |
 
 ---
 
@@ -184,18 +185,19 @@ grandpa-style             pixelrobots
 
 - On first login after install, the **Faded Dream Setup** GUI launches automatically — pick your browser, file manager, and any optional packages, then hit Install.
 - To re-open the setup at any time: `python3 ~/Faded-Dream-dotfiles/Faded\ Dream\ welcome\ app/faded-dream-setup.py`
-- Use the startup toggle inside the app to control whether it launches on login
-- On first boot after install, PipeWire may take a few seconds to start — this is normal
-- `bat` must be installed for the `cat` alias to work — handled automatically by `install.sh`
-- The `if_tea` Oh My Posh theme requires the FiraCode Nerd Font to render correctly
-- GTK theming is managed via `nwg-look` — run it after first login to apply the theme
-- Keyboard layout is set to `us,ro` by default — change `kb_layout` and `kb_variant` in `hyprland.conf` to match your layout
+- Use the startup toggle inside the app to control whether it launches on login.
+- On first boot after install, PipeWire may take a few seconds to start — this is normal.
+- `bat` must be installed for the `cat` alias to work — handled automatically by `install.sh`.
+- The `if_tea` Oh My Posh theme requires the FiraCode Nerd Font to render correctly.
+- GTK theming is managed via `nwg-look` — run it after first login to apply the theme.
+- Keyboard layout is set to `us,ro` by default — change `kb_layout` and `kb_variant` in `hyprland.lua` to match your layout.
 
 ---
 
 ## Installation
 
-> Tested on a fresh Artix Linux (runit) install.
+> Tested on a fresh Artix Linux install with runit, openrc, dinit, and s6.
+
 ```bash
 git clone https://github.com/FemBoyGamerTechGuy/Faded-Dream-dotfiles.git ~/Faded-Dream-dotfiles
 cd ~/Faded-Dream-dotfiles
@@ -203,7 +205,7 @@ chmod +x install.sh
 ./install.sh
 ```
 
-The install script handles packages, AUR helper, GPU drivers, dotfile deployment, and shell setup. A reboot is triggered automatically at the end. On first Hyprland login the setup GUI launches to let you choose your browser, file manager, and optional packages. You can re-open it at any time.
+The install script will ask you which init system you're using, whether you're on a laptop or PC, and handles everything from there — packages, AUR helper, GPU drivers, themes, dotfile deployment, and shell setup. A reboot is triggered automatically at the end. On first Hyprland login the setup GUI launches to let you choose your browser, file manager, and optional packages.
 
 ---
 
@@ -219,7 +221,7 @@ Faded-Dream-dotfiles/
 │   ├── i18n.py
 │   └── widgets.py
 ├── hypr/
-│   └── hyprland.conf
+│   └── hyprland.lua
 ├── kitty/
 │   ├── kitty.conf
 │   └── current-theme.conf
@@ -232,11 +234,21 @@ Faded-Dream-dotfiles/
 ├── rofi for .config/
 ├── rofi for local then share/
 ├── fastfetch/
-├── gtk configs/
-│   ├── gtk-3.0/
-│   ├── gtk-4.0/
-│   ├── xsettingsd/
-│   └── .gtkrc-2.0
+├── scripts/
+│   ├── 01-repos.sh
+│   ├── 02-dirs.sh
+│   ├── 03-packages.sh
+│   ├── 04-device.sh
+│   ├── 05-permissions.sh
+│   ├── 06-shell.sh
+│   ├── 07-aur.sh
+│   ├── 08-gpu.sh
+│   ├── 09-aur-packages.sh
+│   ├── 10-rofi-power-menu.sh
+│   ├── 11-lazyvim.sh
+│   ├── 12-waybar.sh
+│   ├── 13-dotfiles.sh
+│   └── 14-themes.sh
 ├── .zsh/
 │   ├── themes/
 │   │   ├── if_tea.omp.json
@@ -245,15 +257,9 @@ Faded-Dream-dotfiles/
 │   ├── zsh-autosuggestions/
 │   └── zsh-syntax-highlighting/
 ├── .zshrc
-├── .themes/
-│   ├── Nordic-bluish-accent-v40/
-│   └── Sweet-Dark-v40/
-├── .icons/
-│   ├── ArcDusk-cursors/
-│   ├── Papirus/
-│   └── default/
 ├── config.ini for waypaper
 ├── pacman.conf
+├── CHANGELOG.md
 └── install.sh
 ```
 
@@ -271,16 +277,15 @@ They are **not** covered by this repository's GPL v3 license and remain under th
 | Papirus Icon Theme | GPL v3 | [github.com/PapirusDevelopmentTeam/papirus-icon-theme](https://github.com/PapirusDevelopmentTeam/papirus-icon-theme) |
 | Oh My Posh | MIT | [github.com/JanDeDobbeleer/oh-my-posh](https://github.com/JanDeDobbeleer/oh-my-posh) |
 | Nordic | GPL v3 | [github.com/EliverLara/Nordic](https://github.com/EliverLara/Nordic) |
-| FastCat | MIT | [github.com/m3tozz/FastCat](https://github.com/m3tozz/FastCat) |
-| ArcDusk-Cursors | GPL v3 | [github.com/yeyushengfan258/ArcDusk-Cursors](https://github.com/yeyushengfan258/ArcDusk-Cursors) |
 | Sweet | GPL v3 | [github.com/EliverLara/Sweet](https://github.com/EliverLara/Sweet) |
+| ArcDusk-Cursors | GPL v3 | [github.com/yeyushengfan258/ArcDusk-Cursors](https://github.com/yeyushengfan258/ArcDusk-Cursors) |
+| FastCat | MIT | [github.com/m3tozz/FastCat](https://github.com/m3tozz/FastCat) |
 
 ---
 
 ## Contributing
 
-Contributions are welcome! Please read the [CONTRIBUTING.md](CONTRIBUTING.md)
-before submitting a pull request.
+Contributions are welcome! Please read the [CONTRIBUTING.md](CONTRIBUTING.md) before submitting a pull request.
 
 ---
 
