@@ -423,9 +423,14 @@ class SetupWindow(Adw.ApplicationWindow):
         try:
             conf = open(HYPRLAND_CONF).read()
             if enabled and EXEC_LINE not in conf:
-                open(HYPRLAND_CONF, "w").write(conf + f"\n{EXEC_LINE}\n")
+                # Insert before the closing end) of hl.on("hyprland.start", ...)
+                conf = conf.replace(
+                    "\n    -- First-run setup",
+                    f"\n{EXEC_LINE}\n\n    -- First-run setup"
+                )
+                open(HYPRLAND_CONF, "w").write(conf)
             elif not enabled and EXEC_LINE in conf:
-                lines = [l for l in conf.splitlines() if EXEC_LINE not in l]
+                lines = [l for l in conf.splitlines() if EXEC_LINE.strip() not in l]
                 open(HYPRLAND_CONF, "w").write("\n".join(lines) + "\n")
         except Exception as e:
             print(f"[startup toggle] {e}")
@@ -1125,7 +1130,7 @@ class SetupWindow(Adw.ApplicationWindow):
         if selected_fm and os.path.exists(HYPRLAND_CONF):
             fm_exec = _FM_EXEC[selected_fm]
             subprocess.run(["sed", "-i",
-                f's|^local fileManager[[:space:]]*=[[:space:]]*"[^"]*"|local fileManager   = "{fm_exec}"|',
+                f's|^local fileManager = ".*"|local fileManager = "{fm_exec}"|',
                 HYPRLAND_CONF])
             self._log_append(T("log_fm_patched", exec=fm_exec), "patch")
 

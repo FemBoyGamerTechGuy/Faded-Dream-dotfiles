@@ -2,7 +2,8 @@
 # [14/14] Icon Themes & Cursors — cloned fresh from source
 
 ICONS_DIR="${HOME}/.icons"
-mkdir -p "$ICONS_DIR"
+THEMES_DIR="${HOME}/.themes"
+mkdir -p "$ICONS_DIR" "$THEMES_DIR"
 
 # ── Helper ────────────────────────────────────────────────────────────────────
 
@@ -20,6 +21,46 @@ clone_theme() {
     fi
 }
 
+# ── Nordic GTK Theme (v40) ────────────────────────────────────────────────────
+
+clone_theme \
+    "Nordic GTK Theme" \
+    "https://github.com/EliverLara/Nordic.git" \
+    "/tmp/nordic-theme"
+
+if [[ -d "/tmp/nordic-theme" ]]; then
+    # Copy v40 variants
+    for variant in Nordic-v40 Nordic-darker-v40 Nordic-bluish-accent-v40 \
+                   Nordic-standard-buttons-v40 Nordic-darker-standard-buttons-v40; do
+        [[ -d "/tmp/nordic-theme/$variant" ]] && \
+            cp -r "/tmp/nordic-theme/$variant" "$THEMES_DIR/" && \
+            info "Deployed $variant → $THEMES_DIR"
+    done
+    rm -rf /tmp/nordic-theme
+else
+    warn "Nordic source not found after clone, skipping."
+fi
+
+# ── Sweet Dark GTK Theme (v40) ────────────────────────────────────────────────
+
+clone_theme \
+    "Sweet Dark GTK Theme" \
+    "https://github.com/EliverLara/Sweet.git" \
+    "/tmp/sweet-theme"
+
+if [[ -d "/tmp/sweet-theme" ]]; then
+    for variant in Sweet-Dark-v40 Sweet-v40; do
+        [[ -d "/tmp/sweet-theme/$variant" ]] && \
+            cp -r "/tmp/sweet-theme/$variant" "$THEMES_DIR/" && \
+            info "Deployed $variant → $THEMES_DIR"
+    done
+    rm -rf /tmp/sweet-theme
+else
+    warn "Sweet source not found after clone, skipping."
+fi
+
+success "GTK themes deployed."
+
 # ── Papirus Icon Theme ────────────────────────────────────────────────────────
 
 clone_theme \
@@ -28,9 +69,7 @@ clone_theme \
     "/tmp/papirus-icon-theme"
 
 if [[ -d "/tmp/papirus-icon-theme/Papirus" ]]; then
-    cp -r /tmp/papirus-icon-theme/Papirus           "$ICONS_DIR/"
-    cp -r /tmp/papirus-icon-theme/Papirus-Dark      "$ICONS_DIR/" 2>/dev/null || true
-    cp -r /tmp/papirus-icon-theme/Papirus-Light     "$ICONS_DIR/" 2>/dev/null || true
+    cp -r /tmp/papirus-icon-theme/Papirus "$ICONS_DIR/"
     rm -rf /tmp/papirus-icon-theme
     info "Papirus icons deployed → $ICONS_DIR"
 else
@@ -44,18 +83,14 @@ clone_theme \
     "https://github.com/yeyushengfan258/ArcDusk-Cursors.git" \
     "/tmp/arcdusk-cursors"
 
-if [[ -d "/tmp/arcdusk-cursors" ]]; then
-    # Run the upstream install script if present, otherwise copy manually
-    if [[ -f "/tmp/arcdusk-cursors/install.sh" ]]; then
-        bash /tmp/arcdusk-cursors/install.sh && info "ArcDusk Cursors installed via install.sh"
-    else
-        cp -r /tmp/arcdusk-cursors/ArcDusk-cursors "$ICONS_DIR/" 2>/dev/null || \
-        cp -r /tmp/arcdusk-cursors               "$ICONS_DIR/ArcDusk-cursors"
-        info "ArcDusk Cursors deployed → $ICONS_DIR"
-    fi
+if [[ -d "/tmp/arcdusk-cursors/dist" ]]; then
+    mkdir -p "$ICONS_DIR/ArcDusk-cursors"
+    cp -r /tmp/arcdusk-cursors/dist/cursors  "$ICONS_DIR/ArcDusk-cursors/cursors"
+    cp    /tmp/arcdusk-cursors/dist/index.theme "$ICONS_DIR/ArcDusk-cursors/index.theme"
     rm -rf /tmp/arcdusk-cursors
+    info "ArcDusk Cursors deployed → $ICONS_DIR/ArcDusk-cursors"
 else
-    warn "ArcDusk Cursors source not found after clone, skipping deploy."
+    warn "ArcDusk Cursors dist/ not found after clone, skipping deploy."
 fi
 
 # ── Set default cursor ────────────────────────────────────────────────────────

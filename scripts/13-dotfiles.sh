@@ -1,5 +1,5 @@
 #!/bin/bash
-# [13/13] Dotfile Deployment + Autostart
+# [13/14] Dotfile Deployment + Autostart
 
 deploy() {
   local src="$1" dst="$2"
@@ -17,16 +17,11 @@ deploy "$DOTFILES_DIR/kitty"                       "${HOME}/.config/kitty"
 deploy "$DOTFILES_DIR/rofi for .config"            "${HOME}/.config/rofi"
 deploy "$DOTFILES_DIR/rofi for local then share"   "${HOME}/.local/share/rofi"
 deploy "$DOTFILES_DIR/fastfetch"                   "${HOME}/.config/fastfetch"
-deploy "$DOTFILES_DIR/gtk configs/gtk-3.0"         "${HOME}/.config/gtk-3.0"
-deploy "$DOTFILES_DIR/gtk configs/gtk-4.0"         "${HOME}/.config/gtk-4.0"
-deploy "$DOTFILES_DIR/gtk configs/xsettingsd"      "${HOME}/.config/xsettingsd"
 deploy "$DOTFILES_DIR/config.ini for waypaper"     "${HOME}/.config/waypaper/config.ini"
 
 # Home directory deployments
 deploy "$DOTFILES_DIR/.zshrc"                      "${HOME}/.zshrc"
 deploy "$DOTFILES_DIR/.zsh"                        "${HOME}/.zsh"
-deploy "$DOTFILES_DIR/gtk configs/.gtkrc-2.0"      "${HOME}/.gtkrc-2.0"
-deploy "$DOTFILES_DIR/.themes"                     "${HOME}/.themes"
 
 success "Dotfiles deployed."
 

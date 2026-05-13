@@ -1,15 +1,28 @@
 #!/bin/bash
-# [4/13] Device Type
+# [4/14] Device Type
 
-INIT_CACHE="/tmp/.faded-dream-init"
+echo ""
+echo -e "${BOLD}${CYAN}  Which init system are you using?${RESET}"
+echo -e "  1) runit"
+echo -e "  2) openrc"
+echo -e "  3) dinit"
+echo -e "  4) s6"
+echo ""
+read -rp "  Enter choice [1-4]: " INIT_CHOICE
 
-if [[ -f "$INIT_CACHE" ]]; then
-  INIT_SYSTEM="$(cat "$INIT_CACHE")"
-  info "Using init system: ${BOLD}${INIT_SYSTEM}${RESET}"
-else
-  warn "Init system not detected from previous step — defaulting to runit."
-  INIT_SYSTEM="runit"
-fi
+case "$INIT_CHOICE" in
+  1) INIT_SYSTEM="runit"  ;;
+  2) INIT_SYSTEM="openrc" ;;
+  3) INIT_SYSTEM="dinit"  ;;
+  4) INIT_SYSTEM="s6"     ;;
+  *)
+    warn "Invalid choice — please re-run and select a valid option."
+    exit 1
+    ;;
+esac
+
+info "Init system set to: ${BOLD}${INIT_SYSTEM}${RESET}"
+echo "$INIT_SYSTEM" > /tmp/.faded-dream-init
 
 echo ""
 echo -e "${BOLD}${CYAN}  What type of device are you installing on?${RESET}"

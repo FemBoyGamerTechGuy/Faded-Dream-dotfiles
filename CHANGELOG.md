@@ -4,6 +4,34 @@ All notable changes to this project will be documented here.
 
 ---
 
+## [Released] — 2026-05-13
+
+### Fixed
+
+- **Startup toggle writing invalid syntax to hyprland.lua**
+  The welcome app toggle was appending a raw `exec-once = ...` line (old `.conf` syntax) to the Lua config, causing a syntax error on line 238. Fixed by updating `EXEC_LINE` in `packages.py` to proper Lua `hl.exec_cmd(...)` syntax, and rewriting the toggle logic to insert/remove the line inside the `hl.on("hyprland.start", ...)` block instead of appending to the end of the file.
+  _Files:_ `Faded Dream welcome app/packages.py`, `Faded Dream welcome app/faded-dream-setup.py`, `hypr/hyprland.lua`
+
+- **Cursor theme not applying (ArcDusk)**
+  The `14-themes.sh` script was looking for the wrong folder structure in the ArcDusk repo. Fixed to correctly copy from `dist/cursors/` and `dist/index.theme` into `~/.icons/ArcDusk-cursors/`.
+  _File:_ `scripts/14-themes.sh`
+
+- **Init system defaulting to runit silently**
+  `04-device.sh` was reading from a cache file and falling back to runit if not found. Removed the autodetect entirely — the user is now prompted to pick their init system explicitly. `05-permissions.sh` updated to read from the cache written by `04-device.sh` and exit cleanly if missing.
+  _Files:_ `scripts/04-device.sh`, `scripts/05-permissions.sh`
+
+### Changed
+
+- **Bundled `.icons` and `.themes` replaced with cloned sources**
+  Removed the 43k+ SVG Papirus icon files and bundled GTK themes from the repo. A new script `14-themes.sh` now clones them fresh from their official repos at install time: Papirus (base only), Nordic v40 variants, Sweet Dark v40, and ArcDusk Cursors.
+  _Files:_ `scripts/13-dotfiles.sh`, `scripts/14-themes.sh`, `install.sh`
+
+- **Removed gtk configs and .themes from dotfile deployment**
+  GTK theme files are now handled entirely by `14-themes.sh` so the deploy lines for `gtk configs/` and `.themes` have been removed from `13-dotfiles.sh`.
+  _File:_ `scripts/13-dotfiles.sh`
+
+---
+
 ## [Released] — 2026-05-12
 
 ### Fixed
@@ -21,6 +49,4 @@ All notable changes to this project will be documented here.
   - Browser patch `sed` pattern updated from `$Browser = ...` (conf syntax) → `local browser = "..."` (Lua syntax)
   - File manager patch `sed` pattern updated from `$fileManager = ...` (conf syntax) → `local fileManager = "..."` (Lua syntax)
 
-  _Files changed:_
-  - `Faded Dream welcome app/packages.py`
-  - `Faded Dream welcome app/faded-dream-setup.py`
+  _Files:_ `Faded Dream welcome app/packages.py`, `Faded Dream welcome app/faded-dream-setup.py`
