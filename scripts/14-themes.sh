@@ -1,6 +1,18 @@
 #!/bin/bash
 # [14/14] Icon Themes & Cursors — cloned fresh from source
 
+# ── Standalone helpers (no need to source install.sh) ─────────────────────────
+
+BOLD="\e[1m"
+RESET="\e[0m"
+GREEN="\e[32m"
+YELLOW="\e[33m"
+CYAN="\e[36m"
+
+info()    { echo -e "  ${CYAN}${BOLD}info:${RESET}  $*"; }
+warn()    { echo -e "  ${YELLOW}${BOLD}warn:${RESET}  $*"; }
+success() { echo -e "  ${GREEN}${BOLD}done:${RESET}  $*"; }
+
 ICONS_DIR="${HOME}/.icons"
 THEMES_DIR="${HOME}/.themes"
 mkdir -p "$ICONS_DIR" "$THEMES_DIR"
@@ -23,41 +35,23 @@ clone_theme() {
 
 # ── Nordic GTK Theme (v40) ────────────────────────────────────────────────────
 
-clone_theme \
-    "Nordic GTK Theme" \
-    "https://github.com/EliverLara/Nordic.git" \
-    "/tmp/nordic-theme"
-
-if [[ -d "/tmp/nordic-theme" ]]; then
-    # Copy v40 variants
-    for variant in Nordic-v40 Nordic-darker-v40 Nordic-bluish-accent-v40 \
-                   Nordic-standard-buttons-v40 Nordic-darker-standard-buttons-v40; do
-        [[ -d "/tmp/nordic-theme/$variant" ]] && \
-            cp -r "/tmp/nordic-theme/$variant" "$THEMES_DIR/" && \
-            info "Deployed $variant → $THEMES_DIR"
-    done
-    rm -rf /tmp/nordic-theme
-else
-    warn "Nordic source not found after clone, skipping."
-fi
+info "Downloading Nordic GTK Theme v2.2.0..."
+wget -q "https://github.com/EliverLara/Nordic/releases/download/v2.2.0/Nordic-bluish-accent-v40.tar.xz" \
+    -O /tmp/Nordic-bluish-accent-v40.tar.xz && \
+    tar -xf /tmp/Nordic-bluish-accent-v40.tar.xz -C "$THEMES_DIR/" && \
+    rm /tmp/Nordic-bluish-accent-v40.tar.xz && \
+    info "Nordic deployed → $THEMES_DIR/Nordic-bluish-accent-v40" || \
+    warn "Nordic download failed."
 
 # ── Sweet Dark GTK Theme (v40) ────────────────────────────────────────────────
 
-clone_theme \
-    "Sweet Dark GTK Theme" \
-    "https://github.com/EliverLara/Sweet.git" \
-    "/tmp/sweet-theme"
-
-if [[ -d "/tmp/sweet-theme" ]]; then
-    for variant in Sweet-Dark-v40 Sweet-v40; do
-        [[ -d "/tmp/sweet-theme/$variant" ]] && \
-            cp -r "/tmp/sweet-theme/$variant" "$THEMES_DIR/" && \
-            info "Deployed $variant → $THEMES_DIR"
-    done
-    rm -rf /tmp/sweet-theme
-else
-    warn "Sweet source not found after clone, skipping."
-fi
+info "Downloading Sweet Dark GTK Theme v6.0..."
+wget -q "https://github.com/EliverLara/Sweet/releases/download/v6.0/Sweet-Dark-v40.tar.xz" \
+    -O /tmp/Sweet-Dark-v40.tar.xz && \
+    tar -xf /tmp/Sweet-Dark-v40.tar.xz -C "$THEMES_DIR/" && \
+    rm /tmp/Sweet-Dark-v40.tar.xz && \
+    info "Sweet Dark deployed → $THEMES_DIR/Sweet-Dark-v40" || \
+    warn "Sweet Dark download failed."
 
 success "GTK themes deployed."
 

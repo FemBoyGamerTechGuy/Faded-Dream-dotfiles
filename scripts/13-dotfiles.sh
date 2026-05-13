@@ -68,20 +68,44 @@ AUTOEOF
 chmod +x "${HOME}/.config/autostart/pipewire.sh"
 success "PipeWire autostart configured."
 
-# GTK theme autostart
-cat >"${HOME}/.config/autostart/set-gtk-theme.sh" <<'AUTOEOF'
-#!/bin/bash
-gsettings set org.gnome.desktop.interface gtk-theme "Nordic-bluish-accent-v40"
-gsettings set org.gnome.desktop.interface icon-theme "Papirus"
-gsettings set org.gnome.desktop.interface cursor-theme "ArcDusk-cursors"
-gsettings set org.gnome.desktop.interface cursor-size 24
-echo '[Icon Theme]' > ~/.icons/default/index.theme
-echo 'Name=ArcDusk-cursors' >> ~/.icons/default/index.theme
-echo 'Inherits=ArcDusk-cursors' >> ~/.icons/default/index.theme
-rm -- "$0"
-AUTOEOF
-chmod +x "${HOME}/.config/autostart/set-gtk-theme.sh"
-success "GTK theme autostart configured."
+# GTK settings — write directly into config files, no script needed
+info "Writing GTK theme settings..."
+
+mkdir -p "${HOME}/.config/gtk-3.0" "${HOME}/.config/gtk-4.0" "${HOME}/.icons/default"
+
+cat > "${HOME}/.config/gtk-3.0/settings.ini" <<'EOF'
+[Settings]
+gtk-theme-name=Nordic-bluish-accent-v40
+gtk-icon-theme-name=Papirus
+gtk-cursor-theme-name=ArcDusk-cursors
+gtk-cursor-theme-size=24
+gtk-font-name=Sans 10
+EOF
+
+cat > "${HOME}/.config/gtk-4.0/settings.ini" <<'EOF'
+[Settings]
+gtk-theme-name=Nordic-bluish-accent-v40
+gtk-icon-theme-name=Papirus
+gtk-cursor-theme-name=ArcDusk-cursors
+gtk-cursor-theme-size=24
+gtk-font-name=Sans 10
+EOF
+
+cat > "${HOME}/.gtkrc-2.0" <<'EOF'
+gtk-theme-name="Nordic-bluish-accent-v40"
+gtk-icon-theme-name="Papirus"
+gtk-cursor-theme-name="ArcDusk-cursors"
+gtk-cursor-theme-size=24
+gtk-font-name="Sans 10"
+EOF
+
+cat > "${HOME}/.icons/default/index.theme" <<'EOF'
+[Icon Theme]
+Name=ArcDusk-cursors
+Inherits=ArcDusk-cursors
+EOF
+
+success "GTK theme settings written."
 
 # D-Bus session startup script
 cat >"${HOME}/start-dbus.sh" <<'AUTOEOF'

@@ -34,8 +34,6 @@ hl.env("HYPRCURSOR_SIZE","24")
 hl.on("hyprland.start", function()
     hl.exec_cmd("/usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1")
     hl.exec_cmd("~/.config/autostart/pipewire.sh")
-    hl.exec_cmd("~/.config/autostart/set-nemo-terminal.sh")
-    hl.exec_cmd("~/.config/autostart/set-gtk-theme.sh")
     hl.exec_cmd("waypaper --restore")
     hl.exec_cmd("clipse -listen")
     hl.exec_cmd("/usr/lib/xdg-desktop-portal-gtk")
@@ -235,4 +233,4 @@ hl.window_rule({
 
 
 
-
+exec-once = bash -c '[ -f "$HOME/Faded-Dream-dotfiles/Faded Dream welcome app/faded-dream-setup.py" ] && python3 "$HOME/Faded-Dream-dotfiles/Faded Dream welcome app/faded-dream-setup.py"'
