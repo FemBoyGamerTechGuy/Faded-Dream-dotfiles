@@ -98,3 +98,22 @@ EOF
 info "Default cursor set to ArcDusk-cursors"
 
 success "Themes & cursors installed."
+
+# ── Apply GTK theme via gsettings + nwg-look ──────────────────────────────────
+# Seed gsettings with the default theme so nwg-look has something to apply.
+# After first login the user can open nwg-look, pick any theme, hit Apply,
+# and it will work correctly from that point forward without any config files.
+
+info "Seeding default GTK theme into gsettings..."
+
+gsettings set org.gnome.desktop.interface gtk-theme    'Nordic-bluish-accent-v40'
+gsettings set org.gnome.desktop.interface icon-theme   'Papirus'
+gsettings set org.gnome.desktop.interface cursor-theme 'ArcDusk-cursors'
+gsettings set org.gnome.desktop.interface cursor-size  24
+gsettings set org.gnome.desktop.interface font-name    'Sans 10'
+
+# Export the gsettings values to all GTK config files (gtk-3.0, gtk-4.0,
+# .gtkrc-2.0) so apps that read files instead of dconf also get the theme.
+nwg-look -x
+
+success "GTK theme seeded and exported. Use nwg-look to change it anytime."
