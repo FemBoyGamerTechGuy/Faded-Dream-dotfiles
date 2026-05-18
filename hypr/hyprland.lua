@@ -38,8 +38,8 @@ hl.on("hyprland.start", function()
     hl.exec_cmd("clipse -listen")
     hl.exec_cmd("/usr/lib/xdg-desktop-portal-gtk")
 
-    -- First-run setup — toggle inside the app controls whether this runs on login.
-    hl.exec_cmd("bash -c '[ -f \"$HOME/Faded-Dream-dotfiles/Faded Dream welcome app/faded-dream-setup.py\" ] && python3 \"$HOME/Faded-Dream-dotfiles/Faded Dream welcome app/faded-dream-setup.py\"'")
+    -- First-run setup — controlled by sentinel file ~/.config/faded-dream-autostart
+    hl.exec_cmd("bash -c '[ -f \"$HOME/.config/faded-dream-autostart\" ] && [ -f \"$HOME/Faded-Dream-dotfiles/Faded Dream welcome app/faded-dream-setup.py\" ] && python3 \"$HOME/Faded-Dream-dotfiles/Faded Dream welcome app/faded-dream-setup.py\"'")
 end)
 
 -- ── Look and Feel ─────────────────────────────────────────────────────────────────────

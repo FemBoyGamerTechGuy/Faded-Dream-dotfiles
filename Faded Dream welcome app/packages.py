@@ -334,7 +334,7 @@ ACCENT2_COLOR = (0.310, 0.851, 0.769)   # #4fd9c4
 
 # ── Hyprland config ───────────────────────────────────────────────────────────
 HYPRLAND_CONF = os.path.expanduser("~/.config/hypr/hyprland.lua")
-EXEC_LINE = ('    hl.exec_cmd("bash -c \'[ -f \\"$HOME/Faded-Dream-dotfiles/Faded Dream welcome app/faded-dream-setup.py\\" ] && python3 \\"$HOME/Faded-Dream-dotfiles/Faded Dream welcome app/faded-dream-setup.py\\"\'")')
+SENTINEL_FILE = os.path.expanduser("~/.config/faded-dream-autostart")
 
 # ── Init system detection ─────────────────────────────────────────────────────
 _INIT_SYSTEM: str | None = None

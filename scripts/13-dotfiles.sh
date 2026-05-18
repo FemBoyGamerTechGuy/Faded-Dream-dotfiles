@@ -1,5 +1,5 @@
 #!/bin/bash
-# [13/13] Dotfile Deployment + Autostart
+# [13/14] Dotfile Deployment + Autostart
 
 deploy() {
   local src="$1" dst="$2"
@@ -12,18 +12,22 @@ deploy() {
 }
 
 # Config folder deployments
-deploy "$DOTFILES_DIR/hypr" "${HOME}/.config/hypr"
-deploy "$DOTFILES_DIR/kitty" "${HOME}/.config/kitty"
-deploy "$DOTFILES_DIR/rofi for .config" "${HOME}/.config/rofi"
-deploy "$DOTFILES_DIR/rofi for local then share" "${HOME}/.local/share/rofi"
-deploy "$DOTFILES_DIR/fastfetch" "${HOME}/.config/fastfetch"
-deploy "$DOTFILES_DIR/config.ini for waypaper" "${HOME}/.config/waypaper/config.ini"
+deploy "$DOTFILES_DIR/hypr"                        "${HOME}/.config/hypr"
+deploy "$DOTFILES_DIR/kitty"                       "${HOME}/.config/kitty"
+deploy "$DOTFILES_DIR/rofi for .config"            "${HOME}/.config/rofi"
+deploy "$DOTFILES_DIR/rofi for local then share"   "${HOME}/.local/share/rofi"
+deploy "$DOTFILES_DIR/fastfetch"                   "${HOME}/.config/fastfetch"
+deploy "$DOTFILES_DIR/config.ini for waypaper"     "${HOME}/.config/waypaper/config.ini"
 
 # Home directory deployments
-deploy "$DOTFILES_DIR/.zshrc" "${HOME}/.zshrc"
-deploy "$DOTFILES_DIR/.zsh" "${HOME}/.zsh"
+deploy "$DOTFILES_DIR/.zshrc"                      "${HOME}/.zshrc"
+deploy "$DOTFILES_DIR/.zsh"                        "${HOME}/.zsh"
 
 success "Dotfiles deployed."
+
+# Create sentinel so the welcome app runs on first boot
+touch "${HOME}/.config/faded-dream-autostart"
+success "Autostart sentinel created."
 
 # PipeWire autostart
 cat >"${HOME}/.config/autostart/pipewire.sh" <<'AUTOEOF'
@@ -73,7 +77,7 @@ cat >"${HOME}/start-hyprland.sh" <<'HLEOF'
 #!/bin/bash
 # Launch Hyprland under a D-Bus session so portals, tray apps,
 # and systemd user services all get the correct environment.
-exec dbus-run-session start-hyprland
+exec dbus-run-session Hyprland
 HLEOF
 chmod +x "${HOME}/start-hyprland.sh"
 success "start-hyprland.sh created at ~/start-hyprland.sh"

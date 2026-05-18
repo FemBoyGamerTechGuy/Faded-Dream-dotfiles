@@ -55,7 +55,7 @@ from i18n    import T, TD, TN, TS, set_lang, _LANG
 from packages import (BROWSERS, GAMING, FILE_MANAGERS, GITHUB_MAP, FLATPAK_MAP, OTHER, LANG_LIST, LO_CODES, TB_CODES,
                       OFFICE_BASE, MEDIA, COMMS, PERIPHERALS, FILE_TRANSFER,
                       PRINTING, BROTHER_DRIVERS, detect_init, cups_pkg,
-                      REPO_STYLE, AUR_MAP, HYPRLAND_CONF, EXEC_LINE,
+                      REPO_STYLE, AUR_MAP, HYPRLAND_CONF, SENTINEL_FILE,
                       ACCENT_COLOR, ACCENT2_COLOR)
 from widgets  import (APP_CSS, _inject_css, _repo_badge, _faded_dream_badge, _section_label,
                       _sep, _scrolled, _boxed_list,
@@ -415,25 +415,21 @@ class SetupWindow(Adw.ApplicationWindow):
 
     # ── Startup toggle ────────────────────────────────────────────────────────
     def _startup_enabled(self):
-        try:    return EXEC_LINE in open(HYPRLAND_CONF).read()
-        except: return False
+        return os.path.exists(SENTINEL_FILE)
 
     def _on_startup_toggle(self, sw, _param):
-        enabled = sw.get_active()
-        try:
-            conf = open(HYPRLAND_CONF).read()
-            if enabled and EXEC_LINE not in conf:
-                # Insert before the closing end) of hl.on("hyprland.start", ...)
-                conf = conf.replace(
-                    "\n    -- First-run setup",
-                    f"\n{EXEC_LINE}\n\n    -- First-run setup"
-                )
-                open(HYPRLAND_CONF, "w").write(conf)
-            elif not enabled and EXEC_LINE in conf:
-                lines = [l for l in conf.splitlines() if EXEC_LINE.strip() not in l]
-                open(HYPRLAND_CONF, "w").write("\n".join(lines) + "\n")
-        except Exception as e:
-            print(f"[startup toggle] {e}")
+        if sw.get_active():
+            try:
+                open(SENTINEL_FILE, "w").close()
+            except Exception as e:
+                print(f"[startup toggle] {e}")
+        else:
+            try:
+                os.remove(SENTINEL_FILE)
+            except FileNotFoundError:
+                pass
+            except Exception as e:
+                print(f"[startup toggle] {e}")
 
     # ── Welcome page ──────────────────────────────────────────────────────────
     def _page_welcome(self):
