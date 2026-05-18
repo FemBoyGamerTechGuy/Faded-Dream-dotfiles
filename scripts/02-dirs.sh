@@ -1,5 +1,5 @@
 #!/bin/bash
-# [2/11] Directory Structure
+# [2/13] Directory Structure
 
 mkdir -p \
   "${HOME}/.config" \

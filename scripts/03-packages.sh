@@ -1,5 +1,5 @@
 #!/bin/bash
-# [3/11] Core Packages
+# [3/13] Core Packages
 
 PACKAGES=(
   # Desktop / WM
