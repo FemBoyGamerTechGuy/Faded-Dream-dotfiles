@@ -231,6 +231,3 @@ hl.window_rule({
     float = true,
 })
 
-
-
-exec-once = bash -c '[ -f "$HOME/Faded-Dream-dotfiles/Faded Dream welcome app/faded-dream-setup.py" ] && python3 "$HOME/Faded-Dream-dotfiles/Faded Dream welcome app/faded-dream-setup.py"'
