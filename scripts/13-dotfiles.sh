@@ -77,7 +77,7 @@ cat >"${HOME}/start-hyprland.sh" <<'HLEOF'
 #!/bin/bash
 # Launch Hyprland under a D-Bus session so portals, tray apps,
 # and systemd user services all get the correct environment.
-exec dbus-run-session Hyprland
+exec dbus-run-session start-hyprland
 HLEOF
 chmod +x "${HOME}/start-hyprland.sh"
 success "start-hyprland.sh created at ~/start-hyprland.sh"
