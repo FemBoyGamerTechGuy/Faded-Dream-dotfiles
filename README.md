@@ -63,10 +63,6 @@
 | File Manager | chosen at first login via setup GUI |
 | Browser | chosen at first login via setup GUI |
 | Emoji Picker | [rofimoji](https://github.com/fdw/rofimoji) |
-| GTK Theme | [Nordic v40](https://github.com/EliverLara/Nordic) / [Sweet Dark v40](https://github.com/EliverLara/Sweet) |
-| Icon Theme | [Papirus](https://github.com/PapirusDevelopmentTeam/papirus-icon-theme) |
-| Cursor Theme | [ArcDusk Cursors](https://github.com/yeyushengfan258/ArcDusk-Cursors) |
-
 ---
 
 ## Keybinds
@@ -274,11 +270,7 @@ They are **not** covered by this repository's GPL v3 license and remain under th
 |---------|---------|--------|
 | zsh-syntax-highlighting | BSD-3 Clause | [github.com/zsh-users/zsh-syntax-highlighting](https://github.com/zsh-users/zsh-syntax-highlighting) |
 | zsh-autosuggestions | MIT | [github.com/zsh-users/zsh-autosuggestions](https://github.com/zsh-users/zsh-autosuggestions) |
-| Papirus Icon Theme | GPL v3 | [github.com/PapirusDevelopmentTeam/papirus-icon-theme](https://github.com/PapirusDevelopmentTeam/papirus-icon-theme) |
 | Oh My Posh | MIT | [github.com/JanDeDobbeleer/oh-my-posh](https://github.com/JanDeDobbeleer/oh-my-posh) |
-| Nordic | GPL v3 | [github.com/EliverLara/Nordic](https://github.com/EliverLara/Nordic) |
-| Sweet | GPL v3 | [github.com/EliverLara/Sweet](https://github.com/EliverLara/Sweet) |
-| ArcDusk-Cursors | GPL v3 | [github.com/yeyushengfan258/ArcDusk-Cursors](https://github.com/yeyushengfan258/ArcDusk-Cursors) |
 | FastCat | MIT | [github.com/m3tozz/FastCat](https://github.com/m3tozz/FastCat) |
 
 ---
