@@ -209,18 +209,33 @@ The install script will ask you which init system you're using, whether you're o
 
 ```
 Faded-Dream-dotfiles/
-|-- ArchLinux Faded Dream Dotfiles/   (systemd variant)
+|-- ArchLinux Faded Dream Dotfiles/   (systemd variant: Arch Linux)
 |   |-- install.sh
 |   |-- pacman.conf
+|   |-- config.ini for waypaper
+|   |-- .zshrc
 |   |-- Faded Dream welcome app/
+|   |   |-- faded-dream-setup.py
+|   |   |-- packages.py
+|   |   |-- i18n.py
+|   |   `-- widgets.py
+|   |-- hypr/
+|   |-- kitty/
+|   |-- fastfetch/
+|   |-- .zsh/
 |   |-- scripts/
-|   |-- hypr/   kitty/   fastfetch/   .zsh/   .zshrc
-|   |-- Previews/   rofi for .config/   rofi for local then share/
-|   |   waybar laptop/   waybar pc/   config.ini for waypaper   faded-dream-logo.svg
-|-- ArtixLinux Faded Dream Dotfiles/   (runit / openrc / dinit / s6 variant)
-|   |-- (same self-contained layout as the Arch folder above)
-|-- README.md        CHANGELOG.md      LICENSE      CONTRIBUTING.md
-`-- .git/
+|   |-- rofi for .config/
+|   |-- rofi for local then share/
+|   |-- waybar laptop/
+|   `-- waybar pc/
+|-- ArtixLinux Faded Dream Dotfiles/   (runit / openrc / dinit / s6: Artix Linux)
+|   `-- (same self-contained layout as the systemd variant above)
+|-- README.md
+|-- CHANGELOG.md
+|-- LICENSE
+|-- CONTRIBUTING.md
+|-- faded-dream-logo.svg
+`-- Previews/
 ```
 
 ---
