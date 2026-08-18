@@ -5,7 +5,7 @@
 # Faded Dream Dotfiles
 
 > A polished, modular [Hyprland](https://github.com/hyprwm/Hyprland) configuration that looks great out of the box and is built to be easy to tweak, extend, or strip down to your taste.
-> Built and tested on [Artix Linux](https://artixlinux.org/) with [systemd](https://wiki.archlinux.org/title/Systemd) (Arch) and **runit, openrc, dinit, and s6** (Artix).
+> Tested on [Arch Linux](https://archlinux.org/) and [Artix Linux](https://artixlinux.org/) with support for **systemd, runit, openrc, dinit, and s6**.
 
 </div>
 
@@ -37,7 +37,7 @@
 - **Looks good, stays clean** — polished out of the box with smooth animations, rounded corners, blur, and a cohesive Nord-inspired color palette. Every piece feels intentional, not thrown together.
 - **Modular by design** — each part of the config is its own thing. Don't want the emoji picker? Remove one line. Want a different file manager? Change one variable. Nothing is hardwired.
 - **Performs great on any hardware** — lightweight and snappy whether you're running it on a low-end laptop with integrated graphics or a full desktop with a dedicated GPU. Broad iGPU and dGPU support built in, including Intel, AMD, and NVIDIA.
-- **Multi-init support** — works with **systemd** (Arch Linux) and **runit, openrc, dinit, and s6** (Artix Linux). The install script asks you which one you're using and handles service setup accordingly — no silent defaults, no guessing.
+- **Multi-init support** — works with **systemd, runit, openrc, dinit, and s6**. The install script asks you which one you're using and handles service setup accordingly — no silent defaults, no guessing.
 - **Works on PCs and laptops** — laptop-specific packages (TLP, acpid, brightness control, bluetooth) are installed automatically when you select laptop during setup.
 - **[First-run setup GUI](Faded%20Dream%20welcome%20app/faded-dream-setup.py)** — launches on first login to let you choose your browser, file manager, and optional packages (gaming, peripherals, office, media, comms). Can be re-opened at any time.
 - **Lua-based Hyprland config** — uses the modern `hyprland.lua` format with clean structure and comments throughout. Easy to read, easy to edit.
@@ -50,8 +50,8 @@
 | Component | Tool |
 |-----------|------|
 | Compositor | [Hyprland](https://github.com/hyprwm/Hyprland) |
-| Distribution | [Artix Linux](https://artixlinux.org/) (dual distro: Arch Linux or Artix Linux) |
-| Init System | systemd (Arch) / runit, openrc, dinit, s6 (Artix) |
+| Distribution | [Arch Linux](https://archlinux.org/) / [Artix Linux](https://artixlinux.org/) (any pacman-based distro works) |
+| Init System | systemd, runit, openrc, dinit, s6 |
 | Shell | [zsh](https://www.zsh.org/) |
 | Prompt | [Oh My Posh](https://ohmyposh.dev/) |
 | Terminal | [Kitty](https://github.com/kovidgoyal/kitty) |
@@ -192,7 +192,7 @@ grandpa-style             pixelrobots
 
 ## Installation
 
-> Tested on fresh installs of both Arch Linux (systemd) and Artix Linux (runit, openrc, dinit, s6).
+> Tested on fresh installs of [Arch Linux](https://archlinux.org/) and [Artix Linux](https://artixlinux.org/). Other pacman-based distros should work.
 
 ```bash
 git clone https://github.com/FemBoyGamerTechGuy/Faded-Dream-dotfiles.git ~/Faded-Dream-dotfiles
