@@ -133,37 +133,41 @@ class SetupWindow(Adw.ApplicationWindow):
     def _trigger_easter_egg(self):
         # Easter egg: KOCMOC. Resolve the stream with yt-dlp ourselves and play
         # it to mpv with --no-ytdl (mpv's fragile ytdl_hook fails to init yt-dlp).
-        # Never fail silently: log every step (and any missing deps) to the Log
-        # page so the action is always visible. yt-dlp/mpv are optional and may
-        # be absent on a clean install.
-        self._log_append("KOCMOC: easter egg triggered", "raw")
-        self._navigate_to(self._log_page_name)
-
+        # Never fail silently: report every step to the in-app Log page and also
+        # print it to stdout so it is visible from a terminal too.
+        # yt-dlp/mpv are optional and may be absent on a clean install.
         url = "https://www.youtube.com/watch?v=eMDu1byE45A"
         cache = os.path.expanduser("~/.cache/faded-dream-easter-egg.mp4")
 
+        def _say(text):
+            self._log_append(text, "raw")
+            print(f"[easter-egg] {text}", flush=True)
+
+        _say("KOCMOC: easter egg triggered")
+        self._navigate_to(self._log_page_name)
+
         def _run():
             if not shutil.which("yt-dlp"):
-                self._log_append("KOCMOC: yt-dlp not found - install yt-dlp to play the easter-egg video", "raw")
+                _say("KOCMOC: yt-dlp not found - install yt-dlp to play the easter-egg video")
                 return
             if not shutil.which("mpv"):
-                self._log_append("KOCMOC: mpv not found - install mpv to play the easter-egg video", "raw")
+                _say("KOCMOC: mpv not found - install mpv to play the easter-egg video")
                 return
             try:
                 os.makedirs(os.path.dirname(cache), exist_ok=True)
                 if not os.path.exists(cache):
-                    self._log_append("KOCMOC: downloading video with yt-dlp...", "raw")
+                    _say("KOCMOC: downloading video with yt-dlp...")
                     subprocess.run(
                         ["yt-dlp", "-f", "best", "-o", cache, url],
                         stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, timeout=180)
                 if os.path.exists(cache):
-                    self._log_append("KOCMOC: playing cached video...", "raw")
+                    _say("KOCMOC: playing cached video...")
                     subprocess.Popen(["mpv", "--no-ytdl", "--really-quiet", cache])
                 else:
-                    self._log_append("KOCMOC: playing video...", "raw")
+                    _say("KOCMOC: playing video...")
                     subprocess.Popen(["mpv", "--really-quiet", url])
             except Exception as e:
-                self._log_append(f"KOCMOC: error - {e}", "raw")
+                _say(f"KOCMOC: error - {e}")
         threading.Thread(target=_run, daemon=True).start()
 
     # ── UI ────────────────────────────────────────────────────────────────────
