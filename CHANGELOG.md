@@ -11,10 +11,9 @@ All notable changes to this project will be documented here.
 - **Arch Linux (systemd) variant** added alongside the existing Artix Linux builds; each now lives in its own self-contained folder under the repo root (`ArchLinux Faded Dream Dotfiles/` and `ArtixLinux Faded Dream Dotfiles/`).
 - `packages.py` package classification switched to the Arch package DB — fixes AUR/[extra] sourcing (librewulf, vivaldi, obsidian, warpinator, system-config-printer returned to [extra]; android-tools and superfile corrected).
 
-### Fixed
+### Removed
 
-- **KOCMOC easter-egg failing silently with no logs**
-  Typing `KOCMOC` in the welcome screen no longer silently no-ops: it now navigates to the Log page and reports each step (triggered, missing `yt-dlp`/`mpv` deps, download/play progress, and any errors), instead of the previous behavior where everything was swallowed by `stdout/stderr=subprocess.DEVNULL` and `except Exception: pass`. Applies to both the Arch and Artix variants. `yt-dlp` and `mpv` are not part of the default package set, so install them to actually play the easter-egg video.
+- **KOCMOC welcome-app easter-egg** removed. Typing `KOCMOC` used to stream a YouTube video (`https://www.youtube.com/watch?v=eMDu1byE45A`) via `yt-dlp` piped into `mpv`, but the stream fetch returned **HTTP 403 Forbidden** for this video/network (`yt-dlp -g` resolved, but the data fetch failed in both `yt-dlp -o -` and `mpv`), so the video never opened. `yt-dlp` and `mpv` are not part of the default package set, so they would have to be installed manually regardless.
   _Files:_ `Faded Dream welcome app/faded-dream-setup.py` (`ArchLinux Faded Dream Dotfiles/` and `ArtixLinux Faded Dream Dotfiles/`)
 
 ---

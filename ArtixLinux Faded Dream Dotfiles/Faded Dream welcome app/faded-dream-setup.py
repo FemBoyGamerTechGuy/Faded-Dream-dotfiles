@@ -3,7 +3,6 @@
 # Lives in ~/Faded-Dream-dotfiles/faded-dream-setup.py
 # Launched via exec-once in hyprland.conf on first login.
 # dep: sudo pacman -S python-gobject gtk4 libadwaita
-# Easter egg: type KOCMOC
 #
 # Imports:
 #   i18n.py      — translations, T(), TD(), TN(), TS()
@@ -112,59 +111,8 @@ class SetupWindow(Adw.ApplicationWindow):
         self._br_rows    = []   # list of (AnimatedRow, CheckMarkWidget, br_dict)
         self._count_lbl  = None
         self._installing = False
-        self._secret     = ""
-
-        key_ctrl = Gtk.EventControllerKey()
-        key_ctrl.connect("key-pressed", self._on_key_pressed)
-        self.add_controller(key_ctrl)
 
         self._build_ui()
-
-    # ── Easter egg ────────────────────────────────────────────────────────────
-    def _on_key_pressed(self, ctrl, keyval, keycode, state):
-        ch = chr(keyval).upper() if keyval < 128 else ""
-        self._secret += ch
-        if "KOCMOC" in self._secret:
-            self._secret = ""
-            self._trigger_easter_egg()
-        elif not "KOCMOC".startswith(self._secret):
-            self._secret = ch
-
-    def _trigger_easter_egg(self):
-        # Easter egg: KOCMOC. Stream the video straight from YouTube: yt-dlp
-        # resolves the URL into a direct media stream which is piped into mpv.
-        # No local cache file, no local server. Every step is reported to the
-        # in-app Log page and to stdout so the action is never silent.
-        # yt-dlp/mpv are optional and may be absent on a clean install.
-        url = "https://www.youtube.com/watch?v=eMDu1byE45A"
-
-        def _say(text):
-            self._log_append(text, "raw")
-            print(f"[easter-egg] {text}", flush=True)
-
-        _say("KOCMOC: easter egg triggered")
-        self._navigate_to(self._log_page_name)
-
-        def _run():
-            if not shutil.which("yt-dlp"):
-                _say("KOCMOC: yt-dlp not found - install yt-dlp to stream the YouTube video")
-                return
-            if not shutil.which("mpv"):
-                _say("KOCMOC: mpv not found - install mpv to play the video")
-                return
-            try:
-                _say("KOCMOC: resolving stream with yt-dlp...")
-                yt = subprocess.Popen(
-                    ["yt-dlp", "-f", "best", "-o", "-", "--no-warnings", url],
-                    stdout=subprocess.PIPE, stderr=subprocess.DEVNULL)
-                _say("KOCMOC: streaming video to mpv...")
-                mpv = subprocess.Popen(["mpv", "--really-quiet", "-"], stdin=yt.stdout)
-                yt.stdout.close()
-                mpv.wait()
-                _say("KOCMOC: playback finished")
-            except Exception as e:
-                _say(f"KOCMOC: error - {e}")
-        threading.Thread(target=_run, daemon=True).start()
 
     # ── UI ────────────────────────────────────────────────────────────────────
     def _build_ui(self):
