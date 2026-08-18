@@ -131,13 +131,12 @@ class SetupWindow(Adw.ApplicationWindow):
             self._secret = ch
 
     def _trigger_easter_egg(self):
-        # Easter egg: KOCMOC. Resolve the stream with yt-dlp ourselves and play
-        # it to mpv with --no-ytdl (mpv's fragile ytdl_hook fails to init yt-dlp).
-        # Never fail silently: report every step to the in-app Log page and also
-        # print it to stdout so it is visible from a terminal too.
+        # Easter egg: KOCMOC. Stream the video straight from YouTube: yt-dlp
+        # resolves the URL into a direct media stream which is piped into mpv.
+        # No local cache file, no local server. Every step is reported to the
+        # in-app Log page and to stdout so the action is never silent.
         # yt-dlp/mpv are optional and may be absent on a clean install.
         url = "https://www.youtube.com/watch?v=eMDu1byE45A"
-        cache = os.path.expanduser("~/.cache/faded-dream-easter-egg.mp4")
 
         def _say(text):
             self._log_append(text, "raw")
@@ -148,24 +147,21 @@ class SetupWindow(Adw.ApplicationWindow):
 
         def _run():
             if not shutil.which("yt-dlp"):
-                _say("KOCMOC: yt-dlp not found - install yt-dlp to play the easter-egg video")
+                _say("KOCMOC: yt-dlp not found - install yt-dlp to stream the YouTube video")
                 return
             if not shutil.which("mpv"):
-                _say("KOCMOC: mpv not found - install mpv to play the easter-egg video")
+                _say("KOCMOC: mpv not found - install mpv to play the video")
                 return
             try:
-                os.makedirs(os.path.dirname(cache), exist_ok=True)
-                if not os.path.exists(cache):
-                    _say("KOCMOC: downloading video with yt-dlp...")
-                    subprocess.run(
-                        ["yt-dlp", "-f", "best", "-o", cache, url],
-                        stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, timeout=180)
-                if os.path.exists(cache):
-                    _say("KOCMOC: playing cached video...")
-                    subprocess.Popen(["mpv", "--no-ytdl", "--really-quiet", cache])
-                else:
-                    _say("KOCMOC: playing video...")
-                    subprocess.Popen(["mpv", "--really-quiet", url])
+                _say("KOCMOC: resolving stream with yt-dlp...")
+                yt = subprocess.Popen(
+                    ["yt-dlp", "-f", "best", "-o", "-", "--no-warnings", url],
+                    stdout=subprocess.PIPE, stderr=subprocess.DEVNULL)
+                _say("KOCMOC: streaming video to mpv...")
+                mpv = subprocess.Popen(["mpv", "--really-quiet", "-"], stdin=yt.stdout)
+                yt.stdout.close()
+                mpv.wait()
+                _say("KOCMOC: playback finished")
             except Exception as e:
                 _say(f"KOCMOC: error - {e}")
         threading.Thread(target=_run, daemon=True).start()
