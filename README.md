@@ -209,7 +209,7 @@ The install script will ask you which init system you're using, whether you're o
 
 ```
 Faded-Dream-dotfiles/
-|-- ArchLinux Faded Dream Dotfiles/   (systemd variant: Arch Linux)
+|-- ArchLinux Faded Dream Dotfiles/
 |   |-- install.sh
 |   |-- pacman.conf
 |   |-- config.ini for waypaper
@@ -218,7 +218,7 @@ Faded-Dream-dotfiles/
 |   |   |-- faded-dream-setup.py
 |   |   |-- packages.py
 |   |   |-- i18n.py
-|   |   `-- widgets.py
+|   |   |-- widgets.py
 |   |-- hypr/
 |   |-- kitty/
 |   |-- fastfetch/
@@ -228,8 +228,8 @@ Faded-Dream-dotfiles/
 |   |-- rofi for local then share/
 |   |-- waybar laptop/
 |   `-- waybar pc/
-|-- ArtixLinux Faded Dream Dotfiles/   (runit / openrc / dinit / s6: Artix Linux)
-|   `-- (same self-contained layout as the systemd variant above)
+|-- ArtixLinux Faded Dream Dotfiles/
+|   |-- (same self-contained layout as the systemd variant above)
 |-- README.md
 |-- CHANGELOG.md
 |-- LICENSE
