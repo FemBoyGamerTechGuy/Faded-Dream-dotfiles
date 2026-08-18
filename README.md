@@ -196,12 +196,12 @@ grandpa-style             pixelrobots
 
 ```bash
 git clone https://github.com/FemBoyGamerTechGuy/Faded-Dream-dotfiles.git ~/Faded-Dream-dotfiles
-cd ~/Faded-Dream-dotfiles/ArtixLinux\ Faded\ Dream\ Dotfiles     # Arch: cd ArchLinux\ Faded\ Dream\ Dotfiles
+cd ~/Faded-Dream-dotfiles
 chmod +x install.sh
 ./install.sh
 ```
 
-The install script will ask you which init system you're using, whether you're on a laptop or PC, and handles everything from there — packages, AUR helper, GPU drivers, themes, dotfile deployment, and shell setup. A reboot is triggered automatically at the end. On first Hyprland login the setup GUI launches to let you choose your browser, file manager, and optional packages.
+The install script first asks which distro you're on (and, for Artix, which init system), then whether you're on a laptop or PC, and handles everything from there — packages, AUR helper, GPU drivers, themes, dotfile deployment, and shell setup. A reboot is triggered automatically at the end. On first Hyprland login the setup GUI launches to let you choose your browser, file manager, and optional packages.
 
 ---
 
@@ -230,6 +230,7 @@ Faded-Dream-dotfiles/
 |   |-- waybar pc/
 |-- ArtixLinux Faded Dream Dotfiles/
 |   |-- (same self-contained layout as the systemd variant above)
+|-- install.sh
 |-- README.md
 |-- CHANGELOG.md
 |-- LICENSE
