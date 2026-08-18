@@ -50,7 +50,7 @@
 | Component | Tool |
 |-----------|------|
 | Compositor | [Hyprland](https://github.com/hyprwm/Hyprland) |
-| Distribution | [Arch Linux](https://archlinux.org/) / [Artix Linux](https://artixlinux.org/) (any pacman-based distro works) |
+| Distribution | [Arch Linux](https://archlinux.org/) / [Artix Linux](https://artixlinux.org/) — Debian, Fedora, Void Linux, and NixOS planned |
 | Init System | systemd, runit, openrc, dinit, s6 |
 | Shell | [zsh](https://www.zsh.org/) |
 | Prompt | [Oh My Posh](https://ohmyposh.dev/) |
@@ -192,7 +192,7 @@ grandpa-style             pixelrobots
 
 ## Installation
 
-> Tested on fresh installs of [Arch Linux](https://archlinux.org/) and [Artix Linux](https://artixlinux.org/). Other pacman-based distros should work.
+> Tested on fresh installs of [Arch Linux](https://archlinux.org/) and [Artix Linux](https://artixlinux.org/). Debian, Fedora, Void Linux, and NixOS support is planned.
 
 ```bash
 git clone https://github.com/FemBoyGamerTechGuy/Faded-Dream-dotfiles.git ~/Faded-Dream-dotfiles
@@ -257,7 +257,7 @@ See the [LICENSE](LICENSE) file for the full license text.
 ---
 
 <div align="center">
-<sub>Built with 💜 on Arch Linux and Artix Linux</sub>
+<sub>Built with 💜 on Linux: Arch and Artix supported today, Debian/Fedora/Void/NixOS planned</sub>
 <br>
 <sub>Almost all of this repository was vibe coded with <a href="https://claude.ai">Claude.ai</a></sub>
 </div>
