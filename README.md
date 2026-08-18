@@ -182,7 +182,7 @@ grandpa-style             pixelrobots
 - To re-open the setup at any time: `python3 ~/Faded-Dream-dotfiles/ArtixLinux Faded Dream Dotfiles/Faded\ Dream\ welcome\ app/faded-dream-setup.py`
 - Use the startup toggle inside the app to control whether it launches on login.
 - On first boot after install, PipeWire may take a few seconds to start — this is normal.
-- Arch Linux (systemd) and Artix Linux share the same install flow; on systemd the init-system prompt mirrors the Artix options — a systemd-aware branch in `04-device.sh`/`05-permissions.sh` is a planned follow-up.
+- The Arch (systemd) variant manages services directly with `systemctl` in `04-device.sh`; brightness persistence is handled by `systemd-backlight` (no extra package).
 - `bat` must be installed for the `cat` alias to work — handled automatically by `install.sh`.
 - The `if_tea` Oh My Posh theme requires the FiraCode Nerd Font to render correctly.
 - GTK theming is managed via `nwg-look` — run it after first login to apply the theme.

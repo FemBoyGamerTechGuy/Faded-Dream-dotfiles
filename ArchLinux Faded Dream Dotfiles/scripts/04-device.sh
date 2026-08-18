@@ -28,6 +28,9 @@ if [[ "$DEVICE_CHOICE" == "1" ]]; then
       || warn "Could not enable/start ${svc}.service — it will start on next boot."
   done
 
+  # --- Brightness persistence (systemd-native) ---
+  info "Brightness persistence is handled automatically by systemd-backlight (no extra package needed)."
+
   success "Laptop packages installed and systemd services enabled."
 else
   info "PC selected — skipping laptop specific packages."
