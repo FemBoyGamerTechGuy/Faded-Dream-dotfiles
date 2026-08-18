@@ -5,7 +5,7 @@
 # Faded Dream Dotfiles
 
 > A polished, modular [Hyprland](https://github.com/hyprwm/Hyprland) configuration that looks great out of the box and is built to be easy to tweak, extend, or strip down to your taste.
-> Built and tested on [Artix Linux](https://artixlinux.org/) with support for **runit, openrc, dinit, and s6**.
+> Built and tested on [Artix Linux](https://artixlinux.org/) with [systemd](https://wiki.archlinux.org/title/Systemd) (Arch) and **runit, openrc, dinit, and s6** (Artix).
 
 </div>
 
@@ -37,7 +37,7 @@
 - **Looks good, stays clean** — polished out of the box with smooth animations, rounded corners, blur, and a cohesive Nord-inspired color palette. Every piece feels intentional, not thrown together.
 - **Modular by design** — each part of the config is its own thing. Don't want the emoji picker? Remove one line. Want a different file manager? Change one variable. Nothing is hardwired.
 - **Performs great on any hardware** — lightweight and snappy whether you're running it on a low-end laptop with integrated graphics or a full desktop with a dedicated GPU. Broad iGPU and dGPU support built in, including Intel, AMD, and NVIDIA.
-- **Multi-init support** — works with **runit, openrc, dinit, and s6**. The install script asks you which one you're using and handles service setup accordingly — no silent defaults, no guessing.
+- **Multi-init support** — works with **systemd** (Arch Linux) and **runit, openrc, dinit, and s6** (Artix Linux). The install script asks you which one you're using and handles service setup accordingly — no silent defaults, no guessing.
 - **Works on PCs and laptops** — laptop-specific packages (TLP, acpid, brightness control, bluetooth) are installed automatically when you select laptop during setup.
 - **[First-run setup GUI](Faded%20Dream%20welcome%20app/faded-dream-setup.py)** — launches on first login to let you choose your browser, file manager, and optional packages (gaming, peripherals, office, media, comms). Can be re-opened at any time.
 - **Lua-based Hyprland config** — uses the modern `hyprland.lua` format with clean structure and comments throughout. Easy to read, easy to edit.
@@ -50,8 +50,8 @@
 | Component | Tool |
 |-----------|------|
 | Compositor | [Hyprland](https://github.com/hyprwm/Hyprland) |
-| Distribution | [Artix Linux](https://artixlinux.org/) *(multi-distro support planned)* |
-| Init System | runit / openrc / dinit / s6 |
+| Distribution | [Artix Linux](https://artixlinux.org/) (dual distro: Arch Linux or Artix Linux) |
+| Init System | systemd (Arch) / runit, openrc, dinit, s6 (Artix) |
 | Shell | [zsh](https://www.zsh.org/) |
 | Prompt | [Oh My Posh](https://ohmyposh.dev/) |
 | Terminal | [Kitty](https://github.com/kovidgoyal/kitty) |
@@ -179,9 +179,10 @@ grandpa-style             pixelrobots
 ## Notes
 
 - On first login after install, the **Faded Dream Setup** GUI launches automatically — pick your browser, file manager, and any optional packages, then hit Install.
-- To re-open the setup at any time: `python3 ~/Faded-Dream-dotfiles/Faded\ Dream\ welcome\ app/faded-dream-setup.py`
+- To re-open the setup at any time: `python3 ~/Faded-Dream-dotfiles/ArtixLinux Faded Dream Dotfiles/Faded\ Dream\ welcome\ app/faded-dream-setup.py`
 - Use the startup toggle inside the app to control whether it launches on login.
 - On first boot after install, PipeWire may take a few seconds to start — this is normal.
+- Arch Linux (systemd) and Artix Linux share the same install flow; on systemd the init-system prompt mirrors the Artix options — a systemd-aware branch in `04-device.sh`/`05-permissions.sh` is a planned follow-up.
 - `bat` must be installed for the `cat` alias to work — handled automatically by `install.sh`.
 - The `if_tea` Oh My Posh theme requires the FiraCode Nerd Font to render correctly.
 - GTK theming is managed via `nwg-look` — run it after first login to apply the theme.
@@ -191,11 +192,11 @@ grandpa-style             pixelrobots
 
 ## Installation
 
-> Tested on a fresh Artix Linux install with runit, openrc, dinit, and s6.
+> Tested on fresh installs of both Arch Linux (systemd) and Artix Linux (runit, openrc, dinit, s6).
 
 ```bash
 git clone https://github.com/FemBoyGamerTechGuy/Faded-Dream-dotfiles.git ~/Faded-Dream-dotfiles
-cd ~/Faded-Dream-dotfiles
+cd ~/Faded-Dream-dotfiles/ArtixLinux\ Faded\ Dream\ Dotfiles     # Arch: cd ArchLinux\ Faded\ Dream\ Dotfiles
 chmod +x install.sh
 ./install.sh
 ```
@@ -208,54 +209,18 @@ The install script will ask you which init system you're using, whether you're o
 
 ```
 Faded-Dream-dotfiles/
-├── Previews/
-│   └── ... (screenshots)
-├── Faded Dream welcome app/
-│   ├── faded-dream-setup.py
-│   ├── packages.py
-│   ├── i18n.py
-│   └── widgets.py
-├── hypr/
-│   └── hyprland.lua
-├── kitty/
-│   ├── kitty.conf
-│   └── current-theme.conf
-├── waybar laptop/
-│   ├── config-laptop.jsonc
-│   └── style-laptop.css
-├── waybar pc/
-│   ├── config-pc.jsonc
-│   └── style-pc.css
-├── rofi for .config/
-├── rofi for local then share/
-├── fastfetch/
-├── scripts/
-│   ├── 01-repos.sh
-│   ├── 02-dirs.sh
-│   ├── 03-packages.sh
-│   ├── 04-device.sh
-│   ├── 05-permissions.sh
-│   ├── 06-shell.sh
-│   ├── 07-aur.sh
-│   ├── 08-gpu.sh
-│   ├── 09-aur-packages.sh
-│   ├── 10-rofi-power-menu.sh
-│   ├── 11-lazyvim.sh
-│   ├── 12-waybar.sh
-│   ├── 13-dotfiles.sh
-│   └── 14-themes.sh
-├── .zsh/
-│   ├── themes/
-│   │   ├── if_tea.omp.json
-│   │   ├── if_tea-enghlis.omp.json
-│   │   └── ... (all official Oh My Posh themes)
-│   ├── zsh-autosuggestions/
-│   └── zsh-syntax-highlighting/
-├── .zshrc
-├── config.ini for waypaper
-├── pacman.conf
-├── CHANGELOG.md
-└── install.sh
+|-- ArchLinux Faded Dream Dotfiles/   (systemd variant)
+|   |-- install.sh
+|   |-- pacman.conf
+|   |-- Faded Dream welcome app/
+|   |-- scripts/
+|   |-- hypr/   kitty/   fastfetch/   .zsh/   .zshrc
+|   |-- Previews/   rofi for .config/   rofi for local then share/
+|   |   waybar laptop/   waybar pc/   config.ini for waypaper   faded-dream-logo.svg
+|-- ArtixLinux Faded Dream Dotfiles/   (runit / openrc / dinit / s6 variant)
+|   |-- (same self-contained layout as the Arch folder above)
+|-- README.md        CHANGELOG.md      LICENSE      CONTRIBUTING.md
+`-- .git/
 ```
 
 ---
@@ -292,7 +257,7 @@ See the [LICENSE](LICENSE) file for the full license text.
 ---
 
 <div align="center">
-<sub>Built with 💜 on Artix Linux</sub>
+<sub>Built with 💜 on Arch Linux and Artix Linux</sub>
 <br>
 <sub>Almost all of this repository was vibe coded with <a href="https://claude.ai">Claude.ai</a></sub>
 </div>

@@ -28,7 +28,7 @@ step() {
 export -f info success warn die step
 export RED GREEN YELLOW CYAN BOLD RESET
 
-DOTFILES_DIR="${HOME}/Faded-Dream-dotfiles"
+DOTFILES_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 export DOTFILES_DIR
 
 SCRIPTS_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/scripts" && pwd)"

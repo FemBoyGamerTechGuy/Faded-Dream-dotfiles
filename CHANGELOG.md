@@ -4,6 +4,15 @@ All notable changes to this project will be documented here.
 
 ---
 
+## [Unreleased]
+
+### Added
+
+- **Arch Linux (systemd) variant** added alongside the existing Artix Linux builds; each now lives in its own self-contained folder under the repo root (`ArchLinux Faded Dream Dotfiles/` and `ArtixLinux Faded Dream Dotfiles/`).
+- `packages.py` package classification switched to the Arch package DB — fixes AUR/[extra] sourcing (librewulf, vivaldi, obsidian, warpinator, system-config-printer returned to [extra]; android-tools and superfile corrected).
+
+---
+
 ## [Released] — 2026-05-13
 
 ### Fixed
