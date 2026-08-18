@@ -227,7 +227,7 @@ Faded-Dream-dotfiles/
 |   |-- rofi for .config/
 |   |-- rofi for local then share/
 |   |-- waybar laptop/
-|   `-- waybar pc/
+|   |-- waybar pc/
 |-- ArtixLinux Faded Dream Dotfiles/
 |   |-- (same self-contained layout as the systemd variant above)
 |-- README.md
