@@ -41,6 +41,7 @@
 - **Works on PCs and laptops** — laptop-specific packages (TLP, acpid, brightness control, bluetooth) are installed automatically when you select laptop during setup.
 - **[First-run setup GUI](Faded%20Dream%20welcome%20app/faded-dream-setup.py)** — launches on first login to let you choose your browser, file manager, and optional packages (gaming, peripherals, office, media, comms). Can be re-opened at any time.
 - **Lua-based Hyprland config** — uses the modern `hyprland.lua` format with clean structure and comments throughout. Easy to read, easy to edit.
+- **Themes cloned at install time** — Nordic v40, Sweet Dark, Papirus icons, and ArcDusk cursors are pulled fresh from their official repos during install. Nothing is bundled in the repo itself.
 - **XWayland compatibility** — Xorg apps run smoothly alongside native Wayland apps.
 
 ---
