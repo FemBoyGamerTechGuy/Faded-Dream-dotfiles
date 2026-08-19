@@ -4,6 +4,20 @@ All notable changes to this project will be documented here.
 
 ---
 
+## [Released] — 2026-08-18
+
+### Added
+
+- **Arch Linux (systemd) variant** added alongside the existing Artix Linux builds; each now lives in its own self-contained folder under the repo root (`ArchLinux Faded Dream Dotfiles/` and `ArtixLinux Faded Dream Dotfiles/`).
+- `packages.py` package classification switched to the Arch package DB — fixes AUR/[extra] sourcing (librewulf, vivaldi, obsidian, warpinator, system-config-printer returned to [extra]; android-tools and superfile corrected).
+
+### Removed
+
+- **KOCMOC welcome-app easter-egg** removed. Typing `KOCMOC` used to stream a YouTube video (`https://www.youtube.com/watch?v=eMDu1byE45A`) via `yt-dlp` piped into `mpv`, but the stream fetch returned **HTTP 403 Forbidden** for this video/network (`yt-dlp -g` resolved, but the data fetch failed in both `yt-dlp -o -` and `mpv`), so the video never opened. `yt-dlp` and `mpv` are not part of the default package set, so they would have to be installed manually regardless.
+  _Files:_ `Faded Dream welcome app/faded-dream-setup.py` (`ArchLinux Faded Dream Dotfiles/` and `ArtixLinux Faded Dream Dotfiles/`)
+
+---
+
 ## [Released] — 2026-05-13
 
 ### Fixed
