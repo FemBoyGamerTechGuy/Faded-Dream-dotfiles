@@ -42,7 +42,7 @@ case "$GPU_CHOICE" in
   info "Nvidia GTX 1080 Ti - GTX 1010 selected — installing drivers."
   sudo pacman -S --noconfirm --needed dkms "$HEADERS" ||
     die "Failed to install dkms and headers."
-  sudo pacman -S --noconfirm --needed \
+  paru -S --noconfirm --needed \
     nvidia-580xx-dkms nvidia-580xx-utils lib32-nvidia-580xx-utils \
     opencl-nvidia-580xx lib32-opencl-nvidia-580xx nvidia-580xx-settings ||
     die "Failed to install Nvidia 580xx drivers."
