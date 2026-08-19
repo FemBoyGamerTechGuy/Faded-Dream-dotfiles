@@ -9,6 +9,7 @@ PACKAGES=(
   waybar
   swaync
   nwg-look
+  xdg-desktop-portal-hyprland
 
   # Audio
   pipewire
