@@ -4,6 +4,22 @@ All notable changes to this project will be documented here.
 
 ---
 
+## [Released] — 2026-08-19
+
+### Fixed
+
+- **Nvidia 580xx drivers failing to install on Arch Linux**
+  The `08-gpu.sh` script (option 3 — GTX 1080 Ti / GTX 1010) was installing all `580xx` packages via `sudo pacman`, but these are AUR-only on Arch Linux (official support dropped for pre-GTX1650 cards). `pacman` could not resolve them, causing a fatal error under `set -euo pipefail` that aborted the entire dotfiles installation. Switched the `580xx` package install from `pacman` to `paru` (the AUR helper built in step `07-aur.sh`, which runs immediately before this script). `dkms` and kernel headers remain on `pacman` as they are still official-repo packages.
+  _File:_ `ArchLinux Faded Dream Dotfiles/scripts/08-gpu.sh`
+
+### Removed
+
+- **Pipewire autostart line removed from hyprland.lua (ArchLinux only)**
+  `hl.exec_cmd("~/.config/autostart/pipewire.sh")` was removed from the Autostart block. On Arch Linux pipewire is now managed by the system directly, so the manual invocation is no longer needed. The ArtixLinux variant retains the line until an alternative solution is found.
+  _File:_ `ArchLinux Faded Dream Dotfiles/hypr/hyprland.lua`
+
+---
+
 ## [Released] — 2026-08-18
 
 ### Added
