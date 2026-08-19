@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # faded-dream-setup.py — Faded Dream First Run Setup (GTK4 + libadwaita)
-# Lives in ~/Faded-Dream-dotfiles/faded-dream-setup.py
+# Lives in ~/Faded-Dream-dotfiles/ArtixLinux Faded Dream Dotfiles/Faded Dream welcome app/faded-dream-setup.py
 # Launched via exec-once in hyprland.conf on first login.
 # dep: sudo pacman -S python-gobject gtk4 libadwaita
 #

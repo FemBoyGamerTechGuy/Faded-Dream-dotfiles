@@ -36,9 +36,11 @@ hl.on("hyprland.start", function()
     hl.exec_cmd("waypaper --restore")
     hl.exec_cmd("clipse -listen")
     hl.exec_cmd("/usr/lib/xdg-desktop-portal-gtk")
+    -- Autostart waybar (systemd handles PipeWire on Arch, so we only need the bar)
+    hl.exec_cmd("waybar &")
 
     -- First-run setup — controlled by sentinel file ~/.config/faded-dream-autostart
-    hl.exec_cmd("bash -c '[ -f \"$HOME/.config/faded-dream-autostart\" ] && [ -f \"$HOME/Faded-Dream-dotfiles/Faded Dream welcome app/faded-dream-setup.py\" ] && python3 \"$HOME/Faded-Dream-dotfiles/Faded Dream welcome app/faded-dream-setup.py\"'")
+    hl.exec_cmd("bash -c '[ -f \"$HOME/.config/faded-dream-autostart\" ] && [ -f \"$HOME/Faded-Dream-dotfiles/ArchLinux Faded Dream Dotfiles/Faded Dream welcome app/faded-dream-setup.py\" ] && python3 \"$HOME/Faded-Dream-dotfiles/ArchLinux Faded Dream Dotfiles/Faded Dream welcome app/faded-dream-setup.py\"'")
 end)
 
 -- ── Look and Feel ─────────────────────────────────────────────────────────────────────

@@ -8,6 +8,26 @@ All notable changes to this project will be documented here.
 
 ### Fixed
 
+- **Faded Dream welcome screen not launching on login (both ArchLinux & ArtixLinux)**
+  The `hyprland.lua` autostart handler was pointing to `$HOME/Faded-Dream-dotfiles/Faded Dream welcome app/faded-dream-setup.py`, but the welcome app lives inside the distribution-specific subdirectory (`ArchLinux Faded Dream Dotfiles/` or `ArtixLinux Faded Dream Dotfiles/`). Fixed the path in both `hyprland.lua` files to include the correct subdirectory, so the sentinel-triggered welcome screen now launches on first login.
+  _Files:_ `ArchLinux Faded Dream Dotfiles/hypr/hyprland.lua`, `ArtixLinux Faded Dream Dotfiles/hypr/hyprland.lua`
+
+- **Waybar not autostarting on ArchLinux**
+  With the removal of `pipewire.sh` from the ArchLinux install, waybar lost its autostart. Added `hl.exec_cmd("waybar &")` to the `hyprland.start` autostart block in the ArchLinux `hyprland.lua`. PipeWire itself remains managed by systemd user units on Arch, so no manual launch is needed.
+  _File:_ `ArchLinux Faded Dream Dotfiles/hypr/hyprland.lua`
+
+- **Stale comment in faded-dream-setup.py pointing to wrong directory (both ArchLinux & ArtixLinux)**
+  The `# Lives in ~/Faded-Dream-dotfiles/...` header comment was updated to reflect the actual repo subdirectory path.
+  _Files:_ `ArchLinux Faded Dream Dotfiles/Faded Dream welcome app/faded-dream-setup.py`, `ArtixLinux Faded Dream Dotfiles/Faded Dream welcome app/faded-dream-setup.py`
+
+### Removed
+
+- **pipewire.sh autostart script creation removed from ArchLinux install**
+  The `13-dotfiles.sh` script was generating `~/.config/autostart/pipewire.sh` on ArchLinux, but on systemd-based Arch the PipeWire daemons are already started by user units. Removed the heredoc block and `chmod`/`success` lines from the ArchLinux `13-dotfiles.sh` only. The ArtixLinux variant retains `pipewire.sh` creation, since Artix uses OpenRC/runit and still relies on it to start both PipeWire and waybar.
+  _File:_ `ArchLinux Faded Dream Dotfiles/scripts/13-dotfiles.sh`
+
+### Fixed
+
 - **Nvidia 580xx drivers failing to install on Arch Linux**
   The `08-gpu.sh` script (option 3 — GTX 1080 Ti / GTX 1010) was installing all `580xx` packages via `sudo pacman`, but these are AUR-only on Arch Linux (official support dropped for pre-GTX1650 cards). `pacman` could not resolve them, causing a fatal error under `set -euo pipefail` that aborted the entire dotfiles installation. Switched the `580xx` package install from `pacman` to `paru` (the AUR helper built in step `07-aur.sh`, which runs immediately before this script). `dkms` and kernel headers remain on `pacman` as they are still official-repo packages.
   _File:_ `ArchLinux Faded Dream Dotfiles/scripts/08-gpu.sh`
