@@ -1,0 +1,176 @@
+/* =====================================================
+ * Waybar Style — Laptop — Transparent, Clean, Nerd Font Ready
+ * ===================================================== */
+
+/* ---------- Global Bar ---------- */
+window#waybar {
+    background-color: rgba(0, 0, 0, 0.0);
+    color: #ffffff;
+    font-family: "JetBrainsMono Nerd Font", monospace;
+    font-size: 13px;
+    font-weight: 600;
+}
+
+/* ---------- Power Menu Icon ---------- */
+#custom-rofi-power-menu {
+    font-family: "JetBrainsMono Nerd Font", monospace;
+    font-size: 20px;
+    padding: 6px 10px;
+    background-color: rgba(0, 0, 0, 0.28);
+    margin: 5px;
+    border-radius: 6px;
+}
+
+/* ---------- Notification Bell ---------- */
+#custom-notification {
+    font-family: "JetBrainsMono Nerd Font", monospace;
+    font-size: 20px;
+    padding: 6px 10px;
+    background-color: rgba(0, 0, 0, 0.28);
+    margin: 5px;
+    border-radius: 6px;
+}
+
+/* ---------- App Button ---------- */
+#custom-appbutton {
+    font-family: "JetBrainsMono Nerd Font", monospace;
+    font-size: 13px;
+    font-weight: 600;
+    background-color: rgba(0, 0, 0, 0.20);
+    padding: 4px 8px;
+    margin: 5px;
+    border-radius: 6px;
+}
+
+/* ---------- Workspaces ---------- */
+#workspaces {
+    background-color: rgba(0, 0, 0, 0.25);
+    padding: 4px 8px;
+    margin: 5px;
+    border-radius: 6px;
+    font-family: "JetBrainsMono Nerd Font", monospace;
+    font-size: 13px;
+}
+
+#workspaces button {
+    background: transparent;
+    color: #ccc;
+    padding: 0 6px;
+    font-weight: 600;
+}
+
+#workspaces button.active {
+    background-color: rgba(255, 255, 255, 0.1);
+    color: #ffffff;
+    border-radius: 6px;
+}
+
+/* ---------- Window Title ---------- */
+#window {
+    font-weight: 700;
+    color: #ffffff;
+    background-color: rgba(0, 0, 0, 0.30);
+    padding: 4px 8px;
+    margin: 5px;
+    border-radius: 6px;
+    font-family: "JetBrainsMono Nerd Font", monospace;
+    font-size: 13px;
+}
+
+/* ---------- Clock ---------- */
+#clock {
+    background-color: rgba(0, 0, 0, 0.20);
+    padding: 4px 8px;
+    margin: 5px;
+    border-radius: 6px;
+    font-family: "JetBrainsMono Nerd Font", monospace;
+    font-size: 13px;
+    font-weight: 600;
+}
+
+/* ---------- Network ---------- */
+#network {
+    background-color: rgba(0, 0, 0, 0.25);
+    padding: 4px 8px;
+    margin: 5px;
+    border-radius: 6px;
+    font-family: "JetBrainsMono Nerd Font", monospace;
+    font-size: 13px;
+    font-weight: 600;
+}
+
+/* ---------- Pulseaudio / Volume ---------- */
+#pulseaudio {
+    background-color: rgba(0, 0, 0, 0.25);
+    padding: 4px 8px;
+    margin: 5px;
+    border-radius: 6px;
+    font-family: "JetBrainsMono Nerd Font", monospace;
+    font-size: 13px;
+    font-weight: 600;
+}
+
+/* ---------- CPU ---------- */
+#cpu {
+    background-color: rgba(0, 0, 0, 0.20);
+    padding: 4px 8px;
+    margin: 5px;
+    border-radius: 6px;
+    font-family: "JetBrainsMono Nerd Font", monospace;
+    font-size: 13px;
+    font-weight: 600;
+}
+
+/* ---------- Backlight ---------- */
+#backlight {
+    background-color: rgba(0, 0, 0, 0.25);
+    padding: 4px 8px;
+    margin: 5px;
+    border-radius: 6px;
+    font-family: "JetBrainsMono Nerd Font", monospace;
+    font-size: 13px;
+    font-weight: 600;
+}
+
+/* ---------- Battery ---------- */
+#battery {
+    background-color: rgba(0, 0, 0, 0.25);
+    padding: 4px 8px;
+    margin: 5px;
+    border-radius: 6px;
+    font-family: "JetBrainsMono Nerd Font", monospace;
+    font-size: 13px;
+    font-weight: 600;
+}
+
+#battery.warning {
+    background-color: rgba(255, 170, 0, 0.3);
+    color: #ffaa00;
+}
+
+#battery.critical {
+    background-color: rgba(255, 50, 50, 0.3);
+    color: #ff3232;
+    animation: blink 1s infinite;
+}
+
+@keyframes blink {
+    to { background-color: rgba(255, 50, 50, 0.6); }
+}
+
+/* ---------- Tray ---------- */
+#tray {
+    background-color: rgba(0, 0, 0, 0.25);
+    padding: 4px 8px;
+    margin: 5px;
+    border-radius: 6px;
+}
+
+#tray > .passive {
+    -gtk-icon-effect: dim;
+}
+
+#tray > .needs-attention {
+    -gtk-icon-effect: highlight;
+    background-color: rgba(255, 170, 0, 0.3);
+}
