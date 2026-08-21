@@ -76,7 +76,7 @@
 | Void Linux | 📋 Planned | ░░░░░░░░░░░░░░░░░░ 0% |
 | NixOS | 📋 Planned | ░░░░░░░░░░░░░░░░░░ 0% |
 
-> **Fedora notes:** DNF-based installer with RPM Fusion, Flathub, COPR support. Uses official browser repos (LibreWolf, Vivaldi, Chrome, Edge). Hyprland via `sdegler/hyprland` COPR. Nvidia 580xx legacy drivers via RPM Fusion Nonfree. **Untested on real hardware** — needs validation.
+> **Fedora notes:** DNF-based installer with RPM Fusion, Flathub, COPR support. Uses official browser repos (LibreWolf, Vivaldi, Chrome, Edge). Hyprland via `sdegler/hyprland` COPR. Nvidia 580xx legacy drivers via RPM Fusion Nonfree. **Untested on real hardware** — needs validation on **Fedora 44/45**.
 
 ---
 

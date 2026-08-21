@@ -7,7 +7,7 @@
 > - Package availability in COPR/Fedora not fully verified
 > - Installer flow, GPU detection, welcome app untested
 > - Nvidia 580xx branch depends on RPM Fusion Nonfree having the packages
-> - Need manual testing on Fedora 41/42
+> - Need manual testing on Fedora 44/45
 
 ---
 
