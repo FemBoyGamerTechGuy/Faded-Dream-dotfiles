@@ -51,7 +51,7 @@
 | Component | Tool |
 |-----------|------|
 | Compositor | [Hyprland](https://github.com/hyprwm/Hyprland) |
-| Distribution | [Arch Linux](https://archlinux.org/) / [Artix Linux](https://artixlinux.org/) — Debian, Fedora, Void Linux, and NixOS planned |
+| Distribution | [Arch Linux](https://archlinux.org/) / [Artix Linux](https://artixlinux.org/) — **Fedora (WIP)**, Debian, Void Linux, and NixOS planned |
 | Init System | systemd, runit, openrc, dinit, s6 |
 | Shell | [zsh](https://www.zsh.org/) |
 | Prompt | [Oh My Posh](https://ohmyposh.dev/) |
@@ -64,6 +64,22 @@
 | Browser | chosen at first login via setup GUI |
 | Emoji Picker | [rofimoji](https://github.com/fdw/rofimoji) |
 ---
+
+## Distribution Support
+
+| Distribution | Status | Progress |
+|--------------|--------|----------|
+| [Arch Linux](https://archlinux.org/) | ✅ Tested, stable | ████████████████████ 100% |
+| [Artix Linux](https://artixlinux.org/) | ✅ Tested, stable | ████████████████████ 100% |
+| [Fedora Linux](https://fedoraproject.org/) | 🚧 **Work in Progress** | ████████░░░░░░░░░░ 40% |
+| Debian | 📋 Planned | ░░░░░░░░░░░░░░░░░░ 0% |
+| Void Linux | 📋 Planned | ░░░░░░░░░░░░░░░░░░ 0% |
+| NixOS | 📋 Planned | ░░░░░░░░░░░░░░░░░░ 0% |
+
+> **Fedora notes:** DNF-based installer with RPM Fusion, Flathub, COPR support. Uses official browser repos (LibreWolf, Vivaldi, Chrome, Edge). Hyprland via `sdegler/hyprland` COPR. Nvidia 580xx legacy drivers via RPM Fusion Nonfree. **Untested on real hardware** — needs validation.
+
+---
+
 
 ## Keybinds
 

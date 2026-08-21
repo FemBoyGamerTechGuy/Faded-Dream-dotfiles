@@ -1,3 +1,17 @@
+### Status
+
+> ⚠️ **UNTESTED / WORK IN PROGRESS**
+> 
+> The Fedora implementation is complete on paper but **has not been tested on actual Fedora hardware**. Known gaps:
+> - Custom COPR repo name is a placeholder (`yourusername/faded-dream`)
+> - Package availability in COPR/Fedora not fully verified
+> - Installer flow, GPU detection, welcome app untested
+> - Nvidia 580xx branch depends on RPM Fusion Nonfree having the packages
+> - Need manual testing on Fedora 41/42
+
+---
+
+## [Released] — 2026-08-19
 # Faded Dream Dotfiles — Changelog
 
 All notable changes to this project will be documented here.
