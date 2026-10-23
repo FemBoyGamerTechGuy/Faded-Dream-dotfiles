@@ -1,0 +1,41 @@
+#!/bin/sh
+# ════════════════════════════════════════════════════════════════════════════
+# Faded Dream — OpenBox autostart (Arch Linux paths)
+# Port of upstream Hyprland's hyprland.start exec block.
+# Install to: ~/.config/openbox/autostart
+# ════════════════════════════════════════════════════════════════════════════
+
+# ── Compositor FIRST — this is what brings the Hyprland look to X11:
+#    blur, 10px rounded corners, pop-in animations, 80% inactive opacity.
+#    Requires picom v11+ for animations.
+picom --config "$HOME/.config/picom/picom.conf" -b
+
+# ── Keyboard layout (upstream: kb_layout us,ro / kb_variant ,std / grp:win_space_toggle)
+#    Win+Space toggles US↔RO, exactly like on Hyprland. Edit to taste.
+setxkbmap -layout us,ro -variant ,std -option grp:win_space_toggle &
+
+# ── Polkit authentication agent (same Arch path as upstream)
+/usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1 &
+
+# ── XDG desktop portal (upstream runs xdg-desktop-portal-gtk)
+/usr/lib/xdg-desktop-portal-gtk &
+
+# ── Wallpaper (upstream: waypaper --restore).
+#    On X11 waypaper needs the feh backend — open `waypaper` once and
+#    pick "feh" in the backend selector, or replace this line with:
+#    feh --bg-fill /path/to/wallpaper &
+waypaper --restore &
+
+# ── Clipboard daemon (upstream: clipse -listen)
+clipse -listen &
+
+# ── Notifications (dunst replaces Wayland's swaync)
+dunst &
+
+# ── Status bar (upstream: waybar)
+waybar &
+
+# ── Power: keep DPMS/screen blanking sane on a bare WM session.
+#    Upstream delegates this to Hyprland; on X11 either leave X defaults,
+#    or run xfce4-power-manager / xautolock if you want them:
+# xfce4-power-manager &

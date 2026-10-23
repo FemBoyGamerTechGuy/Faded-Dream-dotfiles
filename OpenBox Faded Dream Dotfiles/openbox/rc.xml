@@ -1,0 +1,521 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- ══════════════════════════════════════════════════════════════════════════
+     Faded Dream — OpenBox port
+     Ported from: https://github.com/FemBoyGamerTechGuy/Faded-Dream-dotfiles
+     Upstream is a Hyprland (Wayland tiler) config; this is the X11 stacking
+     translation of its window-management behavior, keybinds and look.
+
+     Install to: ~/.config/openbox/rc.xml
+     Keybinds mirror upstream hyprland.lua 1:1 wherever X11/stacking allows.
+     Super (Hyprland)  →  W  (Mod4)
+     ALT (Hyprland)     →  A  (Mod1)
+     ══════════════════════════════════════════════════════════════════════════ -->
+<openbox_config xmlns="http://openbox.org/3.4/rc">
+
+  <resistance>
+    <strength>10</strength>
+    <screen_edge_strength>20</screen_edge_strength>
+  </resistance>
+
+  <focus>
+    <focusNew>yes</focusNew>
+    <!-- upstream: follow_mouse = 1 -->
+    <followMouse>yes</followMouse>
+    <focusLast>yes</focusLast>
+    <underMouse>no</underMouse>
+    <focusDelay>0</focusDelay>
+    <!-- Hyprland focuses on hover but does not raise -->
+    <raiseOnFocus>no</raiseOnFocus>
+  </focus>
+
+  <placement>
+    <policy>Smart</policy>
+    <monitor>Active</monitor>
+    <primaryMonitor>Active</primaryMonitor>
+  </placement>
+
+  <theme>
+    <name>Faded-Dream</name>
+    <!-- N = window icon, L = label, I = iconify, M = maximize, C = close -->
+    <titleLayout>NLIMC</titleLayout>
+    <titleKeepBorder>yes</titleKeepBorder>
+    <!-- Pango font syntax: needs an OpenBox built with pango (Arch's is).
+         Non-pango builds: swap to e.g. "JetBrainsMono Nerd Font-9". -->
+    <font place="ActiveWindow">JetBrainsMono Nerd Font:weight=Bold:size=9</font>
+    <font place="InactiveWindow">JetBrainsMono Nerd Font:size=9</font>
+    <font place="MenuHeader">JetBrainsMono Nerd Font:weight=Bold:size=9</font>
+    <font place="MenuItem">JetBrainsMono Nerd Font:size=9</font>
+    <font place="ActiveOnScreenDisplay">JetBrainsMono Nerd Font:weight=Bold:size=10</font>
+    <font place="InactiveOnScreenDisplay">JetBrainsMono Nerd Font:size=10</font>
+  </theme>
+
+  <!-- Upstream: 10 workspaces bound to Super+1..0 -->
+  <desktops>
+    <number>10</number>
+    <firstDesk>1</firstDesk>
+    <!-- Hyprland shows no desktop-switch popup; the waybar pager reports state -->
+    <popupTime>0</popupTime>
+    <names>
+      <name>1</name>
+      <name>2</name>
+      <name>3</name>
+      <name>4</name>
+      <name>5</name>
+      <name>6</name>
+      <name>7</name>
+      <name>8</name>
+      <name>9</name>
+      <name>10</name>
+    </names>
+  </desktops>
+
+  <resize>
+    <drawContents>yes</drawContents>
+    <popupShow>Never</popupShow>
+    <popupPosition>Center</popupPosition>
+  </resize>
+
+  <!-- Upstream gaps_in/gaps_out have no analog in a stacking WM (kept 0).
+       Waybar reserves its own space at the top via struts. -->
+  <margins>
+    <top>0</top>
+    <left>0</left>
+    <right>0</right>
+    <bottom>0</bottom>
+  </margins>
+
+  <!-- Waybar is a dock-type window at the top, like upstream -->
+  <dock>
+    <position>Top</position>
+    <stacking>Above</stacking>
+    <direction>Vertical</direction>
+    <autoHide>no</autoHide>
+    <hideDelay>300</hideDelay>
+    <showDelay>300</showDelay>
+    <moveButton>A-Left</moveButton>
+  </dock>
+
+  <keyboard>
+    <chainQuitKey>C-g</chainQuitKey>
+
+    <!-- ═══ Apps (upstream "Apps" block) ═══ -->
+    <!-- Super+Enter → kitty -->
+    <keybind key="W-Return">
+      <action name="Execute"><command>kitty</command></action>
+    </keybind>
+    <!-- Super+E → kitty VoidDream (upstream fileManager) -->
+    <keybind key="W-e">
+      <action name="Execute"><command>kitty VoidDream</command></action>
+    </keybind>
+    <!-- Super+B → librewolf (upstream browser) -->
+    <keybind key="W-b">
+      <action name="Execute"><command>librewolf</command></action>
+    </keybind>
+    <!-- Alt+Space → rofi launcher -->
+    <keybind key="A-space">
+      <action name="Execute"><command>rofi -show drun -show-icons</command></action>
+    </keybind>
+    <!-- Super+C → clipse clipboard manager -->
+    <keybind key="W-c">
+      <action name="Execute"><command>kitty --class clipse -e clipse</command></action>
+    </keybind>
+    <!-- Super+I → rofimoji emoji picker -->
+    <keybind key="W-i">
+      <action name="Execute"><command>rofimoji -a copy</command></action>
+    </keybind>
+    <!-- Print → region screenshot (upstream: hyprshot -m region; X11: flameshot) -->
+    <keybind key="Print">
+      <action name="Execute"><command>flameshot gui</command></action>
+    </keybind>
+    <!-- Super+F → toggle fullscreen -->
+    <keybind key="W-f">
+      <action name="ToggleFullscreen"/>
+    </keybind>
+
+    <!-- ═══ Window management (upstream "Window management" block) ═══ -->
+    <!-- Super+Q → close window -->
+    <keybind key="W-q">
+      <action name="Close"/>
+    </keybind>
+    <!-- Super+V → upstream "toggle float". On a stacking WM every window
+         already floats; the analog is maximize. For a no-decorations toggle
+         swap ToggleMaximize → ToggleDecorations. -->
+    <keybind key="W-v">
+      <action name="ToggleMaximize"/>
+    </keybind>
+    <!-- Super+M → power menu (upstream: command -v hyprshutdown >/dev/null 2>&1
+         && hyprshutdown || hyprctl dispatch exit). Same structure on X11:
+         the rofi power menu if installed (upstream ships rofi-power-menu),
+         otherwise a clean OpenBox exit. -->
+    <keybind key="W-m">
+      <action name="Execute">
+        <command>sh -c 'if command -v rofi-power-menu >/dev/null; then rofi -show power-menu -modi power-menu:rofi-power-menu; else openbox --exit; fi'</command>
+      </action>
+    </keybind>
+    <!-- Super+W → restart waybar (upstream: pkill waybar || waybar &) -->
+    <keybind key="W-w">
+      <action name="Execute"><command>sh -c 'pkill -x waybar; sleep 0.3; waybar'</command></action>
+    </keybind>
+
+    <!-- ═══ Focus (upstream: Super+arrows) ═══ -->
+    <keybind key="W-Left"><action name="DirectionalFocusWest"/></keybind>
+    <keybind key="W-Right"><action name="DirectionalFocusEast"/></keybind>
+    <keybind key="W-Up"><action name="DirectionalFocusNorth"/></keybind>
+    <keybind key="W-Down"><action name="DirectionalFocusSouth"/></keybind>
+
+    <!-- ═══ Desktops (upstream: Super+1..9,0 → workspace 1..10) ═══ -->
+    <keybind key="W-1"><action name="GoToDesktop"><to>1</to><wrap>yes</wrap></action></keybind>
+    <keybind key="W-2"><action name="GoToDesktop"><to>2</to><wrap>yes</wrap></action></keybind>
+    <keybind key="W-3"><action name="GoToDesktop"><to>3</to><wrap>yes</wrap></action></keybind>
+    <keybind key="W-4"><action name="GoToDesktop"><to>4</to><wrap>yes</wrap></action></keybind>
+    <keybind key="W-5"><action name="GoToDesktop"><to>5</to><wrap>yes</wrap></action></keybind>
+    <keybind key="W-6"><action name="GoToDesktop"><to>6</to><wrap>yes</wrap></action></keybind>
+    <keybind key="W-7"><action name="GoToDesktop"><to>7</to><wrap>yes</wrap></action></keybind>
+    <keybind key="W-8"><action name="GoToDesktop"><to>8</to><wrap>yes</wrap></action></keybind>
+    <keybind key="W-9"><action name="GoToDesktop"><to>9</to><wrap>yes</wrap></action></keybind>
+    <keybind key="W-0"><action name="GoToDesktop"><to>10</to><wrap>yes</wrap></action></keybind>
+
+    <!-- upstream: Super+Shift+1..0 → movetoworkspace (follows the window) -->
+    <keybind key="W-S-1"><action name="SendToDesktop"><to>1</to><wrap>yes</wrap><follow>yes</follow></action></keybind>
+    <keybind key="W-S-2"><action name="SendToDesktop"><to>2</to><wrap>yes</wrap><follow>yes</follow></action></keybind>
+    <keybind key="W-S-3"><action name="SendToDesktop"><to>3</to><wrap>yes</wrap><follow>yes</follow></action></keybind>
+    <keybind key="W-S-4"><action name="SendToDesktop"><to>4</to><wrap>yes</wrap><follow>yes</follow></action></keybind>
+    <keybind key="W-S-5"><action name="SendToDesktop"><to>5</to><wrap>yes</wrap><follow>yes</follow></action></keybind>
+    <keybind key="W-S-6"><action name="SendToDesktop"><to>6</to><wrap>yes</wrap><follow>yes</follow></action></keybind>
+    <keybind key="W-S-7"><action name="SendToDesktop"><to>7</to><wrap>yes</wrap><follow>yes</follow></action></keybind>
+    <keybind key="W-S-8"><action name="SendToDesktop"><to>8</to><wrap>yes</wrap><follow>yes</follow></action></keybind>
+    <keybind key="W-S-9"><action name="SendToDesktop"><to>9</to><wrap>yes</wrap><follow>yes</follow></action></keybind>
+    <keybind key="W-S-0"><action name="SendToDesktop"><to>10</to><wrap>yes</wrap><follow>yes</follow></action></keybind>
+
+    <!-- ═══ Scratchpad (upstream: Super+S special:magic, Super+Shift+S send) ═══ -->
+    <keybind key="W-s">
+      <action name="Execute"><command>sh -c '$HOME/.local/bin/faded-scratchpad toggle'</command></action>
+    </keybind>
+    <keybind key="W-S-s">
+      <action name="Execute"><command>sh -c '$HOME/.local/bin/faded-scratchpad send'</command></action>
+    </keybind>
+
+    <!-- ═══ X11 conveniences (not upstream, but expected on OpenBox) ═══ -->
+    <keybind key="A-Tab"><action name="NextWindow"/></keybind>
+    <keybind key="A-S-Tab"><action name="PreviousWindow"/></keybind>
+
+    <!-- ═══ Volume (upstream wpctl commands, unchanged) ═══ -->
+    <keybind key="XF86AudioRaiseVolume">
+      <action name="Execute"><command>wpctl set-volume -l 1 @DEFAULT_AUDIO_SINK@ 5%+</command></action>
+    </keybind>
+    <keybind key="XF86AudioLowerVolume">
+      <action name="Execute"><command>wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%-</command></action>
+    </keybind>
+    <keybind key="XF86AudioMute">
+      <action name="Execute"><command>wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle</command></action>
+    </keybind>
+    <keybind key="XF86AudioMicMute">
+      <action name="Execute"><command>wpctl set-mute @DEFAULT_AUDIO_SOURCE@ toggle</command></action>
+    </keybind>
+
+    <!-- ═══ Brightness (upstream brightnessctl commands, unchanged) ═══ -->
+    <keybind key="XF86MonBrightnessUp">
+      <action name="Execute"><command>brightnessctl -e4 -n2 set 5%+</command></action>
+    </keybind>
+    <keybind key="XF86MonBrightnessDown">
+      <action name="Execute"><command>brightnessctl -e4 -n2 set 5%-</command></action>
+    </keybind>
+
+    <!-- ═══ Media (upstream playerctl commands, unchanged) ═══ -->
+    <keybind key="XF86AudioNext">
+      <action name="Execute"><command>playerctl next</command></action>
+    </keybind>
+    <keybind key="XF86AudioPrev">
+      <action name="Execute"><command>playerctl previous</command></action>
+    </keybind>
+    <keybind key="XF86AudioPlay">
+      <action name="Execute"><command>playerctl play-pause</command></action>
+    </keybind>
+    <keybind key="XF86AudioPause">
+      <action name="Execute"><command>playerctl play-pause</command></action>
+    </keybind>
+  </keyboard>
+
+  <mouse>
+    <dragThreshold>8</dragThreshold>
+    <doubleClickTime>400</doubleClickTime>
+    <screenEdgeWarpTime>400</screenEdgeWarpTime>
+    <screenEdgeWarpMouse>false</screenEdgeWarpMouse>
+
+    <context name="Frame">
+      <mousebind button="A-Left" action="Press">
+        <action name="Focus"/>
+        <action name="Raise"/>
+      </mousebind>
+      <mousebind button="A-Left" action="Drag">
+        <action name="Move"/>
+      </mousebind>
+      <mousebind button="A-Right" action="Press">
+        <action name="Focus"/>
+        <action name="Raise"/>
+      </mousebind>
+      <mousebind button="A-Right" action="Drag">
+        <action name="Resize"/>
+      </mousebind>
+      <!-- upstream: Super+LMB drag = move, Super+RMB drag = resize -->
+      <mousebind button="W-Left" action="Press">
+        <action name="Focus"/>
+        <action name="Raise"/>
+      </mousebind>
+      <mousebind button="W-Left" action="Drag">
+        <action name="Move"/>
+      </mousebind>
+      <mousebind button="W-Right" action="Press">
+        <action name="Focus"/>
+        <action name="Raise"/>
+      </mousebind>
+      <mousebind button="W-Right" action="Drag">
+        <action name="Resize"/>
+      </mousebind>
+      <mousebind button="A-Middle" action="Press">
+        <action name="Lower"/>
+        <action name="FocusToBottom"/>
+        <action name="Unfocus"/>
+      </mousebind>
+      <!-- upstream: Super+wheel = workspace switch (e+1 / e-1, wrapping) -->
+      <mousebind button="W-Up" action="Click">
+        <action name="DesktopPrevious"><wrap>yes</wrap></action>
+      </mousebind>
+      <mousebind button="W-Down" action="Click">
+        <action name="DesktopNext"><wrap>yes</wrap></action>
+      </mousebind>
+    </context>
+
+    <context name="Titlebar">
+      <mousebind button="Left" action="Press">
+        <action name="Focus"/>
+        <action name="Raise"/>
+      </mousebind>
+      <mousebind button="Left" action="Drag">
+        <action name="Move"/>
+      </mousebind>
+      <mousebind button="Left" action="DoubleClick">
+        <action name="ToggleMaximize"/>
+      </mousebind>
+      <mousebind button="Middle" action="Press">
+        <action name="Lower"/>
+        <action name="FocusToBottom"/>
+        <action name="Unfocus"/>
+      </mousebind>
+      <mousebind button="Up" action="Click">
+        <action name="Shade"/>
+        <action name="FocusToBottom"/>
+        <action name="Unfocus"/>
+        <action name="Lower"/>
+      </mousebind>
+      <mousebind button="Down" action="Click">
+        <action name="Unshade"/>
+        <action name="Raise"/>
+      </mousebind>
+      <mousebind button="Right" action="Press">
+        <action name="Focus"/>
+        <action name="Raise"/>
+        <action name="ShowMenu"><menu>client-menu</menu></action>
+      </mousebind>
+    </context>
+
+    <context name="Titlebar Top">
+      <mousebind button="Left" action="Drag">
+        <action name="Resize"/>
+      </mousebind>
+    </context>
+    <context name="Titlebar Left">
+      <mousebind button="Left" action="Drag">
+        <action name="Resize"/>
+      </mousebind>
+    </context>
+    <context name="Titlebar Right">
+      <mousebind button="Left" action="Drag">
+        <action name="Resize"/>
+      </mousebind>
+    </context>
+    <context name="Titlebar TopLeft">
+      <mousebind button="Left" action="Drag">
+        <action name="Resize"/>
+      </mousebind>
+    </context>
+    <context name="Titlebar TopRight">
+      <mousebind button="Left" action="Drag">
+        <action name="Resize"/>
+      </mousebind>
+    </context>
+    <context name="Titlebar BottomLeft">
+      <mousebind button="Left" action="Drag">
+        <action name="Resize"/>
+      </mousebind>
+    </context>
+    <context name="Titlebar BottomRight">
+      <mousebind button="Left" action="Drag">
+        <action name="Resize"/>
+      </mousebind>
+    </context>
+
+    <context name="Client">
+      <mousebind button="Left" action="Press">
+        <action name="Focus"/>
+        <action name="Raise"/>
+      </mousebind>
+      <mousebind button="Middle" action="Press">
+        <action name="Focus"/>
+        <action name="Raise"/>
+      </mousebind>
+      <mousebind button="Right" action="Press">
+        <action name="Focus"/>
+        <action name="Raise"/>
+      </mousebind>
+    </context>
+
+    <context name="Icon">
+      <mousebind button="Left" action="Press">
+        <action name="Focus"/>
+        <action name="Raise"/>
+        <action name="ShowMenu"><menu>client-menu</menu></action>
+      </mousebind>
+    </context>
+
+    <context name="AllDesktops">
+      <mousebind button="Left" action="Press">
+        <action name="Focus"/>
+        <action name="Raise"/>
+        <action name="ToggleOmnipresent"/>
+      </mousebind>
+    </context>
+
+    <context name="Shade">
+      <mousebind button="Left" action="Press">
+        <action name="Focus"/>
+        <action name="Raise"/>
+        <action name="ToggleShade"/>
+      </mousebind>
+    </context>
+
+    <context name="Iconify">
+      <mousebind button="Left" action="Press">
+        <action name="Focus"/>
+        <action name="Raise"/>
+        <action name="Iconify"/>
+      </mousebind>
+    </context>
+
+    <context name="Maximize">
+      <mousebind button="Left" action="Press">
+        <action name="Focus"/>
+        <action name="Raise"/>
+        <action name="ToggleMaximize"/>
+      </mousebind>
+      <mousebind button="Middle" action="Press">
+        <action name="Focus"/>
+        <action name="Raise"/>
+        <action name="ToggleMaximizeVert"/>
+      </mousebind>
+      <mousebind button="Right" action="Press">
+        <action name="Focus"/>
+        <action name="Raise"/>
+        <action name="ToggleMaximizeHorz"/>
+      </mousebind>
+    </context>
+
+    <context name="Close">
+      <mousebind button="Left" action="Press">
+        <action name="Focus"/>
+        <action name="Raise"/>
+        <action name="Close"/>
+      </mousebind>
+    </context>
+
+    <context name="Handle">
+      <mousebind button="Left" action="Press">
+        <action name="Focus"/>
+        <action name="Raise"/>
+      </mousebind>
+      <mousebind button="Left" action="Drag">
+        <action name="Move"/>
+      </mousebind>
+    </context>
+
+    <context name="Handle Left">
+      <mousebind button="Left" action="Drag">
+        <action name="Resize"/>
+      </mousebind>
+    </context>
+    <context name="Handle Right">
+      <mousebind button="Left" action="Drag">
+        <action name="Resize"/>
+      </mousebind>
+    </context>
+    <context name="Handle Top">
+      <mousebind button="Left" action="Drag">
+        <action name="Resize"/>
+      </mousebind>
+    </context>
+
+    <context name="Desktop">
+      <mousebind button="Left" action="Press">
+        <action name="Focus"/>
+        <action name="Raise"/>
+      </mousebind>
+      <!-- root menu on desktop right-click -->
+      <mousebind button="Right" action="Press">
+        <action name="ShowMenu"><menu>root-menu</menu></action>
+      </mousebind>
+      <!-- window list on desktop middle-click -->
+      <mousebind button="Middle" action="Press">
+        <action name="ShowMenu"><menu>client-list-menu</menu></action>
+      </mousebind>
+      <!-- wheel on the desktop also cycles desktops (X11 convention) -->
+      <mousebind button="Up" action="Click">
+        <action name="DesktopPrevious"><wrap>yes</wrap></action>
+      </mousebind>
+      <mousebind button="Down" action="Click">
+        <action name="DesktopNext"><wrap>yes</wrap></action>
+      </mousebind>
+      <mousebind button="W-Up" action="Click">
+        <action name="DesktopPrevious"><wrap>yes</wrap></action>
+      </mousebind>
+      <mousebind button="W-Down" action="Click">
+        <action name="DesktopNext"><wrap>yes</wrap></action>
+      </mousebind>
+    </context>
+  </mouse>
+
+  <menu>
+    <file>menu.xml</file>
+    <hideDelay>250</hideDelay>
+    <middle>no</middle>
+    <submenuShowDelay>100</submenuShowDelay>
+    <applicationIcons>yes</applicationIcons>
+  </menu>
+
+  <applications>
+    <!-- The scratchpad terminal spawned by faded-scratchpad
+         (kitty with class "faded-scratchpad"). Emulates Hyprland's
+         special:magic: undecorated, always-on-top, centered, hidden
+         from taskbar/pager. -->
+    <application class="faded-scratchpad">
+      <decor>no</decor>
+      <shade>no</shade>
+      <position force="yes">
+        <x>center</x>
+        <y>48</y>
+      </position>
+      <layer>above</layer>
+      <skip_taskbar>yes</skip_taskbar>
+      <skip_pager>yes</skip_pager>
+      <maximized>no</maximized>
+      <fullscreen>no</fullscreen>
+    </application>
+
+    <!-- clipse clipboard TUI (kitty with class "clipse") — floats above,
+         like upstream's popup-like usage -->
+    <application class="clipse">
+      <layer>above</layer>
+      <skip_pager>yes</skip_pager>
+    </application>
+  </applications>
+
+</openbox_config>

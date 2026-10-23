@@ -1,0 +1,39 @@
+# ══════════════════════════════════════════════════════════════════════════
+#  Faded Dream — waypaper settings (OpenBox / X11 variant)
+#
+#  Port of upstream "config.ini for waypaper" with ONE change:
+#    backend = mpvpaper → feh
+#  mpvpaper is a Wayland layer-shell app and cannot draw the wallpaper
+#  on X11. feh is the X11 backend waypaper uses (`pacman -S feh`).
+#  Consequence: live wallpapers (mp4/webm) don't animate on X11 —
+#  static wallpapers only. Everything else is upstream-verbatim.
+#
+#  Install to: ~/.config/waypaper/config.ini
+# ══════════════════════════════════════════════════════════════════════════
+
+[Settings]
+language = en
+folder = ~/Live&NON Live Wallpapers
+monitors = All
+wallpaper = ~/Live&NON Live Wallpapers
+show_path_in_tooltip = True
+backend = feh
+fill = stretch
+sort = name
+color = #ffffff
+subfolders = True
+all_subfolders = True
+show_hidden = False
+show_gifs_only = False
+zen_mode = False
+post_command = 
+number_of_columns = 3
+swww_transition_type = any
+swww_transition_step = 63
+swww_transition_angle = 0
+swww_transition_duration = 2
+swww_transition_fps = 60
+mpvpaper_sound = False
+mpvpaper_options = 
+use_xdg_state = False
+stylesheet = ~/.config/waypaper/style.css

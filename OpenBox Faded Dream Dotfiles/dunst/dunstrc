@@ -1,0 +1,84 @@
+# ════════════════════════════════════════════════════════════════════════════
+#  Faded Dream — dunst notification daemon
+#  Replaces upstream's swaync. Styled after the upstream rofi theme
+#  "rounded-pink-dark": #212121 surfaces, #EC407A accent, 10px rounding.
+#
+#  Install to: ~/.config/dunst/dunstrc
+# ════════════════════════════════════════════════════════════════════════════
+
+[global]
+    monitor = 0
+    follow = mouse
+
+    origin = top-right
+    # clear of the 30px waybar + its 5px module margin
+    offset = (12, 44)
+
+    width = (380, 512)
+    height = 120
+    gap = 8
+
+    # keep popups from stealing focus while typing
+    indicate_hidden = yes
+    shrink = no
+    transparency = 5
+
+    # 10px corners, like upstream's decoration.rounding = 10
+    corner_radius = 10
+    progress_bar_corner_radius = 6
+    progress_bar_height = 6
+    progress_bar_frame_width = 0
+
+    padding = 12
+    horizontal_padding = 14
+    frame_width = 1
+    frame_color = "#EC407A"
+    separator_color = frame
+    separator_height = 2
+
+    sort = yes
+    font = JetBrainsMono Nerd Font 11
+    line_height = 0
+    markup = full
+    format = "<b>%s</b>\n%b"
+    alignment = left
+    show_age_threshold = 60
+    word_wrap = yes
+    ellipsize = middle
+    ignore_newline = no
+    stack_duplicates = true
+    hide_duplicate_count = false
+    show_indicators = yes
+    icon_position = left
+    max_icon_size = 40
+    icon_folders = /usr/share/icons/Papirus-Dark, /usr/share/icons/Papirus, /usr/share/icons/hicolor/scalable/apps
+
+    # keyboard interaction stays out of the way
+    close = ctrl+space
+    close_all = ctrl+shift+space
+    history = ctrl+grave
+    context = ctrl+shift+period
+
+    mouse_left_click = close_current
+    mouse_middle_click = do_action
+    mouse_right_click = close_all
+
+    browser = librewolf
+
+[urgency_low]
+    background = "#212121"
+    foreground = "#E6E6E6"
+    frame_color = "#595959"
+    timeout = 5
+
+[urgency_normal]
+    background = "#212121"
+    foreground = "#E6E6E6"
+    frame_color = "#EC407A"
+    timeout = 8
+
+[urgency_critical]
+    background = "#EC407A"
+    foreground = "#FFFFFF"
+    frame_color = "#FFFFFF"
+    timeout = 0

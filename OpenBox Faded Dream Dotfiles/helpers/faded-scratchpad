@@ -1,0 +1,89 @@
+#!/usr/bin/env bash
+# ════════════════════════════════════════════════════════════════════════════
+#  faded-scratchpad — Hyprland's "special:magic" scratchpad, ported to OpenBox
+#
+#    faded-scratchpad toggle     Super+S       show/hide the scratchpad
+#    faded-scratchpad send      Super+Shift+S stash the focused window
+#
+#  How it emulates the upstream special workspace:
+#    • A dedicated terminal (kitty --class faded-scratchpad) is mapped/unmapped
+#      — positioning, "always on top" and no-decoration come from rc.xml
+#      per-application rules.
+#    • "send" withdraws the focused window and remembers its ID;
+#      "toggle" restores everything, just like toggling special:magic.
+#
+#  Needs: xdotool, kitty. Install to: ~/.local/bin/faded-scratchpad
+# ════════════════════════════════════════════════════════════════════════════
+set -u
+
+CLASS="faded-scratchpad"
+CACHE="${XDG_CACHE_HOME:-$HOME/.cache}/faded-scratchpad"
+STASH="$CACHE/stash"
+LIVE="$CACHE/live"
+mkdir -p "$CACHE"
+touch "$STASH" "$LIVE"
+
+term_id()  { xdotool search --class "$CLASS" 2>/dev/null | head -n1; }
+term_vis() { xdotool search --onlyvisible --class "$CLASS" 2>/dev/null | head -n1; }
+
+# move every id from file "$1" to file "$2" (map/unmap helper)
+transfer() { # from → to, action (map|unmap)
+    local id
+    while IFS= read -r id; do
+        [ -z "$id" ] && continue
+        if [ "$3" = "map" ]; then
+            xdotool windowmap "$id" >/dev/null 2>&1 && echo "$id" >> "$2" || true
+        else
+            xdotool windowunmap "$id" >/dev/null 2>&1 && echo "$id" >> "$2" || true
+        fi
+    done < "$1"
+    : > "$1"
+}
+
+toggle() {
+    local vis id
+
+    vis=$(term_vis)
+    if [ -n "$vis" ]; then
+        # ── hide: withdraw the terminal + re-stash everything it restored ──
+        transfer "$LIVE" "$STASH" unmap
+        xdotool windowunmap "$vis" >/dev/null 2>&1 || true
+        exit 0
+    fi
+
+    id=$(term_id)
+    if [ -z "$id" ]; then
+        # first run — spawn the scratchpad terminal
+        kitty --class "$CLASS" --name "$CLASS" >/dev/null 2>&1 &
+        for _ in $(seq 1 20); do            # wait up to ~2s for it to map
+            id=$(term_id)
+            [ -n "$id" ] && break
+            sleep 0.1
+        done
+        if [ -z "$id" ]; then
+            notify-send -u critical "Faded Dream" "Scratchpad failed to spawn" 2>/dev/null
+            exit 1
+        fi
+    else
+        xdotool windowmap "$id" >/dev/null 2>&1 || true
+        xdotool windowactivate "$id" >/dev/null 2>&1 || true
+    fi
+
+    # restore any windows that were stashed into the scratchpad
+    transfer "$STASH" "$LIVE" map
+}
+
+send() {
+    local id term
+    id=$(xdotool getactivewindow 2>/dev/null) || exit 0
+    term=$(term_id)
+    # the scratchpad terminal toggles on its own — don't double-stash it
+    [ "$id" = "$term" ] && exit 0
+    xdotool windowunmap "$id" >/dev/null 2>&1 && echo "$id" >> "$STASH" || true
+}
+
+case "${1:-toggle}" in
+    toggle) toggle ;;
+    send)   send   ;;
+    *) echo "usage: faded-scratchpad [toggle|send]" >&2; exit 1 ;;
+esac

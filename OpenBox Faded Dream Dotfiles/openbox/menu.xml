@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- ══════════════════════════════════════════════════════════════════════════
+     Faded Dream — OpenBox root menu
+     Mirrors the app set of upstream's Hyprland keybinds + the rofi power
+     menu from its waybar.
+     Install to: ~/.config/openbox/menu.xml
+     ══════════════════════════════════════════════════════════════════════════ -->
+<openbox_menu xmlns="http://openbox.org/3.4/menu">
+
+  <menu id="root-menu" label="Faded Dream">
+    <item label="Terminal — kitty">
+      <action name="Execute"><command>kitty</command></action>
+    </item>
+    <item label="File Manager — VoidDream">
+      <action name="Execute"><command>kitty VoidDream</command></action>
+    </item>
+    <item label="Web Browser — LibreWolf">
+      <action name="Execute"><command>librewolf</command></action>
+    </item>
+    <item label="App Launcher — rofi">
+      <action name="Execute"><command>rofi -show drun -show-icons</command></action>
+    </item>
+    <item label="Emoji Picker — rofimoji">
+      <action name="Execute"><command>rofimoji -a copy</command></action>
+    </item>
+    <item label="Clipboard — clipse">
+      <action name="Execute"><command>kitty --class clipse -e clipse</command></action>
+    </item>
+
+    <separator />
+
+    <item label="Screenshot region — flameshot">
+      <action name="Execute"><command>flameshot gui</command></action>
+    </item>
+    <item label="Wallpaper — waypaper">
+      <action name="Execute"><command>waypaper</command></action>
+    </item>
+
+    <separator />
+
+    <!-- built-in window list -->
+    <menu id="client-list-menu" />
+
+    <separator />
+
+    <item label="Reconfigure OpenBox">
+      <action name="Reconfigure"/>
+    </item>
+    <item label="Restart OpenBox">
+      <action name="Restart"/>
+    </item>
+    <item label="Power menu — rofi">
+      <action name="Execute"><command>rofi -show power-menu -modi power-menu:rofi-power-menu</command></action>
+    </item>
+
+    <separator />
+
+    <item label="Exit Faded Dream">
+      <action name="Exit"><confirm>yes</confirm></action>
+    </item>
+  </menu>
+
+</openbox_menu>

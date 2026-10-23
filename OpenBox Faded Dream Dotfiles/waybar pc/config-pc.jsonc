@@ -1,0 +1,116 @@
+{
+  // ═══════════════════════════════════════════════════════════════════════
+  // Faded Dream — waybar on X11 (OpenBox)
+  // Port of upstream "waybar pc/config-pc.jsonc".
+  // Module replacements for X11:
+  //   hyprland/workspaces → custom/workspaces  (faded-workspaces pager)
+  //   hyprland/window     → custom/window      (faded-window-title)
+  //   swaync bell         → dunstctl bell      (faded-notifications)
+  // ═══════════════════════════════════════════════════════════════════════
+  "layer": "top",
+  "position": "top",
+  "height": 30,
+
+  "modules-left": [
+    "custom/appbutton",
+    "custom/workspaces"
+  ],
+  "modules-center": [
+    "custom/window"
+  ],
+  "modules-right": [
+    "tray",
+    "network",
+    "pulseaudio",
+    "cpu",
+    "clock",
+    "custom/notification",
+    "custom/rofi-power-menu"
+  ],
+
+  "custom/appbutton": {
+    "format": "APPS",
+    "tooltip": false,
+    "on-click": "rofi -show drun -show-icons"
+  },
+
+  // X11 workspace pager (replaces hyprland/workspaces)
+  "custom/workspaces": {
+    "format": "{}",
+    "exec": "$HOME/.local/bin/faded-workspaces",
+    "interval": 1,
+    "tooltip": false,
+    "on-scroll-up": "$HOME/.local/bin/faded-workspaces prev",
+    "on-scroll-down": "$HOME/.local/bin/faded-workspaces next"
+  },
+
+  // Active window title (replaces hyprland/window)
+  "custom/window": {
+    "format": "{}",
+    "exec": "$HOME/.local/bin/faded-window-title",
+    "interval": 1,
+    "tooltip": false,
+    "max-length": 50
+  },
+
+  // Notification bell, backed by dunst (replaces swaync-client -swb)
+  "custom/notification": {
+    "tooltip": true,
+    "format": "{icon}",
+    "format-icons": {
+      "notification": "󱅫",
+      "none": "󰂜",
+      "dnd-notification": "󰂠",
+      "dnd-none": "󰪓",
+      "inhibited-notification": "󰂛",
+      "inhibited-none": "󰪑",
+      "dnd-inhibited-notification": "󰂛",
+      "dnd-inhibited-none": "󰪑"
+    },
+    "return-type": "json",
+    "exec-if": "command -v dunstctl",
+    "exec": "$HOME/.local/bin/faded-notifications",
+    // left-click re-shows the last notification (no panel exists in dunst);
+    // right-click toggles DND — upstream: swaync-client -d -sw
+    "on-click": "dunstctl history-pop",
+    "on-click-right": "dunstctl set-paused toggle",
+    "escape": true
+  },
+
+  "custom/rofi-power-menu": {
+    "format": "⏻",
+    "tooltip": false,
+    "on-click": "rofi -show power-menu -modi power-menu:rofi-power-menu"
+  },
+
+  "tray": {
+    "icon-size": 18,
+    "spacing": 5
+  },
+
+  "clock": {
+    "format": "󰥔  {:%H:%M}",
+    "on-click": "kitty calcurse"
+  },
+
+  "network": {
+    "format-wifi": "󰤨  {essid}",
+    "format-ethernet": "󰈀  Ethernet",
+    "format-disconnected": "󰤭  Disconnected",
+    "on-click": "kitty -- nmtui",
+    "tooltip-format-wifi": "{signalStrength}% {frequency}MHz"
+  },
+
+  "pulseaudio": {
+    "format": "󰕾  {volume}%",
+    "format-muted": "󰝟  Muted",
+    "on-click": "pavucontrol",
+    "tooltip": true
+  },
+
+  "cpu": {
+    "format": "󰻠  {usage}%",
+    "max-length": 50,
+    "on-click": "kitty btop"
+  }
+}

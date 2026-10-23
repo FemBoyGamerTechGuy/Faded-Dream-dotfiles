@@ -1,0 +1,59 @@
+#!/usr/bin/env bash
+# ════════════════════════════════════════════════════════════════════════════
+#  faded-workspaces — waybar workspace pager for OpenBox on X11
+#  (replaces upstream's hyprland/workspaces module)
+#
+#    faded-workspaces              print a Pango summary of desktops 1..10
+#    faded-workspaces next|prev   switch to the next/previous desktop
+#
+#  Colors follow the Faded Dream look:
+#    active   #33CCFF  (the Hyprland active border gradient start)
+#    occupied #E6E6E6  (rofi fg)
+#    empty    #6E6E6E  (dimmed)
+#
+#  Needs: xprop, wmctrl. Install to: ~/.local/bin/faded-workspaces
+# ════════════════════════════════════════════════════════════════════════════
+set -u
+MODE="${1:-}"
+
+TOTAL=$(xprop -root _NET_NUMBER_OF_DESKTOPS 2>/dev/null | awk -F'= ' '{print $2+0}')
+[ "${TOTAL:-0}" -lt 1 ] && TOTAL=10
+
+# ── desktop switching (for waybar scroll events) ──
+if [ "$MODE" = "next" ] || [ "$MODE" = "prev" ]; then
+    CUR=$(xprop -root _NET_CURRENT_DESKTOP | awk -F'= ' '{print $2+0}')
+    if [ "$MODE" = "next" ]; then
+        TGT=$(( (CUR + 1) % TOTAL ))
+    else
+        TGT=$(( (CUR - 1 + TOTAL) % TOTAL ))
+    fi
+    wmctrl -s "$TGT" 2>/dev/null
+    exit 0
+fi
+
+# ── print pager state ──
+CUR=$(xprop -root _NET_CURRENT_DESKTOP 2>/dev/null | awk -F'= ' '{print $2+0}')
+
+# windows per desktop: wmctrl -l → "<id> <desktop> <host> <title...>"
+declare -a COUNT
+for ((i=0; i<TOTAL; i++)); do COUNT[$i]=0; done
+while read -r _id d _rest; do
+    [ -z "${_id:-}" ] && continue
+    case "$d" in ''|*[!0-9]*) continue ;; esac       # skip sticky/dock (-1)
+    [ "$d" -lt "$TOTAL" ] && COUNT[$d]=$((COUNT[$d]+1))
+done < <(wmctrl -l 2>/dev/null)
+
+OUT=""
+for ((i=0; i<TOTAL; i++)); do
+    n=$((i+1))
+    color="#6E6E6E"
+    extra=""
+    if [ "$i" -eq "$CUR" ]; then
+        color="#33CCFF"
+        extra=" weight='bold'"
+    elif [ "${COUNT[$i]}" -gt 0 ]; then
+        color="#E6E6E6"
+    fi
+    OUT+="${OUT:+ }<span foreground='$color'$extra>$n</span>"
+done
+printf '%s' "$OUT"

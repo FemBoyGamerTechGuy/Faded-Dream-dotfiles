@@ -1,0 +1,20 @@
+#!/usr/bin/env bash
+# ════════════════════════════════════════════════════════════════════════════
+#  faded-window-title — active window title for waybar on X11
+#  (replaces upstream's hyprland/window module; waybar truncates to
+#   max-length 50 like upstream)
+#
+#  Needs: xdotool. Install to: ~/.local/bin/faded-window-title
+# ════════════════════════════════════════════════════════════════════════════
+set -u
+
+id=$(xdotool getactivewindow 2>/dev/null) || { echo ""; exit 0; }
+title=$(xdotool getwindowname "$id" 2>/dev/null) || { echo ""; exit 0; }
+
+# escape pango markup characters so app titles can't break the bar
+title=${title//&/&amp;}
+title=${title//</&lt;}
+title=${title//>/&gt;}
+title=${title//$'\n'/ }
+
+printf '%s' "$title"

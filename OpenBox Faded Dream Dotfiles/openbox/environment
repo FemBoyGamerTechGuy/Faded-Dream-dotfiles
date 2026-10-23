@@ -1,0 +1,20 @@
+# ══════════════════════════════════════════════════════════════
+# Faded Dream — OpenBox environment
+# Port of upstream Hyprland env vars (hyprland.lua: hl.env(...))
+# Install to: ~/.config/openbox/environment
+# ══════════════════════════════════════════════════════════════
+
+# upstream: XCURSOR_SIZE=24
+XCURSOR_SIZE=24
+
+# upstream look uses the ArcDusk cursor set — must be installed:
+#   https://www.pling.com/p/1888134  (or your distro's package)
+XCURSOR_THEME=ArcDusk
+
+# Default browser (upstream: librewolf)
+BROWSER=librewolf
+
+# Optional: force the upstream GTK look per-app (upstream themes:
+# Nordic v40 / Sweet Dark + Papirus icons). Uncomment to use, or better:
+# set it globally with nwg-look / lxappearance.
+#GTK_THEME=Nordic
